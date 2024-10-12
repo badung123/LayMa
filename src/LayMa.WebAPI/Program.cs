@@ -1,5 +1,7 @@
 using LayMa.Core.Domain.Identity;
+using LayMa.Core.Interface;
 using LayMa.Data;
+using LayMa.Data.SeedWorks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -36,6 +38,22 @@ builder.Services.Configure<IdentityOptions>(options =>
 });
 
 // Add services to the container.
+builder.Services.AddScoped(typeof(IRepository<,>), typeof(RepositoryBase<,>));
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+// Business services and repositories
+//var services = typeof(PostRepository).Assembly.GetTypes()
+//    .Where(x => x.GetInterfaces().Any(i => i.Name == typeof(IRepository<,>).Name)
+//    && !x.IsAbstract && x.IsClass && !x.IsGenericType);
+
+//foreach (var service in services)
+//{
+//    var allInterfaces = service.GetInterfaces();
+//    var directInterface = allInterfaces.Except(allInterfaces.SelectMany(t => t.GetInterfaces())).FirstOrDefault();
+//    if (directInterface != null)
+//    {
+//        builder.Services.Add(new ServiceDescriptor(directInterface, service, ServiceLifetime.Scoped));
+//    }
+//}
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
