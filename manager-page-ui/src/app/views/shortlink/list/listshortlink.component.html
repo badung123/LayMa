@@ -1,0 +1,87 @@
+
+<c-row>
+  <c-col xs="12">
+    <c-card class="mb-4">
+      <c-card-header>
+        <strong>QUẢN LÝ LIÊN KẾT</strong>
+      </c-card-header>
+      <c-card-body>
+        <c-row>
+          
+          <c-input-group class="mb-3">
+            <input aria-describedby="button-addon2"
+                   aria-label="Nhập link gốc"
+                   cFormControl
+                   id="txtKeyword" pInputText (keyup.enter)="loadData()" [(ngModel)]="keyword"
+                   placeholder="Nhập link gốc..."
+            />
+            <button cButton color="secondary" id="button-addon2" type="button" (click)="loadData()" variant="outline">
+              Tìm
+            </button>
+          </c-input-group>
+          <hr>
+        </c-row>
+        <c-row>
+          <c-col xs>
+            <c-card class="mb-4">
+              <c-card-body>
+                <table
+                  [hover]="true"
+                  [responsive]="true"
+                  [striped]="true"
+                  align="middle"
+                  cTable
+                  class="mb-0 border"
+                >
+                  <thead class="text-nowrap text-truncate">
+                  <tr>
+                    <th class="bg-body-tertiary text-center ">
+                      <svg cIcon name="cilPeople"></svg>
+                    </th>
+                    <th class="bg-body-tertiary">Link Rút gọn</th>
+                    <th class="bg-body-tertiary text-center">Số Click</th>
+                    <th class="bg-body-tertiary">Link Gốc</th>
+                    <th class="bg-body-tertiary text-center">Tạo Từ</th>
+                    <th class="bg-body-tertiary">Hoạt động</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                    @for (item of items; track item.token; let i = $index) {
+                      <tr>
+                        <td class="text-center">
+                          <div>{{ i + 1 }}</div>
+                        </td>
+                        <td>
+                          <div>{{ item.link }}</div>
+                          <div class="small text-body-secondary text-nowrap">
+                          <span>
+                            Tạo lúc: {{ item.dateCreated }}
+                          </span>
+                          </div>
+                        </td>
+                        <td class="text-center">
+                          <div>{{ item.viewCount  }}</div>
+                        </td>
+                        <td>
+                          <div>{{ item.originLink }}</div>
+                        </td>
+                        <td class="text-center">
+                          
+                        </td>
+                        <td>
+                          <div class="small text-body-secondary">Số liệu thống kê</div>
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </c-card-body>
+            </c-card>
+          </c-col>
+        </c-row>
+        
+        
+      </c-card-body>
+    </c-card>
+  </c-col> 
+</c-row>

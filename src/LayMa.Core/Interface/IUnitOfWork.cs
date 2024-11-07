@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LayMa.Core.Repositories;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,11 @@ namespace LayMa.Core.Interface
 {
     public interface IUnitOfWork
     {
+		IShortLinkRepository ShortLinks { get; }
+		IKeySearchRepository KeySearchs { get; }
+		ICodeManagerRepository CodeManagers { get; }
+		IViewDetailRepository ViewDetails { get; }
+        IBankTransactionRepository BankTransactions { get; }
         Task<int> CompleteAsync();
     }
 }

@@ -12,10 +12,12 @@ namespace LayMa.Data.SeedWorks
     public class RepositoryBase<T, Key> : IRepository<T, Key> where T : class
     {
         private readonly DbSet<T> _dbSet;
-        public RepositoryBase(LayMaContext context)
+		protected readonly LayMaContext _context;
+		public RepositoryBase(LayMaContext context)
         {
             _dbSet = context.Set<T>();
-        }
+			_context = context;
+		}
         public void Add(T entity)
         {
             _dbSet.AddAsync(entity);

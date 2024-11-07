@@ -1,0 +1,187 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Trang chủ";
+    //Layout = "_Layout";
+}
+@model TemplateViewModel;
+<h1 id="tokenId" style="display:none">@ViewData["Id"]</h1>
+<!-- Team-->
+<section class="page-section bg-light" id="team">
+	<div class="box-step">
+		<div class="box-step-wrap fadeInUp visible">
+			
+			<div id="fingerprint-data">
+				<div class="fingerprint-header-container">
+					<div class="fingerprint-header">
+						<div class="ellipsis-all">   </div>
+					</div>
+				</div>
+			</div>
+			<div class="heading -lv2 fadeInUp visible">
+				<h2>LÀM THEO CÁC BƯỚC <br class="is-visibleSp"> ĐỂ LẤY LINK TRUY CẬP</h2>
+			</div>
+			<div class="box-step-note fadeInUp d-none visible">
+				<span>Ghi chú:</span>
+				<p>Vị trí của từ khóa là ở top <t id="top" class="text-danger fw-bold"></t> Google!</p>
+			</div>
+			<p class="box-step-link fadeInUp visible"><a href="#videohd">Xem video hướng dẫn cách lấy mã</a></p>
+			<p class="box-step-title fadeInUp visible">Bước 1: Mở tab mới, truy cập <a href="https://google.com" target="_blank">Google.com</a></p>
+			<p class="fadeInUp visible">(Vui lòng tắt chế độ ẩn danh khi vượt mã)</p>
+			<p class="box-step-title fadeInUp visible">Bước 2: Hãy nhớ từ khóa trong ô dưới đây.</p>
+			<div class="box-copy fadeInUp mb-3 visible">
+				<div class="box-copy-content">
+					<p class="box-copy-code" id="TK1">@Model.Key</p>
+					<p class="box-copy-button d-none" id="copyCode"><img src="https://yeumoney.com/theme_v2/assets/img/icn-copy.svg" alt="" class="img-fluid"> Copy</p>
+					<span id="TK2" data-clipboard-text="@Model.Key"></span>
+				</div>
+				<p class="message" id="copyMessage"></p>
+			</div>
+			<p class="box-step-title fadeInUp visible">Bước 3: Gõ từ khóa trên vào tìm kiếm Google</p>
+			<div class="box-google fadeInUp visible">
+				<div>
+					<span class="position-relative display-inline-block">
+						<img src="https://yeumoney.com/theme_v2/assets/img/img-tim-kiem-04.webp" alt="" class="img-fluid">
+						<span class="position-absolute" id="TK3">@Model.Key</span>
+					</span>
+				</div>
+				<p class="box-google-text">
+					<img src="https://yeumoney.com/theme_v2/assets/img/icn-search.svg" alt="" class="img-fluid">
+					Tìm rồi bấm vào kết quả giống hình bên dưới
+				</p>
+				<!-- <p class="box-google-text text-danger fw-normal">
+					Hiện tại nhà mạng VNPT, FPT, Vinaphone đã chặn website này. Vui lòng đổi nhà mạng khác để truy cập
+				</p> -->
+				<span><img id="hinh_nv" src="@Model.UrlImage" alt="" class="img-fluid rounded"></span>
+
+				<div id="halt"></div>
+
+				<p class="box-google-note">Nếu không vào được trang vui lòng đổi trình duyệt khác hoặc xoá cache trình duyệt</p>
+				<span><img src="https://yeumoney.com/theme_v2/assets/img/img-tim-kiem-03.webp" alt="" class="img-fluid"></span>
+				<p class="box-google-note">(Trang 1 không thấy thì tìm qua trang 2 nhé)</p>
+			</div>
+			<p class="box-step-title fadeInUp visible">Bước 4: Cuộn chậm từ trên xuống tìm nút như hình bên dưới và sau đó click vào</p>
+			<p class="box-step-getCode fadeInUp mt-1 visible">
+				<span><img src="https://yeumoney.com/theme_v2/assets/img/img-get-code.webp" alt="" class="img-fluid"></span>
+				<span class="text-danger">(Nếu không thấy nút lấy mã, vui lòng trở lại <br class="is-visibleSp">Google và bấm vào website 1 lần nữa)</span>
+			</p>
+			<p class="box-step-title fadeInUp visible">Bước 5: Sao chép mã hiện ra và nhập vào ô bên dưới</p>
+			<a id="xuong"></a>
+			<div class="box-form">
+				<div class="">
+					<div class="box-form-wrap">
+						<input type="text" class="form-control" id="codeInput" name="code" required="required" placeholder="Nhập mã vào đây">
+					</div>
+
+					<!-- <p class="box-step-title fadeInUp mt-3">Bước 7: Nhấn nút xác nhận và xác thực captcha</p> -->
+					<!-- <p class="fadeInUp">(Kéo mũi tên sang phải để mảnh ghép về đúng vị trí )</p> -->
+
+					<div class="box-form-button mt-5">
+						<button type="submit" class="btn btn-primary" id="btn-xac-nhan" onclick="confirm();">Xác nhận</button>
+						<a id="btn-baoloi" class="btn btn-success" href="#">Đổi nhiệm vụ</a>
+					</div>
+					@* <div>
+					<input type="text" name="keyword" class="form-control" style="display: none" id="keyword" value="">
+					<span id="dieuhanh"><input type="hidden" name="dieuhanh" value="Win32"></span>
+					<span id="pix"><input type="hidden" name="pix" value="1536x864"></span>
+					<span id="lv_p"><input type="hidden" name="lvp" value="100"></span>
+					<c id="d"></c>
+					<span id="xoa_lichsu_duphong"></span>
+					<span id="chuyen_dauvantay_duphong"></span>
+					<input type="hidden" name="ref" value="$ref">
+					<input id="trinhduyet" type="hidden" name="trinhduyet" value="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36 Edg/129.0.0.0|1536 x 864|Win32">
+					<input id="id_donhang" type="hidden" name="id_traffic" value="42">
+					<input id="check_index" type="hidden" name="check_index" value="">
+					<input id="check_gt" type="hidden" name="check_index" value="1">
+					</div> *@
+					
+				</div>
+			</div>
+
+			<a id="videohd"></a>
+			<div class="box-video fadeInUp visible">
+				<p class="box-video-title fadeInUp visible">VIDEO HƯỚNG DẪN CÁCH LẤY MÃ</p>
+				<div class="box-video-youtube fadeInUp visible">
+					<iframe style="width:100%; aspect-ratio:0.452;" src="https://customer-fr8xnm7my3qm5f02.cloudflarestream.com/dfa1f086b08c4d46402977184d7e85c9/iframe?poster=https%3A%2F%2Fcustomer-fr8xnm7my3qm5f02.cloudflarestream.com%2Fdfa1f086b08c4d46402977184d7e85c9%2Fthumbnails%2Fthumbnail.jpg%3Ftime%3D%26height%3D600"></iframe>
+				</div>
+			</div>
+
+
+
+			<!-- ----------------------------  Custom css ------------------------------ -->
+			<style>
+				.css-lam-mo {
+					background: rgba(0, 0, 0, 0.8);
+					z-index: 51;
+					position: fixed;
+					bottom: 0px;
+					left: 0px;
+					right: 0px;
+					top: 0px;
+				}
+
+				.my-vien-ngoai {
+					margin: auto;
+					background: #ffffff;
+					width: 100%;
+					max-width: 320px;
+					border-radius: 6px;
+					z-index: 52;
+					position: fixed;
+					top: 17%;
+					right: 5%;
+					left: 5%;
+				}
+
+				.vien-vip {
+					height: unset !important;
+					padding: 15px 15px 15px 15px;
+					overflow-x: auto
+				}
+
+				.tat {
+					float: right;
+					padding-right: 5px;
+					font-size: 22px;
+					margin-top: -5px;
+				}
+			</style>
+
+			
+			
+
+
+			<!-- --------------------------------- Kết quả -------------------------------- -->
+
+			<span id="ketqua"></span>
+
+			
+		</div>
+	</div>
+</section>
+<script>
+	function confirm() {
+		var code = document.getElementById("codeInput").value;
+		var tokenId = document.getElementById("tokenId").innerHTML;
+		var key = document.getElementById("TK1").innerHTML;
+		var postData = {
+			"Key": key,
+			"Code":code,
+			"Token":tokenId
+		};
+		$.ajax({
+			url: 'https://api.layma.net/api/admin/codemanager/checkcode',
+			type: 'POST',
+			contentType: 'application/json',
+			data: JSON.stringify(postData),
+			success: function () {
+				alert('checkcode thanh cong');
+			},
+			error: function () {
+				alert('error');
+			}
+		});
+	}
+</script>
+

@@ -1,4 +1,4 @@
-namespace LayMa.WebApp.Models
+﻿namespace LayMa.WebApp.Models
 {
     public class ErrorViewModel
     {

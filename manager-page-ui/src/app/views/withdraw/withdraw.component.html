@@ -1,0 +1,144 @@
+
+<c-row>
+  <c-col xs="12">
+    <c-card class="mb-4">
+      <c-card-header>
+        <strong>RÚT TIỀN</strong>
+      </c-card-header>
+      <c-card-body>       
+        <c-row class="mb-4">
+          <c-col xs>
+            <c-card class="mx-4">
+              <c-card-body class="p-4">
+                <form cForm>
+                  <div cFormFloating class="mb-3">
+                    <select cSelect id="floatingSelectGrid">
+                      <option>Chọn ngân hàng</option>
+                      <option value="1">VCB</option>
+                      <option value="2">MB</option>
+                      <option value="3">TCB</option>
+                    </select>
+                    <label cLabel for="floatingSelectGrid">Chọn ngân hàng</label>
+                  </div>
+                  <div cFormFloating class="mb-3">
+                    <input
+    cFormControl
+    id="floatingInputValue"
+    type="text"
+    value="Nguyễn Văn A"
+  />
+  <label cLabel for="floatingInputValue">Tên Tài Khoản</label>
+                  </div>
+                  <div cFormFloating class="mb-3">
+                    <input
+    cFormControl
+    id="floatingInputValue"
+    type="number"
+    value="123456789"
+  />
+  <label cLabel for="floatingInputValue">Số Tài Khoản</label>
+                  </div>  
+                  <div cFormFloating class="mb-3">
+                    <input
+    cFormControl
+    id="floatingInputValue"
+    type="number"
+    value="0"
+  />
+  <label cLabel for="floatingInputValue">Số Tiền</label>
+                  </div>                                                 
+                  <div class="d-grid">
+                    <button cButton color="success" type="submit">RÚT TIỀN</button>
+                  </div>
+                </form>
+              </c-card-body>
+            </c-card>
+          </c-col>
+        </c-row>
+        <c-row>
+          <c-col xs>
+            <c-card class="mx-4">
+              <c-card-header>
+                <strong style="color:red">Các lưu ý nên đọc:</strong>
+              </c-card-header>
+              <c-card-body class="p-4">
+                <ul class="pl-3">
+                  <li>Khi tài khoản của bạn đạt số dư tối thiểu <b>100.000đ</b> trở lên, bạn có thể rút tiền bằng cách nhấp vào nút ở trên.</li>
+                  <li>Việc rút tiền sẽ được phê duyệt trong vòng 48 giờ kể từ thời điểm rút tiền.</li>
+                  <li>Hệ thống kiểm duyệt và thanh toán vào thứ 3 hàng tuần. Đặt lệnh trước 15h để được thanh toán trong ngày </li>
+                  <li>Nếu bạn có 1 lệnh rút chưa thanh toán, và bạn tiếp tục rút thêm 1 lệnh mới thì sẽ cộng dồn vào lệnh cũ.</li>
+                </ul>
+              </c-card-body>
+            </c-card>
+          </c-col>
+        </c-row>       
+      </c-card-body>
+    </c-card>
+  </c-col> 
+</c-row>
+<c-row>
+  <c-col xs="12">
+    <c-card class="mb-4">
+      <c-card-header>
+        <strong>LỊCH SỬ RÚT TIỀN</strong>
+      </c-card-header>
+      <c-card-body>       
+        <c-row>
+          <c-col xs>
+            <c-card class="mb-4">
+              <c-card-body>
+                <table
+                  [hover]="true"
+                  [responsive]="true"
+                  [striped]="true"
+                  align="middle"
+                  cTable
+                  class="mb-0 border"
+                >
+                  <thead class="text-nowrap text-truncate">
+                  <tr>
+                    <th class="bg-body-tertiary text-center ">
+                      <svg cIcon name="cilPeople"></svg>
+                    </th>
+                    <th class="bg-body-tertiary">Tên TK</th>
+                    <th class="bg-body-tertiary text-center">Số TK</th>
+                    <th class="bg-body-tertiary">Ngân Hàng</th>
+                    <th class="bg-body-tertiary text-center">Tạo lúc</th>
+                    <th class="bg-body-tertiary">Trạng thái</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                    @for (item of histories; track item.bankAccountName; let i = $index) {
+                      <tr>
+                        <td class="text-center">
+                          <div>{{ i + 1 }}</div>
+                        </td>
+                        <td>
+                          <div>{{ item.bankAccountName }}</div>
+                        </td>
+                        <td class="text-center">
+                          <div>{{ item.bankAccountNumber  }}</div>
+                        </td>
+                        <td>
+                          <div>{{ item.bankName }}</div>
+                        </td>
+                        <td class="text-center">
+                          {{ item.dateCreated }}
+                        </td>
+                        <td>
+                          {{item.statusProcess}}
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </c-card-body>
+            </c-card>
+          </c-col>
+        </c-row>
+        
+        
+      </c-card-body>
+    </c-card>
+  </c-col> 
+</c-row>

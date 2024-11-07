@@ -1,4 +1,9 @@
-﻿using LayMa.Core.Interface;
+﻿using AutoMapper;
+using LayMa.Core.Domain.Identity;
+using LayMa.Core.Interface;
+using LayMa.Core.Repositories;
+using LayMa.Data.Repositories;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,10 +16,21 @@ namespace LayMa.Data.SeedWorks
     {
         private readonly LayMaContext _context;
 
-        public UnitOfWork(LayMaContext context)
+        public UnitOfWork(LayMaContext context, IMapper mapper, UserManager<AppUser> userManager)
         {
             _context = context;
-        }
+            ShortLinks = new ShortLinkRepository(context,mapper,userManager);
+            KeySearchs = new KeySearchRepository(context, mapper);
+            CodeManagers = new CodeManagerRepository(context, mapper);
+            ViewDetails = new ViewDetailRepository(context, mapper);
+            BankTransactions = new BankTransactionRepository(context, mapper);
+
+		}
+        public IShortLinkRepository ShortLinks { get; private set; }
+		public IKeySearchRepository KeySearchs { get; private set; }
+		public ICodeManagerRepository CodeManagers { get; private set; }
+		public IViewDetailRepository ViewDetails { get; private set; }
+        public IBankTransactionRepository BankTransactions { get; private set; }
         public async Task<int> CompleteAsync()
         {
             return await _context.SaveChangesAsync();

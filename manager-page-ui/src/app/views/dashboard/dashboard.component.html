@@ -1,3 +1,151 @@
-<p class="text-medium-emphasis float-start">
-  dashboard
-</p>
+
+<c-card class="my-4">
+  <c-card-body>
+    <c-row>
+      <c-col sm="5">
+        <h4 class="card-title mb-0" id="traffic">Thống kê</h4>
+        <div class="small text-body-secondary">October 2024</div>
+      </c-col>
+      <c-col class="d-none d-md-block" sm="7">
+        <form [formGroup]="trafficRadioGroup">
+          <c-button-group class="float-end me-3" role="group">
+            <input
+              class="btn-check"
+              formControlName="trafficRadio"
+              type="radio"
+              value="Day"
+              id="dayRadio"
+            />
+            <label
+              (click)="setTrafficPeriod('Day')"
+              cButton
+              cFormCheckLabel
+              color="secondary"
+              variant="outline"
+              for="dayRadio"
+            >
+              Day
+            </label>
+            <input
+              class="btn-check"
+              formControlName="trafficRadio"
+              type="radio"
+              value="Month"
+              id="radioMonth"
+            />
+            <label
+              (click)="setTrafficPeriod('Month')"
+              cButton
+              cFormCheckLabel
+              color="secondary"
+              variant="outline"
+              for="radioMonth"
+            >
+              Month
+            </label>
+            <input
+              class="btn-check"
+              formControlName="trafficRadio"
+              type="radio"
+              value="Year"
+              id="radioYear"
+            />
+            <label
+              (click)="setTrafficPeriod('Year')"
+              cButton
+              cFormCheckLabel
+              color="secondary"
+              variant="outline"
+              for="radioYear"
+            >
+              Year
+            </label>
+          </c-button-group>
+        </form>
+      </c-col>
+    </c-row>
+  </c-card-body>
+  <c-card-footer>
+    <c-row class="text-center mb-2" [xl]="5" [lg]="4" [sm]="2" [xs]="1" [gutter]="4">
+      <c-col>
+        <div class="text-body-secondary">Tổng lượt xem</div>
+        <strong>{{tongview}}</strong>
+        <!-- <c-progress class="mt-2" thin color="success" value="40" aria-label="User visits" /> -->
+      </c-col>
+      <c-col>
+        <div class="text-body-secondary">Tổng hoa hồng</div>
+        <div class="fw-semibold text-truncate">{{hoahong}} đ</div>
+        <!-- <c-progress class="mt-2" thin color="info" value="20" aria-label="Unique users" /> -->
+      </c-col>
+      <c-col>
+        <div class="text-body-secondary">Tổng thu nhập</div>
+        <div class="fw-semibold text-truncate">{{tongthunhap}} đ</div>
+        <!-- <c-progress class="mt-2" thin color="warning" value="60" aria-label="Page views" /> -->
+      </c-col>
+      <c-col>
+        <div class="text-body-secondary">Số dư</div>
+        <div class="fw-semibold text-truncate">{{balance}} đ</div>
+        <!-- <c-progress class="mt-2" thin color="danger" value="80" aria-label="New users" /> -->
+      </c-col>
+      <c-col class="d-none d-xl-block">
+        <div class="text-body-secondary">Số view còn lại trong ngày</div>
+        <div class="fw-semibold text-truncate">{{thongkeviewconlai}}</div>
+        <!-- <c-progress class="mt-2" thin value="40" aria-label="Bounce rate" /> -->
+      </c-col>
+    </c-row>
+  </c-card-footer>
+</c-card>
+<c-row>
+  <c-col xs>
+    <c-card class="mb-4">
+      <c-card-header><strong>TOP 10 LINKS</strong></c-card-header>
+      <c-card-body>
+        <table
+          [hover]="true"
+          [responsive]="true"
+          [striped]="true"
+          align="middle"
+          cTable
+          class="mb-0 border"
+        >
+          <thead class="text-nowrap text-truncate">
+          <tr>
+            <th class="bg-body-tertiary">Link rút gọn</th>
+            <th class="bg-body-tertiary">Số click</th>
+            <th class="bg-body-tertiary">Thu nhập</th>
+          </tr>
+          </thead>
+          <tbody>
+            @for (item of items; track item.token; let i = $index) {
+              <tr>
+                <td>
+                  <div>{{ item.link }}</div>
+                </td>
+                <td>
+                  <div class="d-flex justify-content-between">
+                    <div class="float-end ms-1 text-nowrap">
+                      <small class="text-body-secondary">
+                        {{ item.viewCount }}
+                      </small>
+                    </div>
+                  </div>
+                  
+                </td>
+                <td class="text-center">
+                  <div class="d-flex justify-content-between">
+                    <div class="float-end ms-1 text-nowrap">
+                      <small class="text-body-secondary">
+                        {{ item.viewCount * 500 }}
+                      </small>
+                    </div>
+                  </div>
+                </td>
+                
+              </tr>
+            }
+          </tbody>
+        </table>
+      </c-card-body>
+    </c-card>
+  </c-col>
+</c-row>

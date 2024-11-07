@@ -33,8 +33,4 @@
     <ProjectReference Include="..\LayMa.Core\LayMa.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Repositories\" />
-  </ItemGroup>
-
 </Project>

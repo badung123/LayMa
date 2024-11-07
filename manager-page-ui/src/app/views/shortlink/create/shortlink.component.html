@@ -1,0 +1,25 @@
+
+<c-row>
+  <c-col xs="12">
+    <c-card class="mb-4">
+      <c-card-header>
+        <strong>RÚT GỌN LINK</strong>
+      </c-card-header>
+      <c-card-body>
+        <form cForm [formGroup]="shortlinkForm" (ngSubmit)="createlink()">
+          <c-input-group class="flex-nowrap">
+            <input aria-describedby="addon-wrapping"
+                   aria-label="Link"
+                   cFormControl
+                   formControlName="shortlink"
+                   placeholder="Nhập URL cần rút gọn vào đây"
+            />
+          </c-input-group>
+          <button cButton color="primary" type="submit" style="margin-top: 20px;">Rút gọn</button>
+        </form>
+        
+        
+      </c-card-body>
+    </c-card>
+  </c-col> 
+</c-row>

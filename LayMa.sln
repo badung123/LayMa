@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35222.181
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LayMa.WebAPI", "src\LayMa.WebAPI\LayMa.WebAPI.csproj", "{364A91D9-0B43-4D2A-A8C0-9D83694EB9EE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LayMa.WebAPI", "src\LayMa.WebAPI\LayMa.WebAPI.csproj", "{364A91D9-0B43-4D2A-A8C0-9D83694EB9EE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LayMa.Core", "src\LayMa.Core\LayMa.Core.csproj", "{B098AEFE-DDFD-4636-8CFF-A6EBA961F559}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LayMa.Core", "src\LayMa.Core\LayMa.Core.csproj", "{B098AEFE-DDFD-4636-8CFF-A6EBA961F559}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LayMa.Data", "src\LayMa.Data\LayMa.Data.csproj", "{9570E9B0-46F7-4400-AB76-83492D8B6886}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LayMa.Data", "src\LayMa.Data\LayMa.Data.csproj", "{9570E9B0-46F7-4400-AB76-83492D8B6886}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LayMa.WebApp", "src\LayMa.WebApp\LayMa.WebApp.csproj", "{AB3EAA5D-E22E-45A6-8102-ECCC8435D4F5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LayMa.WebApp", "src\LayMa.WebApp\LayMa.WebApp.csproj", "{AB3EAA5D-E22E-45A6-8102-ECCC8435D4F5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
