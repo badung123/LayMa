@@ -10,28 +10,28 @@
           <c-col xs>
             <c-card class="mx-4">
               <c-card-body class="p-4">
-                <form cForm>
-                  <div cFormFloating class="mb-3">
-                    <select cSelect id="floatingSelectGrid">
-                      <option>Chọn ngân hàng</option>
-                      <option value="1">VCB</option>
-                      <option value="2">MB</option>
-                      <option value="3">TCB</option>
-                    </select>
-                    <label cLabel for="floatingSelectGrid">Chọn ngân hàng</label>
-                  </div>
+                <div cFormFloating class="mb-3">
+                  <select cSelect id="floatingSelectGrid" [(ngModel)]="selectedBank">
+                    <option *ngFor="let b of banks" [ngValue]="b">{{b.shortName}} - {{b.name}}</option>
+                  </select>
+                  <label cLabel for="floatingSelectGrid">Chọn ngân hàng</label>
+                </div>
+                <div cFormFloating class="mb-3">
+                  <input
+                    cFormControl
+                    id="floatingInputValue"
+                    type="text"
+                    [ngModel]="accountName"
+                    (ngModelChange)="validateName($event)"
+                  />
+                  <label cLabel for="floatingInputValue">Tên Tài Khoản</label>
+                </div>
+                <form cForm [formGroup]="withdrawForm" (ngSubmit)="withdraw()">                 
+                  
+                  
                   <div cFormFloating class="mb-3">
                     <input
-    cFormControl
-    id="floatingInputValue"
-    type="text"
-    value="Nguyễn Văn A"
-  />
-  <label cLabel for="floatingInputValue">Tên Tài Khoản</label>
-                  </div>
-                  <div cFormFloating class="mb-3">
-                    <input
-    cFormControl
+                    cFormControl formControlName="accountNumber"
     id="floatingInputValue"
     type="number"
     value="123456789"
@@ -40,7 +40,7 @@
                   </div>  
                   <div cFormFloating class="mb-3">
                     <input
-    cFormControl
+                    cFormControl formControlName="amount"
     id="floatingInputValue"
     type="number"
     value="0"
@@ -123,10 +123,13 @@
                           <div>{{ item.bankName }}</div>
                         </td>
                         <td class="text-center">
-                          {{ item.dateCreated }}
+                          {{ item.dateCreated | date: 'dd/MM/yyyy'}}
                         </td>
                         <td>
-                          {{item.statusProcess}}
+                          <button *ngIf="item.statusProcess === processStatus._0" cButton color="secondary">Chờ xử lý</button>
+                          <button *ngIf="item.statusProcess === processStatus._1" cButton color="primary">Đang xử lý</button>
+                          <button *ngIf="item.statusProcess === processStatus._2" cButton color="danger">Từ chối</button>
+                          <button *ngIf="item.statusProcess === processStatus._3" cButton color="success">Thành công</button>
                         </td>
                       </tr>
                     }

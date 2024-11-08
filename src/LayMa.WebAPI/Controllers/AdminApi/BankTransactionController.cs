@@ -33,6 +33,7 @@ namespace LayMa.WebAPI.Controllers.AdminApi
         //[Authorize(ShortLinks.Create)]
         public async Task<IActionResult> CreateBankTransaction([FromBody] CreateBankTransactionDto request)
         {
+            //check thoi gian toi thieu tao lenh rut
             var userId = User.GetUserId();
             var user = await _userManager.FindByIdAsync(userId.ToString());
             if (user == null) return BadRequest("User không tồn tại");

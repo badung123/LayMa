@@ -22,6 +22,7 @@ import { TokenInterceptor } from './shared/interceptors/token.interceptor';
 import { HTTP_INTERCEPTORS,HttpClientModule } from '@angular/common/http';
 import { AuthGuard } from './shared/auth.guard';
 import { BroadcastService } from 'src/app/shared/services/boardcast.service';
+import { UtilityService } from './shared/services/utility.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -47,6 +48,7 @@ export const appConfig: ApplicationConfig = {
     IconSetService,
     MessageService,
     AlertService,
+    UtilityService,
     AdminApiAuthApiClient,
     TokenStorageService,
     AdminApiTokenApiClient,

@@ -1230,6 +1230,10 @@ export interface ICheckCodeRequest {
 }
 
 export class CreateBankTransactionDto implements ICreateBankTransactionDto {
+    money?: number;
+    bankAccountName?: string | undefined;
+    bankAccountNumber?: string | undefined;
+    bankName?: string | undefined;
 
     constructor(data?: ICreateBankTransactionDto) {
         if (data) {
@@ -1241,6 +1245,12 @@ export class CreateBankTransactionDto implements ICreateBankTransactionDto {
     }
 
     init(_data?: any) {
+        if (_data) {
+            this.money = _data["money"];
+            this.bankAccountName = _data["bankAccountName"];
+            this.bankAccountNumber = _data["bankAccountNumber"];
+            this.bankName = _data["bankName"];
+        }
     }
 
     static fromJS(data: any): CreateBankTransactionDto {
@@ -1252,11 +1262,19 @@ export class CreateBankTransactionDto implements ICreateBankTransactionDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["money"] = this.money;
+        data["bankAccountName"] = this.bankAccountName;
+        data["bankAccountNumber"] = this.bankAccountNumber;
+        data["bankName"] = this.bankName;
         return data;
     }
 }
 
 export interface ICreateBankTransactionDto {
+    money?: number;
+    bankAccountName?: string | undefined;
+    bankAccountNumber?: string | undefined;
+    bankName?: string | undefined;
 }
 
 export class CreateShortLinkDto implements ICreateShortLinkDto {
@@ -1437,6 +1455,7 @@ export interface ILoginRequest {
 
 export enum ProcessStatus {
     _0 = 0,
+    _1 = 1,
     _2 = 2,
     _3 = 3,
 }

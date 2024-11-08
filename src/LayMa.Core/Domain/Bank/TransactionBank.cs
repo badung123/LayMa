@@ -34,7 +34,7 @@ namespace LayMa.Core.Domain.Bank
     public enum ProcessStatus
     {
         WaitingForApproval = 0,
-        Processing = 0,
+        Processing = 1,
         Rejected = 2,
         Accepted = 3
     }

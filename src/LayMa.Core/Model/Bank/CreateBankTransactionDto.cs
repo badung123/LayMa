@@ -11,12 +11,12 @@ namespace LayMa.Core.Model.Bank
 {
     public class CreateBankTransactionDto
     {
+        public long Money { get; set; }
+        public required string BankAccountName { get; set; }
+        public required string BankAccountNumber { get; set; }
+        public required string BankName { get; set; }
         public class AutoMapperProfiles : Profile
         {
-            public long Money { get; set; }
-            public required string BankAccountName { get; set; }
-            public required string BankAccountNumber { get; set; }
-            public required string BankName { get; set; }
             public AutoMapperProfiles()
             {
                 CreateMap<CreateBankTransactionDto, TransactionBank>();
