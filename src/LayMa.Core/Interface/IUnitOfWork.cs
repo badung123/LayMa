@@ -14,6 +14,8 @@ namespace LayMa.Core.Interface
 		ICodeManagerRepository CodeManagers { get; }
 		IViewDetailRepository ViewDetails { get; }
         IBankTransactionRepository BankTransactions { get; }
-        Task<int> CompleteAsync();
+		ICampainRepository Campains { get; }
+		IMissionRepository Missions { get; }
+		Task<int> CompleteAsync();
     }
 }

@@ -48,7 +48,7 @@ namespace LayMa.Api.Controllers.AdminApi
             }
 
             var user = await _userManager.FindByNameAsync(request.UserName);
-            if (user == null || user.IsActive == false || user.LockoutEnabled)
+            if (user == null || user.IsActive == false)
             {
                 return Unauthorized();
             }
@@ -122,11 +122,22 @@ namespace LayMa.Api.Controllers.AdminApi
             //Authentication
             if (request == null)
             {
-                return BadRequest("Invalid request");
+                var listErr = new List<string>();
+                listErr.Add("Invalid request");
+                return BadRequest(new RegistrationResponse { Errors = listErr });
             }
 
-            //var user = _mapper.Map<RegisterRequest, AppUser>(request1);
-           
+            //check User exist
+            var userExist = await _userManager.FindByNameAsync(request.UserName);
+
+            if (userExist != null) { 
+                var listErr = new List<string>();
+                listErr.Add("Tên đăng nhập đã tồn tại");
+                return BadRequest(new RegistrationResponse { Errors = listErr }); 
+            }
+            
+                //var user = _mapper.Map<RegisterRequest, AppUser>(request1);
+
             var passwordHasher = new PasswordHasher<AppUser>();
             var userId = Guid.NewGuid();
             var user = new AppUser()

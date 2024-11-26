@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 using LayMa.Core.Domain.Identity;
 using LayMa.Core.Domain.Link;
 using LayMa.Core.Domain.Bank;
+using LayMa.Core.Domain.Campain;
+using LayMa.Core.Domain.Mission;
 
 namespace LayMa.Data
 {
@@ -25,8 +27,10 @@ namespace LayMa.Data
         public DbSet<ViewDetail> ViewDetails { get; set; }
 
         public DbSet<TransactionBank> TransactionBanks { get; set; }
+		public DbSet<Campain> Campains { get; set; }
+		public DbSet<Mission> Missions { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder builder)
+		protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<IdentityUserClaim<Guid>>().ToTable("AppUserClaims").HasKey(x => x.Id);
 

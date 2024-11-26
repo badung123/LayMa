@@ -82,5 +82,8 @@ export class LoginComponent implements OnDestroy,OnInit{
       },
     });
   }
+  clickRegister(){
+    this.router.navigate([UrlConstants.REGISTER]);
+  }
 
 }

@@ -24,6 +24,8 @@ namespace LayMa.Data.SeedWorks
             CodeManagers = new CodeManagerRepository(context, mapper);
             ViewDetails = new ViewDetailRepository(context, mapper);
             BankTransactions = new BankTransactionRepository(context, mapper);
+            Campains = new CampainRepository(context, mapper);
+            Missions = new MissionRepository(context, mapper);
 
 		}
         public IShortLinkRepository ShortLinks { get; private set; }
@@ -31,7 +33,9 @@ namespace LayMa.Data.SeedWorks
 		public ICodeManagerRepository CodeManagers { get; private set; }
 		public IViewDetailRepository ViewDetails { get; private set; }
         public IBankTransactionRepository BankTransactions { get; private set; }
-        public async Task<int> CompleteAsync()
+		public ICampainRepository Campains { get; private set; }
+		public IMissionRepository Missions { get; private set; }
+		public async Task<int> CompleteAsync()
         {
             return await _context.SaveChangesAsync();
         }

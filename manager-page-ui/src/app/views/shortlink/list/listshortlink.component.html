@@ -52,10 +52,10 @@
                           <div>{{ i + 1 }}</div>
                         </td>
                         <td>
-                          <div>{{ item.link }}</div>
+                          <a href="{{item.link}}" target="_blank">{{ item.link }}</a>
                           <div class="small text-body-secondary text-nowrap">
                           <span>
-                            Tạo lúc: {{ item.dateCreated }}
+                            Tạo lúc: {{ item.dateCreated | date: 'dd/MM/yyyy hh:mm:ss'}}
                           </span>
                           </div>
                         </td>
@@ -63,7 +63,7 @@
                           <div>{{ item.viewCount  }}</div>
                         </td>
                         <td>
-                          <div>{{ item.originLink }}</div>
+                          <a href="{{item.originLink}}" target="_blank">{{ item.originLink }}</a>
                         </td>
                         <td class="text-center">
                           

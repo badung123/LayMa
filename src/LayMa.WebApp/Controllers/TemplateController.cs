@@ -16,7 +16,7 @@ namespace LayMa.WebApp.Controllers
         {
             ViewBag.Id = id;
             Console.WriteLine("ViewBag ID = " + ViewBag.Id);
-            string apiUrl = "https://api.layma.net/api/admin/keyseo";
+            string apiUrl = "https://localhost:7020/api/admin/keyseo"; //https://api.layma.net,https://localhost:7020
 			var table = new TemplateViewModel();
 			using (HttpClient client = new HttpClient())
 			{

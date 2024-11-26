@@ -3,6 +3,7 @@ using LayMa.Core.Domain.Link;
 using LayMa.Core.Interface;
 using LayMa.Core.Model.Auth;
 using LayMa.Core.Model.CodeManager;
+using LayMa.Core.Utilities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -55,7 +56,13 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 			{
 				return BadRequest("Invalid request");
 			}
-			var keysearhID = await _unitOfWork.KeySearchs.GetKeySearchIDByKey(request.Key);
+            string ip = HttpContext.GetServerVariable("REMOTE_HOST");
+            if (ip == null)
+            {
+                ip = this.HttpContext.GetServerVariable("REMOTE_ADDR");
+            }
+            var ips = HttpContext.Request.GetIpAddress();
+            var keysearhID = await _unitOfWork.KeySearchs.GetKeySearchIDByKey(request.Key);
             if (keysearhID == null)
             {
 				return BadRequest("Key Search không hợp lệ");
@@ -85,12 +92,13 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 			await _unitOfWork.ShortLinks.UpdateViewCount(shortLink.Id);
 			//update code đã dùng
 			await _unitOfWork.CodeManagers.UpdateIsUsed(request.Code, keysearhID.Value);
-			//insert view detail
-			var viewDetail = new ViewDetail()
+            
+            //insert view detail
+            var viewDetail = new ViewDetail()
 			{
 				Id = Guid.NewGuid(),
 				Device = "",
-				IPAddress = "",
+				IPAddress = ips,
 				ShortLinkId = shortLink.Id,
 				DateCreated = DateTime.Now,
 				DateModified = DateTime.Now
@@ -100,6 +108,14 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 			var result = await _unitOfWork.CompleteAsync();
 			return result > 0 ? Ok() : BadRequest();
 
+		}
+
+		[HttpGet]
+		[Route("getcode")]
+		public async Task<ActionResult<string>> GetCode(string trafficid)
+		{
+			
+			return Ok("12345");
 		}
 	}
 }

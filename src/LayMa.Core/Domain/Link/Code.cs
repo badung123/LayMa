@@ -14,6 +14,7 @@ namespace LayMa.Core.Domain.Link
 		[Key]
 		public Guid Id { get; set; }
 		public Guid KeySearchId { get; set; }
+		public Guid CampainId { get; set; }
 		public required string CodeString { get; set; }
         public bool IsUsed { get; set; }
         public DateTime DateCreated { get; set; }
