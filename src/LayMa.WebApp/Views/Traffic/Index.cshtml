@@ -125,6 +125,296 @@
 		const regex = new RegExp(referrer_pattern,"i")
 		return referrer.match(regex)
 	}
+	const ajax = function(url, method = 'GET', data, onSuccess = null, onError = null, onDone = null) {
+		let postData = JSON.stringify(data);
+		let xhr = new XMLHttpRequest();
+
+		xhr.open(method, url, true);
+		xhr.setRequestHeader('Content-type', 'application/json; charset=UTF-8');
+		xhr.send(postData);
+		console.log(postData);
+
+		xhr.addEventListener('load', function(event) {
+			if (onSuccess) onSuccess(JSON.parse(event.target.response));
+			if (onDone) onDone();
+		});
+
+		xhr.addEventListener('error', function(event) {
+			if (onError) onError(event);
+			if (onDone) onDone();
+		});
+	}
+
+	const ajaxGet = function(url, onSuccess = null, onError = null, onDone = null) {
+		return ajax(url, 'GET', [], onSuccess, onError, onDone);
+	}
+
+	const ajaxPost = function(url, data, onSuccess = null, onError = null, onDone = null) {
+		return ajax(url, 'POST', data, onSuccess, onError, onDone);
+	}
+	const getVisitorInfo = function() {
+		var unknown = "-";
+		var screenSize = "";
+		if (screen.width) {
+			width = screen.width ? screen.width : "";
+			height = screen.height ? screen.height : "";
+			screenSize += "" + width + " x " + height;
+		}
+		var nVer = navigator.appVersion;
+		var nAgt = navigator.userAgent;
+		var browser = navigator.appName;
+		var version = "" + parseFloat(navigator.appVersion);
+		var majorVersion = parseInt(navigator.appVersion, 10);
+		var nameOffset, verOffset, ix;
+		if ((verOffset = nAgt.indexOf("Opera")) != -1) {
+			browser = "Opera";
+			version = nAgt.substring(verOffset + 6);
+			if ((verOffset = nAgt.indexOf("Version")) != -1) {
+				version = nAgt.substring(verOffset + 8);
+			}
+		}
+		if ((verOffset = nAgt.indexOf("OPR")) != -1) {
+			browser = "Opera";
+			version = nAgt.substring(verOffset + 4);
+		} else if ((verOffset = nAgt.indexOf("MSIE")) != -1) {
+			browser = "Microsoft Internet Explorer";
+			version = nAgt.substring(verOffset + 5);
+		} else if ((verOffset = nAgt.indexOf("Chrome")) != -1) {
+			browser = "Chrome";
+			version = nAgt.substring(verOffset + 7);
+		} else if ((verOffset = nAgt.indexOf("Safari")) != -1) {
+			browser = "Safari";
+			version = nAgt.substring(verOffset + 7);
+			if ((verOffset = nAgt.indexOf("Version")) != -1) {
+				version = nAgt.substring(verOffset + 8);
+			}
+		} else if ((verOffset = nAgt.indexOf("Firefox")) != -1) {
+			browser = "Firefox";
+			version = nAgt.substring(verOffset + 8);
+		} else if (nAgt.indexOf("Trident/") != -1) {
+			browser = "Microsoft Internet Explorer";
+			version = nAgt.substring(nAgt.indexOf("rv:") + 3);
+		} else if (
+			(nameOffset = nAgt.lastIndexOf(" ") + 1) <
+			(verOffset = nAgt.lastIndexOf("/"))
+		) {
+			browser = nAgt.substring(nameOffset, verOffset);
+			version = nAgt.substring(verOffset + 1);
+			if (browser.toLowerCase() == browser.toUpperCase()) {
+				browser = navigator.appName;
+			}
+		}
+		if ((ix = version.indexOf(";")) != -1) version = version.substring(0, ix);
+		if ((ix = version.indexOf(" ")) != -1) version = version.substring(0, ix);
+		if ((ix = version.indexOf(")")) != -1) version = version.substring(0, ix);
+		majorVersion = parseInt("" + version, 10);
+		if (isNaN(majorVersion)) {
+			version = "" + parseFloat(navigator.appVersion);
+			majorVersion = parseInt(navigator.appVersion, 10);
+		}
+		var mobile = /Mobile|mini|Fennec|Android|iP(ad|od|hone)/.test(nVer);
+		var cookieEnabled = navigator.cookieEnabled ? true : false;
+		if (typeof navigator.cookieEnabled == "undefined" && !cookieEnabled) {
+			document.cookie = "testcookie";
+			cookieEnabled =
+				document.cookie.indexOf("testcookie") != -1 ? true : false;
+		}
+		var os = unknown;
+		var clientStrings = [{
+				s: "Windows 10",
+				r: /(Windows 10.0|Windows NT 10.0)/
+			},
+			{
+				s: "Windows 8.1",
+				r: /(Windows 8.1|Windows NT 6.3)/
+			},
+			{
+				s: "Windows 8",
+				r: /(Windows 8|Windows NT 6.2)/
+			},
+			{
+				s: "Windows 7",
+				r: /(Windows 7|Windows NT 6.1)/
+			},
+			{
+				s: "Windows Vista",
+				r: /Windows NT 6.0/
+			},
+			{
+				s: "Windows Server 2003",
+				r: /Windows NT 5.2/
+			},
+			{
+				s: "Windows XP",
+				r: /(Windows NT 5.1|Windows XP)/
+			},
+			{
+				s: "Windows 2000",
+				r: /(Windows NT 5.0|Windows 2000)/
+			},
+			{
+				s: "Windows ME",
+				r: /(Win 9x 4.90|Windows ME)/
+			},
+			{
+				s: "Windows 98",
+				r: /(Windows 98|Win98)/
+			},
+			{
+				s: "Windows 95",
+				r: /(Windows 95|Win95|Windows_95)/
+			},
+			{
+				s: "Windows NT 4.0",
+				r: /(Windows NT 4.0|WinNT4.0|WinNT|Windows NT)/
+			},
+			{
+				s: "Windows CE",
+				r: /Windows CE/
+			},
+			{
+				s: "Windows 3.11",
+				r: /Win16/
+			},
+			{
+				s: "Android",
+				r: /Android/
+			},
+			{
+				s: "Open BSD",
+				r: /OpenBSD/
+			},
+			{
+				s: "Sun OS",
+				r: /SunOS/
+			},
+			{
+				s: "Linux",
+				r: /(Linux|X11)/
+			},
+			{
+				s: "iOS",
+				r: /(iPhone|iPad|iPod)/
+			},
+			{
+				s: "Mac OS X",
+				r: /Mac OS X/
+			},
+			{
+				s: "Mac OS",
+				r: /(MacPPC|MacIntel|Mac_PowerPC|Macintosh)/
+			},
+			{
+				s: "QNX",
+				r: /QNX/
+			},
+			{
+				s: "UNIX",
+				r: /UNIX/
+			},
+			{
+				s: "BeOS",
+				r: /BeOS/
+			},
+			{
+				s: "OS/2",
+				r: /OS\/2/
+			},
+			{
+				s: "Search Bot",
+				r: /(nuhk|Googlebot|Yammybot|Openbot|Slurp|MSNBot|Ask Jeeves\/Teoma|ia_archiver)/,
+			},
+		];
+		for (var id in clientStrings) {
+			var cs = clientStrings[id];
+			if (cs.r.test(nAgt)) {
+				os = cs.s;
+				break;
+			}
+		}
+		var osVersion = unknown;
+		if (/Windows/.test(os)) {
+			osVersion = /Windows (.*)/.exec(os)[1];
+			os = "Windows";
+		}
+		switch (os) {
+			case "Mac OS X":
+				osVersion = /Mac OS X (10[\.\_\d]+)/.exec(nAgt)[1];
+				break;
+			case "Android":
+				osVersion = /Android ([\.\_\d]+)/.exec(nAgt)[1];
+				break;
+			case "iOS":
+				osVersion = /OS (\d+)_(\d+)_?(\d+)?/.exec(nVer);
+				osVersion =
+					osVersion[1] + "." + osVersion[2] + "." + (osVersion[3] | 0);
+				break;
+		}
+		if (typeof swfobject != "undefined") {
+			var fv = swfobject.getFlashPlayerVersion();
+			if (fv.major > 0) {
+				flashVersion = fv.major + "." + fv.minor + " r" + fv.release;
+			} else {
+				flashVersion = unknown;
+			}
+		}
+
+		return {
+			uuid: getVisitorUUID(),
+			browser: browser,
+			browserVersion: version,
+			browserMajorVersion: majorVersion,
+			cookies: cookieEnabled,
+			mobile: mobile,
+			os: os,
+			osVersion: osVersion,
+			screen: screenSize,
+		};
+	}
+	const getVisitorUUID = function() {
+		let uuid;
+
+		try {
+			uuid = localStorage.getItem("__"+traffic_key+"_uuid");
+			if (uuid === null) {
+				uuid = uuidv4();
+				localStorage.setItem("__"+traffic_key+"_uuid", uuid);
+			}
+		} catch(e) {
+			uuid = uuidv4();
+		}
+
+		return uuid;
+	}
+	const uuidv4 = function() {
+		if (typeof crypto == 'object') {
+			return uuidv4ByCrypto();
+		}
+
+		return uuidv4ByMath();
+	}
+
+	const uuidv4ByMath = function() {
+		let d = new Date().getTime();//Timestamp
+		let d2 = ((typeof performance !== 'undefined') && performance.now && (performance.now()*1000)) || 0;//Time in microseconds since page-load or 0 if unsupported
+		return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+			let r = Math.random() * 16;//random number between 0 and 16
+			if(d > 0){//Use timestamp until depleted
+				r = (d + r)%16 | 0;
+				d = Math.floor(d/16);
+			} else {//Use microseconds since page-load if supported
+				r = (d2 + r)%16 | 0;
+				d2 = Math.floor(d2/16);
+			}
+			return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+		});
+	}
+
+	const uuidv4ByCrypto = function() {
+		return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, function (c) {
+			return (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+		});
+	}
 	const showTrackingMessage = (message) => {
 		if (trackingMessageContainer) {
 			return
@@ -671,12 +961,12 @@
 		){
 			var code = element.dataset.code;
 
-			var xmlhttp = new XMLHttpRequest();
-			xmlhttp.withCredentials = true;
+			//var xmlhttp = new XMLHttpRequest();
+			//xmlhttp.withCredentials = true;
 
 			element.dataset.loading = 'true';
 
-			xmlhttp.onreadystatechange = function() {
+			@* xmlhttp.onreadystatechange = function() {
 				if (xmlhttp.readyState == XMLHttpRequest.DONE) {   // XMLHttpRequest.DONE == 4
 					if (xmlhttp.status == 200) {
 						var result = JSON.parse(xmlhttp.responseText)
@@ -715,10 +1005,46 @@
 			};
 			xmlhttp.addEventListener("loadend", function(){
 				element.dataset.loading = 'false';
-			});
+			}); *@
 			//xmlhttp.open("GET", "https://" + traffic_domain + "/widget/get_code.html?code=" + traffic_id + '&traffic_session=' + traffic_session + '&' + jQuery.param( jscd ), true);
-			xmlhttp.open("GET", apiUrl + "/api/admin/codemanager/getcode?trafficid=" + traffic_id, true);
-			xmlhttp.send();
+			//xmlhttp.open("GET", apiUrl + "/api/admin/codemanager/getcode?trafficid=" + traffic_id, true);
+			//xmlhttp.send();
+			ajaxPost(
+					apiUrl + "/api/admin/codemanager/getcode",
+					{
+						...getVisitorInfo(),
+						referrer: getReferrer(),
+						trafficid: traffic_id
+					},
+					(result) => {
+						if(result.success){
+							updateTrackingMessage(code_string + ': ' + result.html + '
+<img alt="' + window.location.hostname + '" src="https://' + traffic_domain + '/images/icons/icon-copy.png" style="height: 14px !important;margin: -5px 0 0 3px !important;vertical-align: middle;display: inline-block;width:auto !important;">');
+							trackingMessageContainer.addEventListener("click", function(){
+								if(copyTextToClipboard(result.html)){
+									var tooltip = createTooltip(copied_notify);
+									trackingMessageContainer.appendChild(tooltip);
+									window.setTimeout(function(){
+										tooltip.remove();
+									},3000);
+								}
+								return false;
+							});
+							window.removeEventListener('scroll',checkScroll,false);
+							element.dataset.loaded = true;
+						}else{
+							element.remove();
+						}
+					},
+					(event) => {
+						element.getElementsByTagName("div")[0].innerHTML = 'Lỗi khi lấy mã. Bạn vui lòng thử lại.';
+						setTimeout(function(){
+							element.remove();
+						}, 5000);
+					},
+					() => {
+						element.dataset.loading = 'false';
+					});
 		}
 	}
 

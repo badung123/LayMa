@@ -8,6 +8,7 @@ using LayMa.Core.Utilities;
 using LayMa.WebAPI.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace LayMa.WebAPI.Controllers.AdminApi
 {
@@ -112,11 +113,12 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 
 		}
 
-		[HttpGet]
+		[HttpPost]
 		[Route("getcode")]
-		public async Task<ActionResult<string>> GetCode(string trafficid)
+		public async Task<ActionResult<string>> GetCode([FromBody] Dictionary<string, dynamic> request)
 		{
 			// bo sung cac thong tin ip,browser,client ui sau
+			//Dictionary<string, string> res = JsonConvert.DeserializeObject<Dictionary<string, string>>(request);
 			var token = "";
 			token = token.GenerateLinkToken(6);
 			var Id = Guid.NewGuid();
@@ -128,7 +130,7 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 				DateModified = DateTime.Now,
 				IsUsed = false,
 				KeySearchId = Guid.NewGuid(),
-				CampainId = Guid.Parse(trafficid)
+				CampainId = Guid.Parse(request["trafficid"].ToString())
 			};
 			_unitOfWork.CodeManagers.Add(code);
 			var result = await _unitOfWork.CompleteAsync();			
