@@ -7,16 +7,19 @@ namespace LayMa.WebApp.Controllers
     public class TemplateController : Controller
     {
         private readonly ILogger<TemplateController> _logger;
-        public TemplateController(ILogger<TemplateController> logger)
+		private IConfiguration _configuration;
+		public TemplateController(ILogger<TemplateController> logger, IConfiguration configuration)
         {
             _logger = logger;
-        }
+			_configuration = configuration;
+		}
         [HttpGet("/{id}")]
         public async Task<IActionResult> Index(string id)
         {
             ViewBag.Id = id;
-            Console.WriteLine("ViewBag ID = " + ViewBag.Id);
-            string apiUrl = "https://localhost:7020/api/admin/keyseo"; //https://api.layma.net,https://localhost:7020
+			var url = _configuration.GetValue<string>("API_URL");
+			ViewBag.ApiUrl = url;
+            string apiUrl = url + "/api/admin/mission?token=" + id; //https://api.layma.net,https://localhost:7020
 			var table = new TemplateViewModel();
 			using (HttpClient client = new HttpClient())
 			{

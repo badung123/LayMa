@@ -13,6 +13,7 @@ using LayMa.Core.Domain.Link;
 using LayMa.Core.Domain.Bank;
 using LayMa.Core.Domain.Campain;
 using LayMa.Core.Domain.Mission;
+using LayMa.Core.Domain.Visitor;
 
 namespace LayMa.Data
 {
@@ -29,6 +30,7 @@ namespace LayMa.Data
         public DbSet<TransactionBank> TransactionBanks { get; set; }
 		public DbSet<Campain> Campains { get; set; }
 		public DbSet<Mission> Missions { get; set; }
+		public DbSet<Visitor> Visitors { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder builder)
         {

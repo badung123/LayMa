@@ -7,19 +7,30 @@
 @model CampainViewModel;
 (function() {
 	var traffic_key = '@Html.Raw(ViewData["Id"])';
+	var apiUrl = '@Html.Raw(ViewData["ApiUrl"])';
 	var traffic_id = '@Html.Raw(Model.Id)';
 	var traffic_domain = 's1.what-on.com';
 	console.log(traffic_id);
 	//var traffic_session = '6738b1734418c72a297fbe94';
 	var uuid_name = 'uuid_name';
+	var cache_remain_time = 'cache_remain_time';
 	var check_script_hash = '\x23\x63\x68\x65\x63\x6B\x5F\x73\x63\x72\x69\x70\x74';
 
 	var initTrafficScript = initTrafficScript || {};
-	var traffic_wait_time = 10;
+	var traffic_wait_time = @Html.Raw(Model.TimeOnSitePerView);
+	traffic_wait_time = traffic_wait_time + Math.floor(Math.random() * 10);
+	var timeToScrollUp = 20 + Math.floor(Math.random() * 10);
+	var timeToScrollDown = 20 + Math.floor(Math.random() * 10);
 	var traffic_click = false;
 	var traffic_blurred = !1;;
 	var hidden = "hidden";
-
+	let trackingMessageContainer;
+	var referrer_pattern = '^http(s|)\:\/\/(?:www\.)?google\.[a-z]{2,3}([.a-z]{2,4}|)';
+	if ('@Html.Raw(Model.Flatform)' == 'facebook')
+	{
+		referrer_pattern = '^http(s|)\:\/\/(www|l|m|lm|mobile|web|touch|fbclid|)(\.)?facebook\.[a-z]{2,3}([.a-z]{2,4}|)';
+	}
+	
 	var google_domain_list = ["google.com","google.ad","google.ae","google.com.af","google.com.ag","google.com.ai","google.al","google.am","google.co.ao","google.com.ar","google.as","google.at","google.com.au","google.az","google.ba","google.com.bd","google.be","google.bf","google.bg","google.com.bh","google.bi","google.bj","google.com.bn","google.com.bo","google.com.br","google.bs","google.bt","google.co.bw","google.by","google.com.bz","google.ca","google.cd","google.cf","google.cg","google.ch","google.ci","google.co.ck","google.cl","google.cm","google.cn","google.com.co","google.co.cr","google.com.cu","google.cv","google.com.cy","google.cz","google.de","google.dj","google.dk","google.dm","google.com.do","google.dz","google.com.ec","google.ee","google.com.eg","google.es","google.com.et","google.fi","google.com.fj","google.fm","google.fr","google.ga","google.ge","google.gg","google.com.gh","google.com.gi","google.gl","google.gm","google.gr","google.com.gt","google.gy","google.com.hk","google.hn","google.hr","google.ht","google.hu","google.co.id","google.ie","google.co.il","google.im","google.co.in","google.iq","google.is","google.it","google.je","google.com.jm","google.jo","google.co.jp","google.co.ke","google.com.kh","google.ki","google.kg","google.co.kr","google.com.kw","google.kz","google.la","google.com.lb","google.li","google.lk","google.co.ls","google.lt","google.lu","google.lv","google.com.ly","google.co.ma","google.md","google.me","google.mg","google.mk","google.ml","google.com.mm","google.mn","google.ms","google.com.mt","google.mu","google.mv","google.mw","google.com.mx","google.com.my","google.co.mz","google.com.na","google.com.ng","google.com.ni","google.ne","google.nl","google.no","google.com.np","google.nr","google.nu","google.co.nz","google.com.om","google.com.pa","google.com.pe","google.com.pg","google.com.ph","google.com.pk","google.pl","google.pn","google.com.pr","google.ps","google.pt","google.com.py","google.com.qa","google.ro","google.ru","google.rw","google.com.sa","google.com.sb","google.sc","google.se","google.com.sg","google.sh","google.si","google.sk","google.com.sl","google.sn","google.so","google.sm","google.sr","google.st","google.com.sv","google.td","google.tg","google.co.th","google.com.tj","google.tl","google.tm","google.tn","google.to","google.com.tr","google.tt","google.com.tw","google.co.tz","google.com.ua","google.co.ug","google.co.uk","google.com.uy","google.co.uz","google.com.vc","google.co.ve","google.vg","google.co.vi","google.com.vn","google.vu","google.ws","google.rs","google.co.za","google.co.zm","google.co.zw","google.cat"];
 	var ref_domain_list = ["www.google.com","google.com","google.ad","google.ae","google.com.af","google.com.ag","google.com.ai","google.al","google.am","google.co.ao","google.com.ar","google.as","google.at","google.com.au","google.az","google.ba","google.com.bd","google.be","google.bf","google.bg","google.com.bh","google.bi","google.bj","google.com.bn","google.com.bo","google.com.br","google.bs","google.bt","google.co.bw","google.by","google.com.bz","google.ca","google.cd","google.cf","google.cg","google.ch","google.ci","google.co.ck","google.cl","google.cm","google.cn","google.com.co","google.co.cr","google.com.cu","google.cv","google.com.cy","google.cz","google.de","google.dj","google.dk","google.dm","google.com.do","google.dz","google.com.ec","google.ee","google.com.eg","google.es","google.com.et","google.fi","google.com.fj","google.fm","google.fr","google.ga","google.ge","google.gg","google.com.gh","google.com.gi","google.gl","google.gm","google.gr","google.com.gt","google.gy","google.com.hk","google.hn","google.hr","google.ht","google.hu","google.co.id","google.ie","google.co.il","google.im","google.co.in","google.iq","google.is","google.it","google.je","google.com.jm","google.jo","google.co.jp","google.co.ke","google.com.kh","google.ki","google.kg","google.co.kr","google.com.kw","google.kz","google.la","google.com.lb","google.li","google.lk","google.co.ls","google.lt","google.lu","google.lv","google.com.ly","google.co.ma","google.md","google.me","google.mg","google.mk","google.ml","google.com.mm","google.mn","google.ms","google.com.mt","google.mu","google.mv","google.mw","google.com.mx","google.com.my","google.co.mz","google.com.na","google.com.ng","google.com.ni","google.ne","google.nl","google.no","google.com.np","google.nr","google.nu","google.co.nz","google.com.om","google.com.pa","google.com.pe","google.com.pg","google.com.ph","google.com.pk","google.pl","google.pn","google.com.pr","google.ps","google.pt","google.com.py","google.com.qa","google.ro","google.ru","google.rw","google.com.sa","google.com.sb","google.sc","google.se","google.com.sg","google.sh","google.si","google.sk","google.com.sl","google.sn","google.so","google.sm","google.sr","google.st","google.com.sv","google.td","google.tg","google.co.th","google.com.tj","google.tl","google.tm","google.tn","google.to","google.com.tr","google.tt","google.com.tw","google.co.tz","google.com.ua","google.co.ug","google.co.uk","google.com.uy","google.co.uz","google.com.vc","google.co.ve","google.vg","google.co.vi","google.com.vn","google.vu","google.ws","google.rs","google.co.za","google.co.zm","google.co.zw","google.cat"];
 	var check_ref = false;
@@ -30,6 +41,8 @@
 	var code_string = 'Mã KM';
 	var copied_notify = 'Đã sao chép mã';
 	var close_private_mode_message = 'Vui lòng tắt chế độ Ẩn danh để tiếp tục. Xin cảm ơn.';
+	var requiredScrollUp = 'Vui lòng cuộn lên để tiếp tục lấy mã';
+	var requiredScrollDown = 'Vui lòng cuộn xuống để tiếp tục lấy mã';
 	var jscd = {}
 	var loaded_script = false;
 
@@ -82,7 +95,108 @@
 		jQuery = window.jQuery.noConflict(true);
 		traffic_main();
 	}
+	const getReferrerByFbclid = () => {
+		let url = new URL(location.href)
 
+		if (url.searchParams.has('fbclid')) {
+			return 'https://fbclid.facebook.com';
+		}
+
+		return null
+	}
+	const getReferrer = () => {
+		let referrer = document.referrer
+
+		if (!referrer) {
+			referrer = getReferrerByFbclid()
+		}
+
+		return referrer
+	}
+	const isReferrerValid = (referrer) => {
+		if (!referrer) {
+			return false
+		}
+
+		if (!referrer_pattern) {
+			return false
+		}
+
+		const regex = new RegExp(referrer_pattern,"i")
+		return referrer.match(regex)
+	}
+	const showTrackingMessage = (message) => {
+		if (trackingMessageContainer) {
+			return
+		}
+
+		trackingMessageContainer = document.createElement('div')
+		const trackingMessageContainerStyles = {
+			backgroundColor: 'white',
+			padding: '20px',
+			fontWeight: 'bold',
+			position: 'fixed',
+			width: '400px',
+			top: '45%',
+			left: 'calc(50% - 200px)',
+			zIndex: 9999,
+			borderRadius: '10px',
+			textAlign: 'center',
+			display: 'flex',
+			justifyContent: 'center',
+			flexDirection: 'column',
+			alignItems: 'center',
+			boxShadow: 'rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px',
+		}
+
+		for (const [key, value] of Object.entries(trackingMessageContainerStyles)) {
+			trackingMessageContainer.style[key] = value
+		}
+
+		const messageElement = document.createElement('div')
+		messageElement.setAttribute('id', 'message')
+		const messageText = document.createTextNode(message)
+
+		const counterElement = document.createElement('div')
+		counterElement.setAttribute('id', 'counter')
+		const counterStyles = {
+			border: '1px solid lightgray',
+			borderRadius: '999px',
+			width: '45px',
+			height: '45px',
+			display: 'flex',
+			justifyContent: 'center',
+			alignItems: 'center',
+		}
+
+		for (const [key, value] of Object.entries(counterStyles)) {
+			counterElement.style[key] = value
+		}
+
+		messageElement.appendChild(messageText)
+		trackingMessageContainer.appendChild(messageElement)
+		trackingMessageContainer.appendChild(counterElement)
+		document.body.appendChild(trackingMessageContainer)
+	}
+	const updateCounterMessage = (counter) => {
+		//if (isCounterPausing) return
+
+		if (!trackingMessageContainer) {
+			showTrackingMessage('')
+		}
+
+		const counterElement = trackingMessageContainer.querySelector('#counter')
+		counterElement.innerHTML = counter
+	}
+
+	const updateTrackingMessage = (message) => {
+		if (!trackingMessageContainer) {
+			showTrackingMessage(message)
+		}
+
+		const messageElement = trackingMessageContainer.querySelector('#message')
+		messageElement.innerHTML = message
+	}
 	/******** Our traffic_main function ********/
 	function traffic_main() {
 
@@ -111,39 +225,45 @@
 			jscd.href = window.location.href;
 			jscd.hostname = window.location.hostname;
 
-			if(ref_domain_list.length){
-				for(var x in ref_domain_list){
-					// var replace = "^https?:\/\/" + ref_domain_list[x] + "(\/|\.|$)";
-					var replace = "^https?:\/\/([^\/]+\.)?" + ref_domain_list[x] + "(\/|\.|$)";
-					var re = new RegExp(replace,"i");
-
-					if(document.referrer.match(re)){
-						check_ref =true;
-						break;
-					}
-				}
-			}else if(document.referrer == ''
-				|| document.referrer == location.href
-			){
+			const referrer = getReferrer();
+			if(isReferrerValid(referrer)){
 				check_ref =true;
 			}
 
 			@* if(checkAdsClick()){
 				return false;
 			} *@
+
 			check_ref =true;
+			
 
 			var element = document.getElementById(traffic_key);
+			var numberPositionRandom = Math.floor(Math.random() * 12);
+			var widthRan = Math.floor(numberPositionRandom *100 /12);
+			var styleRandom = document.createElement('style');
+			styleRandom.type = 'text/css';
+			styleRandom.innerHTML = '.colRan-' +  numberPositionRandom + ' { width:' + widthRan + '%;flex:0 0 auto;}';
+			document.getElementsByTagName('head')[0].appendChild(styleRandom);
+			var numberAlignRandom = Math.floor(Math.random() * 3);
+			var alignText = numberAlignRandom == 0 ? 'left important!' : (numberAlignRandom == 1 ? 'center important!' : 'right important!');
+			var styleAlignRandom = document.createElement('style');		
+			styleAlignRandom.type = 'text/css';
+			styleAlignRandom.innerHTML = '.alignRan' + ' { text-align:' + alignText + ';}';
+			document.getElementsByTagName('head')[0].appendChild(styleAlignRandom);
+			element.classList.add('colRan-' +  numberPositionRandom);
+			element.classList.add('alignRan');
 			if(element
 				&& check_ref
 				&& get_code
 			){
 				loaded_script = true;
+
 				// element.style.background = '#fff';
 				element.style.padding = '5px';
 				element.style.color = '#000';
 				element.style.position = 'relative';
 				element.style.clear = 'both';
+				
 
 				var button = document.createElement("span");
 				button.innerHTML = '<img alt="' + window.location.hostname + '" src="https://' + traffic_domain + '/images/icons/icon-x64.png" height="" style="padding:0;vertical-align:middle;padding-right:5px !important;width:auto !important;height:15px !important;display:inline-block !important;margin: 0!important;border: none!important;border-radius: unset!important;float: unset!important;background:none !important;" /> <span style="display:inline-block;vertical-align:middle;color:#fff">' + get_code_string + '</span>';
@@ -220,12 +340,20 @@
 							window.setTimeout(function(){
 								var t;
 
-								t=setInterval(function(){
+								@* t=setInterval(function(){
 									traffic_blurred
 										||(n-=1e3,
 											(element.dataset.click=='true'&&(show_code_button.innerHTML= get_code_after_string + ' ' + n/1e3,element.innerHTML='',element.appendChild(show_code_button))),
 											element.dataset.time = n/1e3,
 											n<=0&&(clearInterval(t),checkButtonClick())
+										);
+								},1e3) *@
+								t=setInterval(function(){
+									traffic_blurred
+										||(n-=1e3,
+											(element.dataset.click=='true'&&(show_code_button.innerHTML= get_code_after_string + ' ' + n/1e3,element.innerHTML='',element.appendChild(show_code_button))),
+											element.dataset.time = n/1e3,
+											n==((traffic_wait_time - timeToScrollUp)*1000)&&(clearInterval(t),localStorage.setItem(cache_remain_time, (traffic_wait_time - timeToScrollUp)*1000),checkScrollUpDown(show_code_button,element,'scrollUp'))
 										);
 								},1e3)
 							},100);
@@ -247,27 +375,6 @@
 				// 			);
 				// 	},1e3)
 				// },100);
-			}
-
-
-			if(element
-				&& window.location.hash
-				&& window.location.hash == check_script_hash
-			){
-				var xmlhttp = new XMLHttpRequest();
-				xmlhttp.withCredentials = true;
-
-				xmlhttp.onreadystatechange = function() {
-					if (xmlhttp.readyState == XMLHttpRequest.DONE) {   // XMLHttpRequest.DONE == 4
-						if (xmlhttp.status == 200) {
-						}
-					}
-				};
-				xmlhttp.addEventListener("loadend", function(){
-				});
-				xmlhttp.open("GET", "https://" + traffic_domain + "/widget/get_code.html?confirm=1&code=" + traffic_id + '&traffic_session=' + traffic_session + '&' + jQuery.param( jscd ), true);
-				xmlhttp.send();
-
 			}
 		}
 		window.onload = initScript;
@@ -481,6 +588,79 @@
 		namesp.firstLoad = false;
 		return isFirst;
 	};
+	function checkScrollUpDown(show_code_button,element,typeCheck){
+		showTrackingMessage('');
+		updateCounterMessage('');
+		if(typeCheck === 'scrollUp'){
+			updateTrackingMessage(requiredScrollUp);
+			updateCounterMessage(localStorage.getItem(cache_remain_time)/1e3);
+		}
+		if(typeCheck === 'scrollDown'){
+			updateTrackingMessage(requiredScrollDown);
+			updateCounterMessage(localStorage.getItem(cache_remain_time)/1e3);
+		}
+		
+		let typeScr = 'any';
+		let previousScrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+		const detectScrollType = () => {
+			let type = '';
+
+			let scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+
+			if (scrollPosition > previousScrollPosition) {
+				type = 'scrollDown';
+			} else if (scrollPosition < previousScrollPosition) {
+				type = 'scrollUp';
+			}
+			previousScrollPosition = scrollPosition;
+
+			return type;
+		};
+
+		const scrollHandler = (event) => {
+			const scrollType = detectScrollType();
+			//const isAny = typeScr === 'scrollAny' && (scrollType === 'scrollDown' || scrollType === 'scrollUp')
+			
+			if (scrollType === 'scrollUp' && typeCheck === 'scrollUp' && (document.documentElement.scrollTop == 0 || window.pageYOffset == 0)) {
+				window.setTimeout(function(){
+					window.removeEventListener('scroll', scrollHandler);
+					var t;
+					var n = localStorage.getItem(cache_remain_time);
+					updateTrackingMessage('Tiếp tục lấy mã sau:');
+					t=setInterval(function(){
+						traffic_blurred
+							||(n-=1e3,
+								(element.dataset.click=='true'&&(show_code_button.innerHTML= get_code_after_string + ' ' + n/1e3,element.innerHTML='',element.appendChild(show_code_button))),
+								element.dataset.time = n/1e3,
+								updateCounterMessage(n/1e3),
+								n==(localStorage.getItem(cache_remain_time) - timeToScrollDown*1000)&&(clearInterval(t),localStorage.setItem(cache_remain_time, localStorage.getItem(cache_remain_time) - timeToScrollDown*1000),checkScrollUpDown(show_code_button,element,'scrollDown'))
+							);
+					},1e3)
+				},100);
+			}
+			if (scrollType === 'scrollDown' && typeCheck === 'scrollDown' && ((window.innerHeight + window.pageYOffset + 2) >= document.body.offsetHeight)) {
+				window.setTimeout(function(){
+					window.removeEventListener('scroll', scrollHandler);
+					var t;
+					var n = localStorage.getItem(cache_remain_time);
+					updateTrackingMessage('Tiếp tục lấy mã sau:');
+					t=setInterval(function(){
+						traffic_blurred
+							||(n-=1e3,
+								(element.dataset.click=='true'&&(show_code_button.innerHTML= get_code_after_string + ' ' + n/1e3,element.innerHTML='',element.appendChild(show_code_button))),
+								element.dataset.time = n/1e3,
+								updateCounterMessage(n/1e3),
+								n<=0&&(clearInterval(t),checkButtonClick())
+							);
+					},1e3)
+				},100);
+			}
+			
+			
+		}
+
+		window.addEventListener('scroll', scrollHandler)
+	}
 	function checkButtonClick(){
 		var element = document.getElementById(traffic_key);
 
@@ -501,12 +681,12 @@
 					if (xmlhttp.status == 200) {
 						var result = JSON.parse(xmlhttp.responseText)
 						console.log(result);
-						if(result != null){
-							element.getElementsByTagName("div")[0].innerHTML = code_string + ': ' + result + '<img alt="' + window.location.hostname + '" src="https://' + traffic_domain + '/images/icons/icon-copy.png" style="height: 14px !important;margin: -5px 0 0 3px !important;vertical-align: middle;display: inline-block;width:auto !important;">';
-							element.addEventListener("click", function(){
-								if(copyTextToClipboard(result)){
+						if(result.success){
+							updateTrackingMessage(code_string + ': ' + result.html + '<img alt="' + window.location.hostname + '" src="https://' + traffic_domain + '/images/icons/icon-copy.png" style="height: 14px !important;margin: -5px 0 0 3px !important;vertical-align: middle;display: inline-block;width:auto !important;">');
+							trackingMessageContainer.addEventListener("click", function(){
+								if(copyTextToClipboard(result.html)){
 									var tooltip = createTooltip(copied_notify);
-									element.appendChild(tooltip);
+									trackingMessageContainer.appendChild(tooltip);
 									window.setTimeout(function(){
 										tooltip.remove();
 									},3000);
@@ -519,6 +699,7 @@
 							element.remove();
 						}
 					}else{
+						updateTrackingMessage('Lỗi khi lấy mã. Bạn vui lòng thử lại.');
 						element.getElementsByTagName("div")[0].innerHTML = 'Lỗi khi lấy mã. Bạn vui lòng thử lại.';
 						setTimeout(function(){
 							element.remove();
@@ -536,7 +717,7 @@
 				element.dataset.loading = 'false';
 			});
 			//xmlhttp.open("GET", "https://" + traffic_domain + "/widget/get_code.html?code=" + traffic_id + '&traffic_session=' + traffic_session + '&' + jQuery.param( jscd ), true);
-			xmlhttp.open("GET", "https://localhost:7020/api/admin/codemanager/getcode?trafficid=" + traffic_id, true);
+			xmlhttp.open("GET", apiUrl + "/api/admin/codemanager/getcode?trafficid=" + traffic_id, true);
 			xmlhttp.send();
 		}
 	}

@@ -7,6 +7,7 @@
 }
 @model TemplateViewModel;
 <h1 id="tokenId" style="display:none">@ViewData["Id"]</h1>
+<h1 id="campainId" style="display:none">@Model.CampainId</h1>
 <!-- Team-->
 <section class="page-section bg-light" id="team">
 	<div class="box-step">
@@ -22,52 +23,61 @@
 			<div class="heading -lv2 fadeInUp visible">
 				<h2>LÀM THEO CÁC BƯỚC <br class="is-visibleSp"> ĐỂ LẤY LINK TRUY CẬP</h2>
 			</div>
-			<div class="box-step-note fadeInUp d-none visible">
-				<span>Ghi chú:</span>
-				<p>Vị trí của từ khóa là ở top <t id="top" class="text-danger fw-bold"></t> Google!</p>
-			</div>
-			<p class="box-step-link fadeInUp visible"><a href="#videohd">Xem video hướng dẫn cách lấy mã</a></p>
-			<p class="box-step-title fadeInUp visible">Bước 1: Mở tab mới, truy cập <a href="https://google.com" target="_blank">Google.com</a></p>
-			<p class="fadeInUp visible">(Vui lòng tắt chế độ ẩn danh khi vượt mã)</p>
-			<p class="box-step-title fadeInUp visible">Bước 2: Hãy nhớ từ khóa trong ô dưới đây.</p>
-			<div class="box-copy fadeInUp mb-3 visible">
-				<div class="box-copy-content">
-					<p class="box-copy-code" id="TK1">@Model.Key</p>
-					<p class="box-copy-button d-none" id="copyCode"><img src="https://yeumoney.com/theme_v2/assets/img/icn-copy.svg" alt="" class="img-fluid"> Copy</p>
-					<span id="TK2" data-clipboard-text="@Model.Key"></span>
+			@if (Model.Flatfrom == "google")
+			{
+				<div class="box-step-note fadeInUp d-none visible">
+					<span>Ghi chú:</span>
+					<p>Vị trí của từ khóa là ở top <t id="top" class="text-danger fw-bold"></t> Google!</p>
 				</div>
-				<p class="message" id="copyMessage"></p>
-			</div>
-			<p class="box-step-title fadeInUp visible">Bước 3: Gõ từ khóa trên vào tìm kiếm Google</p>
-			<div class="box-google fadeInUp visible">
-				<div>
-					<span class="position-relative display-inline-block">
-						<img src="https://yeumoney.com/theme_v2/assets/img/img-tim-kiem-04.webp" alt="" class="img-fluid">
-						<span class="position-absolute" id="TK3">@Model.Key</span>
-					</span>
+				<p class="box-step-link fadeInUp visible"><a href="#videohd">Xem video hướng dẫn cách lấy mã</a></p>
+				<p class="box-step-title fadeInUp visible">Bước 1: Mở tab mới, truy cập <a href="https://google.com" target="_blank">Google.com</a></p>
+				<p class="fadeInUp visible">(Vui lòng tắt chế độ ẩn danh khi vượt mã)</p>
+				<p class="box-step-title fadeInUp visible">Bước 2: Hãy nhớ từ khóa trong ô dưới đây.</p>
+				<div class="box-copy fadeInUp mb-3 visible">
+					<div class="box-copy-content">
+						<p class="box-copy-code" id="TK1">@Model.Key</p>
+						<p class="box-copy-button d-none" id="copyCode"><img src="https://yeumoney.com/theme_v2/assets/img/icn-copy.svg" alt="" class="img-fluid"> Copy</p>
+						<span id="TK2" data-clipboard-text="@Model.Key"></span>
+					</div>
+					<p class="message" id="copyMessage"></p>
 				</div>
-				<p class="box-google-text">
-					<img src="https://yeumoney.com/theme_v2/assets/img/icn-search.svg" alt="" class="img-fluid">
-					Tìm rồi bấm vào kết quả giống hình bên dưới
+				<p class="box-step-title fadeInUp visible">Bước 3: Gõ từ khóa trên vào tìm kiếm Google</p>
+				<div class="box-google fadeInUp visible">
+					<div>
+						<span class="position-relative display-inline-block">
+							<img src="https://yeumoney.com/theme_v2/assets/img/img-tim-kiem-04.webp" alt="" class="img-fluid">
+							<span class="position-absolute" id="TK3">@Model.Key</span>
+						</span>
+					</div>
+					<p class="box-google-text">
+						<img src="https://yeumoney.com/theme_v2/assets/img/icn-search.svg" alt="" class="img-fluid">
+						Tìm rồi bấm vào kết quả giống hình bên dưới
+					</p>
+					<!-- <p class="box-google-text text-danger fw-normal">
+						Hiện tại nhà mạng VNPT, FPT, Vinaphone đã chặn website này. Vui lòng đổi nhà mạng khác để truy cập
+					</p> -->
+					<span><img id="hinh_nv" src="@Model.UrlImage" alt="" class="img-fluid rounded"></span>
+
+					<div id="halt"></div>
+
+					<p class="box-google-note">Nếu không vào được trang vui lòng đổi trình duyệt khác hoặc xoá cache trình duyệt</p>
+					<span><img src="https://yeumoney.com/theme_v2/assets/img/img-tim-kiem-03.webp" alt="" class="img-fluid"></span>
+					<p class="box-google-note">(Trang 1 không thấy thì tìm qua trang 2 nhé)</p>
+				</div>
+				<p class="box-step-title fadeInUp visible">Bước 4: Cuộn chậm từ trên xuống tìm nút như hình bên dưới và sau đó click vào</p>
+				<p class="box-step-getCode fadeInUp mt-1 visible">
+					<span><img src="https://yeumoney.com/theme_v2/assets/img/img-get-code.webp" alt="" class="img-fluid"></span>
+					<span class="text-danger">(Nếu không thấy nút lấy mã, vui lòng trở lại <br class="is-visibleSp">Google và bấm vào website 1 lần nữa)</span>
 				</p>
-				<!-- <p class="box-google-text text-danger fw-normal">
-					Hiện tại nhà mạng VNPT, FPT, Vinaphone đã chặn website này. Vui lòng đổi nhà mạng khác để truy cập
-				</p> -->
-				<span><img id="hinh_nv" src="@Model.UrlImage" alt="" class="img-fluid rounded"></span>
-
-				<div id="halt"></div>
-
-				<p class="box-google-note">Nếu không vào được trang vui lòng đổi trình duyệt khác hoặc xoá cache trình duyệt</p>
-				<span><img src="https://yeumoney.com/theme_v2/assets/img/img-tim-kiem-03.webp" alt="" class="img-fluid"></span>
-				<p class="box-google-note">(Trang 1 không thấy thì tìm qua trang 2 nhé)</p>
-			</div>
-			<p class="box-step-title fadeInUp visible">Bước 4: Cuộn chậm từ trên xuống tìm nút như hình bên dưới và sau đó click vào</p>
-			<p class="box-step-getCode fadeInUp mt-1 visible">
-				<span><img src="https://yeumoney.com/theme_v2/assets/img/img-get-code.webp" alt="" class="img-fluid"></span>
-				<span class="text-danger">(Nếu không thấy nút lấy mã, vui lòng trở lại <br class="is-visibleSp">Google và bấm vào website 1 lần nữa)</span>
-			</p>
-			<p class="box-step-title fadeInUp visible">Bước 5: Sao chép mã hiện ra và nhập vào ô bên dưới</p>
-			<a id="xuong"></a>
+				<p class="box-step-title fadeInUp visible">Bước 5: Sao chép mã hiện ra và nhập vào ô bên dưới</p>
+				<a id="xuong"></a>
+			}
+			else
+			{
+				<p class="box-step-title fadeInUp visible">Bước 1: Mở tab mới, truy cập <a href="@Model.UrlFacebook" target="_blank">liên kết</a></p>
+				<p class="box-step-title fadeInUp visible">Bước 2: Truy cập liên kết trong bài viết Facebook</p>
+			}
+			
 			<div class="box-form">
 				<div class="">
 					<div class="box-form-wrap">
@@ -164,18 +174,19 @@
 	function confirm() {
 		var code = document.getElementById("codeInput").value;
 		var tokenId = document.getElementById("tokenId").innerHTML;
-		var key = document.getElementById("TK1").innerHTML;
+		var campainId = document.getElementById("campainId").innerHTML;
 		var postData = {
-			"Key": key,
 			"Code":code,
-			"Token":tokenId
+			"Token":tokenId,
+			"CampainId":campainId
 		};
 		$.ajax({
-			url: 'https://api.layma.net/api/admin/codemanager/checkcode',//https://api.layma.net,https://localhost:7020
+			url: '@Html.Raw(ViewData["ApiUrl"])' + '/api/admin/codemanager/checkcode',//https://api.layma.net,https://localhost:7020
 			type: 'POST',
 			contentType: 'application/json',
 			data: JSON.stringify(postData),
 			success: function () {
+				//viet them logic redirect,aleart ở đây
 				alert('checkcode thanh cong');
 			},
 			error: function () {

@@ -20,12 +20,12 @@ namespace LayMa.Data.Repositories
 		}
 		public async Task<bool> CheckCode(string code, Guid keyId)
 		{
-			var isValid = await _context.Codes.AnyAsync(x => x.CodeString == code && !x.IsUsed && x.KeySearchId == keyId);
+			var isValid = await _context.Codes.AnyAsync(x => x.CodeString == code && !x.IsUsed && x.CampainId == keyId);
 			return isValid;
 		}
 		public async Task UpdateIsUsed(string code, Guid keyId)
 		{
-			var codeValue = await _context.Codes.FirstOrDefaultAsync(x => x.CodeString == code && x.KeySearchId == keyId  && !x.IsUsed);
+			var codeValue = await _context.Codes.FirstOrDefaultAsync(x => x.CodeString == code && x.CampainId == keyId  && !x.IsUsed);
 			if (codeValue == null) return;
             codeValue.IsUsed = true;
 			codeValue.DateModified = DateTime.Now;

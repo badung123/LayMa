@@ -320,6 +320,72 @@ export class AdminApiBankTransactionApiClient {
 }
 
 @Injectable()
+export class AdminApiCampainApiClient {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(ADMIN_API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ?? "";
+    }
+
+    /**
+     * @param keytoken (optional) 
+     * @return Success
+     */
+    getCampainByKeyToken(keytoken?: string | null | undefined): Observable<CampainDto> {
+        let url_ = this.baseUrl + "/api/admin/campain?";
+        if (keytoken !== undefined && keytoken !== null)
+            url_ += "keytoken=" + encodeURIComponent("" + keytoken) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetCampainByKeyToken(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetCampainByKeyToken(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<CampainDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<CampainDto>;
+        }));
+    }
+
+    protected processGetCampainByKeyToken(response: HttpResponseBase): Observable<CampainDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = CampainDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+}
+
+@Injectable()
 export class AdminApiCodeManagerApiClient {
     private http: HttpClient;
     private baseUrl: string;
@@ -435,21 +501,20 @@ export class AdminApiCodeManagerApiClient {
     }
 
     /**
-     * @param body (optional) 
+     * @param trafficid (optional) 
      * @return Success
      */
-    getCode(body?: any | undefined): Observable<void> {
-        let url_ = this.baseUrl + "/api/admin/codemanager/getcode";
+    getCode(trafficid?: string | null | undefined): Observable<string> {
+        let url_ = this.baseUrl + "/api/admin/codemanager/getcode?";
+        if (trafficid !== undefined && trafficid !== null)
+            url_ += "trafficid=" + encodeURIComponent("" + trafficid) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(body);
-
         let options_ : any = {
-            body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
-                "Content-Type": "application/json",
+                "Accept": "text/plain"
             })
         };
 
@@ -460,14 +525,14 @@ export class AdminApiCodeManagerApiClient {
                 try {
                     return this.processGetCode(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<void>;
+                    return _observableThrow(e) as any as Observable<string>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<void>;
+                return _observableThrow(response_) as any as Observable<string>;
         }));
     }
 
-    protected processGetCode(response: HttpResponseBase): Observable<void> {
+    protected processGetCode(response: HttpResponseBase): Observable<string> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -476,7 +541,11 @@ export class AdminApiCodeManagerApiClient {
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
         if (status === 200) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            return _observableOf(null as any);
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
@@ -590,6 +659,72 @@ export class AdminApiKeySearchApiClient {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
             result200 = ThongKeView.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+}
+
+@Injectable()
+export class AdminApiMissionApiClient {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(ADMIN_API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ?? "";
+    }
+
+    /**
+     * @param token (optional) 
+     * @return Success
+     */
+    getMissionByTokenShortLink(token?: string | null | undefined): Observable<MissionDto> {
+        let url_ = this.baseUrl + "/api/admin/mission?";
+        if (token !== undefined && token !== null)
+            url_ += "token=" + encodeURIComponent("" + token) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetMissionByTokenShortLink(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetMissionByTokenShortLink(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<MissionDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<MissionDto>;
+        }));
+    }
+
+    protected processGetMissionByTokenShortLink(response: HttpResponseBase): Observable<MissionDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = MissionDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -1237,10 +1372,54 @@ export interface IBankTransactionInListDtoPagedResult {
     results?: BankTransactionInListDto[] | undefined;
 }
 
+export class CampainDto implements ICampainDto {
+    id?: string;
+    keyToken?: string | undefined;
+    flatform?: string | undefined;
+
+    constructor(data?: ICampainDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.keyToken = _data["keyToken"];
+            this.flatform = _data["flatform"];
+        }
+    }
+
+    static fromJS(data: any): CampainDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CampainDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["keyToken"] = this.keyToken;
+        data["flatform"] = this.flatform;
+        return data;
+    }
+}
+
+export interface ICampainDto {
+    id?: string;
+    keyToken?: string | undefined;
+    flatform?: string | undefined;
+}
+
 export class CheckCodeRequest implements ICheckCodeRequest {
-    key?: string | undefined;
     code?: string | undefined;
     token?: string | undefined;
+    campainId?: string | undefined;
 
     constructor(data?: ICheckCodeRequest) {
         if (data) {
@@ -1253,9 +1432,9 @@ export class CheckCodeRequest implements ICheckCodeRequest {
 
     init(_data?: any) {
         if (_data) {
-            this.key = _data["key"];
             this.code = _data["code"];
             this.token = _data["token"];
+            this.campainId = _data["campainId"];
         }
     }
 
@@ -1268,17 +1447,17 @@ export class CheckCodeRequest implements ICheckCodeRequest {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["key"] = this.key;
         data["code"] = this.code;
         data["token"] = this.token;
+        data["campainId"] = this.campainId;
         return data;
     }
 }
 
 export interface ICheckCodeRequest {
-    key?: string | undefined;
     code?: string | undefined;
     token?: string | undefined;
+    campainId?: string | undefined;
 }
 
 export class CreateBankTransactionDto implements ICreateBankTransactionDto {
@@ -1503,6 +1682,70 @@ export class LoginRequest implements ILoginRequest {
 export interface ILoginRequest {
     userName?: string | undefined;
     password?: string | undefined;
+}
+
+export class MissionDto implements IMissionDto {
+    id?: string;
+    key?: string | undefined;
+    urlImage?: string | undefined;
+    urlWeb?: string | undefined;
+    urlVideo?: string | undefined;
+    flatfrom?: string | undefined;
+    urlFacebook?: string | undefined;
+    campainId?: string;
+
+    constructor(data?: IMissionDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.key = _data["key"];
+            this.urlImage = _data["urlImage"];
+            this.urlWeb = _data["urlWeb"];
+            this.urlVideo = _data["urlVideo"];
+            this.flatfrom = _data["flatfrom"];
+            this.urlFacebook = _data["urlFacebook"];
+            this.campainId = _data["campainId"];
+        }
+    }
+
+    static fromJS(data: any): MissionDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new MissionDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["key"] = this.key;
+        data["urlImage"] = this.urlImage;
+        data["urlWeb"] = this.urlWeb;
+        data["urlVideo"] = this.urlVideo;
+        data["flatfrom"] = this.flatfrom;
+        data["urlFacebook"] = this.urlFacebook;
+        data["campainId"] = this.campainId;
+        return data;
+    }
+}
+
+export interface IMissionDto {
+    id?: string;
+    key?: string | undefined;
+    urlImage?: string | undefined;
+    urlWeb?: string | undefined;
+    urlVideo?: string | undefined;
+    flatfrom?: string | undefined;
+    urlFacebook?: string | undefined;
+    campainId?: string;
 }
 
 export enum ProcessStatus {

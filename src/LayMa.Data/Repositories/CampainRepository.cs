@@ -2,6 +2,7 @@
 using LayMa.Core.Domain.Bank;
 using LayMa.Core.Domain.Campain;
 using LayMa.Core.Model.Campain;
+using LayMa.Core.Model.KeySearch;
 using LayMa.Core.Repositories;
 using LayMa.Data.SeedWorks;
 using Microsoft.EntityFrameworkCore;
@@ -26,6 +27,18 @@ namespace LayMa.Data.Repositories
 			var campainDto = _mapper.Map<Campain,CampainDto>(campain);
 
 			return campainDto;
+		}
+		public async Task<Guid> GetCampainIdRandom()
+		{
+			var key = await _context.Campains.OrderBy(x => Guid.NewGuid()).FirstOrDefaultAsync();
+			if (key == null) return Guid.Empty;
+			return key.Id;
+		}
+		public async Task<string> GetFlatformByCampainId(Guid campainId)
+		{
+			var campain = await _context.Campains.Where(x => x.Id == campainId).FirstOrDefaultAsync();
+			if (campain == null) return string.Empty;
+			return campain.Flatform;
 		}
 	}
 }

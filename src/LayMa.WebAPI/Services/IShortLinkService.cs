@@ -2,6 +2,6 @@
 {
 	public interface IShortLinkService
 	{
-		string GenerateLinkToken();
+		string GenerateLinkToken(int number);
 	}
 }

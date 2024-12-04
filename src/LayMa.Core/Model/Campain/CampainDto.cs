@@ -13,6 +13,8 @@ namespace LayMa.Core.Model.Campain
 	{
 		public Guid Id { get; set; }
 		public string KeyToken { get; set; }
+		public string Flatform { get; set; }
+		public int TimeOnSitePerView { get; set; }
 		public class AutoMapperProfiles : Profile
 		{			
 			public AutoMapperProfiles()

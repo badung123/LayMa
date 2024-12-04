@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using LayMa.Core.Domain.Identity;
 using LayMa.Core.Domain.Link;
+using LayMa.Core.Domain.Mission;
 using LayMa.Core.Interface;
 using LayMa.Core.Model;
 using LayMa.Core.Model.ShortLink;
@@ -44,10 +45,28 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 			var id = Guid.NewGuid();
 			link.Id = id;
 			link.OriginLink = request.Url;
-			var token = _shortLinkService.GenerateLinkToken();
+			var token = "";
+			token = token.GenerateLinkToken(9);
 			link.Token = token;
-			link.Link = "https://layma.net/" + token;
+			link.Link = "https://layma.net/" + token; //https://localhost:7181/,https://layma.net/
 			_unitOfWork.ShortLinks.Add(link);
+			//add nhiem vu
+			//get campainid random
+			var campainId = await _unitOfWork.Campains.GetCampainIdRandom();
+			if (campainId == Guid.Empty) return BadRequest();
+			var missionId = Guid.NewGuid();
+			var mission = new Mission() { 
+				Id = missionId,
+				CampainId = campainId,
+				ShortLinkId = id,
+				TokenUrl = token,
+				ShortLink = request.Url,
+				UserId = userId,
+				DateCreated = DateTime.Now,
+				DateModified = DateTime.Now,
+				IsActive = true
+			};
+			_unitOfWork.Missions.Add(mission);
 			var result = await _unitOfWork.CompleteAsync();
 			return result > 0 ? Ok() : BadRequest();
 		}

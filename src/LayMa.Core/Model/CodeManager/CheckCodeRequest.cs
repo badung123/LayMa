@@ -8,8 +8,9 @@ namespace LayMa.Core.Model.CodeManager
 {
 	public class CheckCodeRequest
 	{
-		public required string Key { get; set; }
 		public required string Code { get; set; }
 		public required string Token { get; set; }
+		public required string CampainId { get; set; }
+		
 	}
 }

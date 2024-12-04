@@ -11,5 +11,6 @@ namespace LayMa.Core.Repositories
 {
 	public interface IMissionRepository : IRepository<Mission, Guid>
 	{
+		Task<Mission> GetMissionByUserId(Guid userId);
 	}
 }

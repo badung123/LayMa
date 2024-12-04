@@ -5,17 +5,24 @@ namespace LayMa.WebApp.Controllers
 {
 	public class TrafficController : Controller
 	{
+		private IConfiguration _configuration;
+		public TrafficController(IConfiguration configuration)
+		{
+			_configuration = configuration;
+		}
 		[HttpGet]
 		[Route("Traffic/Index/{id?}")]
 		public async Task<IActionResult> Index(string id)
 		{
 			ViewBag.Id = id;
+			var url = _configuration.GetValue<string>("API_URL");
+			ViewBag.ApiUrl = url;
+			var apiUrl = url + "/api/admin/campain?keytoken=" + id;
 			//get campain or keysearch by token id
-			string apiUrl = "https://localhost:7020/api/admin/campain?keytoken=" + id; //https://api.layma.net,https://localhost:7020
+			//string apiUrl = "https://api.layma.net/api/admin/campain?keytoken=" + id; //https://api.layma.net,https://localhost:7020
 			var table = new CampainViewModel();
 			using (HttpClient client = new HttpClient())
 			{
-				Console.WriteLine("Da vao");
 				client.BaseAddress = new Uri(apiUrl);
 				client.DefaultRequestHeaders.Accept.Clear();
 				client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));

@@ -1,12 +1,9 @@
-﻿using System;
-using System.Security.Cryptography;
-
-namespace LayMa.WebAPI.Services
+﻿namespace LayMa.WebAPI.Extensions
 {
-	public class ShortLinkService : IShortLinkService
+	public static class GenarateKeyExtension
 	{
 		private static Random random = new Random();
-		public string GenerateLinkToken(int number)
+		public static string GenerateLinkToken(this String stringChar,int number)
 		{
 			const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 			return new string(Enumerable.Repeat(chars, number)
