@@ -11,6 +11,8 @@ namespace LayMa.Core.Repositories
 	public interface IViewDetailRepository : IRepository<ViewDetail, Guid>
 	{
 		Task<List<ViewDetail>> GetTopListViewDetail(int top);
-		Task<int> CountClickByDateRange(DateTime start, DateTime end,Guid shortLinkId);
+		Task<int> CountClickByDateRangeAndShortLink(DateTime start, DateTime end, Guid shortLinkId);
+
+        Task<int> CountClickByDateRange(DateTime start, DateTime end);
 	}
 }

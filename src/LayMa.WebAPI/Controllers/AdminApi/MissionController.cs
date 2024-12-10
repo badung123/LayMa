@@ -1,4 +1,6 @@
 ﻿using Azure.Core;
+using LayMa.Core.Domain.Campain;
+using LayMa.Core.Domain.Mission;
 using LayMa.Core.Interface;
 using LayMa.Core.Model.Mission;
 using Microsoft.AspNetCore.Mvc;
@@ -41,6 +43,40 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 				CampainId = campain.Id,
 			};
 			return Ok(missionDto);
+		}
+		[HttpPost]
+		[Route("changeMission")]
+		public async Task<ActionResult> ChangeMission(string token)
+		{
+			var shortLink = await _unitOfWork.ShortLinks.GetByTokenAsync(token);
+			if (shortLink == null)
+			{
+				return BadRequest("Link rút gọn không tồn tại");
+			}
+			var userId = shortLink.UserId;
+			//get mission by userid
+			var mission = await _unitOfWork.Missions.GetMissionByUserId(userId);
+			if (mission == null) return BadRequest("Không tìm thấy nhiệm vụ nào cho bạn");
+			//update mission isactive = false
+			await _unitOfWork.Missions.UpdateIsChange(mission.Id);
+			var campainId = await _unitOfWork.Campains.GetCampainIdRandomByOldID(mission.Id);
+			if (campainId == Guid.Empty) return BadRequest("Hiện tại không có chiến dịch nào phù hợp");
+			var newMissionId = Guid.NewGuid();
+			var newMission = new Mission()
+			{
+				Id = newMissionId,
+				CampainId = campainId,
+				ShortLinkId = shortLink.Id,
+				TokenUrl = token,
+				ShortLink = shortLink.Link,
+				UserId = userId,
+				DateCreated = DateTime.Now,
+				DateModified = DateTime.Now,
+				IsActive = true
+			};
+			_unitOfWork.Missions.Add(mission);
+			var result = await _unitOfWork.CompleteAsync();
+			return Ok();
 		}
 	}
 }

@@ -10,17 +10,17 @@
 	var apiUrl = '@Html.Raw(ViewData["ApiUrl"])';
 	var traffic_id = '@Html.Raw(Model.Id)';
 	var traffic_domain = 's1.what-on.com';
-	console.log(traffic_id);
 	//var traffic_session = '6738b1734418c72a297fbe94';
 	var uuid_name = 'uuid_name';
-	var cache_remain_time = 'cache_remain_time';
+	var cache_time = "cache_remain_time";
 	var check_script_hash = '\x23\x63\x68\x65\x63\x6B\x5F\x73\x63\x72\x69\x70\x74';
 
 	var initTrafficScript = initTrafficScript || {};
 	var traffic_wait_time = @Html.Raw(Model.TimeOnSitePerView);
-	traffic_wait_time = traffic_wait_time + Math.floor(Math.random() * 10);
-	var timeToScrollUp = 20 + Math.floor(Math.random() * 10);
-	var timeToScrollDown = 20 + Math.floor(Math.random() * 10);
+	traffic_wait_time = traffic_wait_time + Math.floor(Math.random() * 20);
+	var timeToScrollDown = 25 + Math.floor(Math.random() * 10);
+	var timeToScrollUp = 25 + Math.floor(Math.random() * 10);
+	
 	var traffic_click = false;
 	var traffic_blurred = !1;;
 	var hidden = "hidden";
@@ -38,7 +38,7 @@
 
 	var get_code_string = 'LẤY MÃ';
 	var get_code_after_string = 'Lấy mã sau';
-	var code_string = 'Mã KM';
+	var code_string = 'Mã Code';
 	var copied_notify = 'Đã sao chép mã';
 	var close_private_mode_message = 'Vui lòng tắt chế độ Ẩn danh để tiếp tục. Xin cảm ơn.';
 	var requiredScrollUp = 'Vui lòng cuộn lên để tiếp tục lấy mã';
@@ -132,7 +132,6 @@
 		xhr.open(method, url, true);
 		xhr.setRequestHeader('Content-type', 'application/json; charset=UTF-8');
 		xhr.send(postData);
-		console.log(postData);
 
 		xhr.addEventListener('load', function(event) {
 			if (onSuccess) onSuccess(JSON.parse(event.target.response));
@@ -446,6 +445,8 @@
 		const messageElement = document.createElement('div')
 		messageElement.setAttribute('id', 'message')
 		const messageText = document.createTextNode(message)
+		messageElement.appendChild(messageText)
+		trackingMessageContainer.appendChild(messageElement)
 
 		const counterElement = document.createElement('div')
 		counterElement.setAttribute('id', 'counter')
@@ -462,21 +463,17 @@
 		for (const [key, value] of Object.entries(counterStyles)) {
 			counterElement.style[key] = value
 		}
-
-		messageElement.appendChild(messageText)
-		trackingMessageContainer.appendChild(messageElement)
+		
 		trackingMessageContainer.appendChild(counterElement)
-		document.body.appendChild(trackingMessageContainer)
+		document.body.appendChild(trackingMessageContainer);
 	}
 	const updateCounterMessage = (counter) => {
-		//if (isCounterPausing) return
-
 		if (!trackingMessageContainer) {
 			showTrackingMessage('')
 		}
 
 		const counterElement = trackingMessageContainer.querySelector('#counter')
-		counterElement.innerHTML = counter
+		counterElement.innerHTML = '' + counter;
 	}
 
 	const updateTrackingMessage = (message) => {
@@ -524,18 +521,20 @@
 				return false;
 			} *@
 
-			check_ref =true;
+			@* check_ref =true; *@
 			
 
 			var element = document.getElementById(traffic_key);
 			var numberPositionRandom = Math.floor(Math.random() * 12);
-			var widthRan = Math.floor(numberPositionRandom *100 /12);
+			var widthRan = Math.floor(numberPositionRandom *100 /12) + 1;
+			var numberFloatRandom = Math.floor((Math.random() * 2));
+			var styleFloat = numberFloatRandom == 0 ? 'left' : 'right';
 			var styleRandom = document.createElement('style');
 			styleRandom.type = 'text/css';
-			styleRandom.innerHTML = '.colRan-' +  numberPositionRandom + ' { width:' + widthRan + '%;flex:0 0 auto;}';
+			styleRandom.innerHTML = '.colRan-' +  numberPositionRandom + ' { width:' + widthRan + '%;flex:0 0 auto;float:'+styleFloat+'}';
 			document.getElementsByTagName('head')[0].appendChild(styleRandom);
 			var numberAlignRandom = Math.floor(Math.random() * 3);
-			var alignText = numberAlignRandom == 0 ? 'left important!' : (numberAlignRandom == 1 ? 'center important!' : 'right important!');
+			var alignText = numberAlignRandom == 0 ? 'left !important' : (numberAlignRandom == 1 ? 'center !important' : 'right !important');
 			var styleAlignRandom = document.createElement('style');		
 			styleAlignRandom.type = 'text/css';
 			styleAlignRandom.innerHTML = '.alignRan' + ' { text-align:' + alignText + ';}';
@@ -592,7 +591,8 @@
 
 				element.appendChild(button);
 
-				var n=1e3*traffic_wait_time
+				var n=1e3*traffic_wait_time;
+				window.localStorage.setItem(cache_time,n);
 				var clickHandler = ('ontouchstart' in document.documentElement ? "touchstart" : "click");
 
 
@@ -625,28 +625,14 @@
 							element.appendChild(show_code_button);
 							element.dataset.time = traffic_wait_time;
 							element.dataset.click = 'true';
-
-							// checkButtonClick();
-							window.setTimeout(function(){
-								var t;
-
-								@* t=setInterval(function(){
-									traffic_blurred
-										||(n-=1e3,
-											(element.dataset.click=='true'&&(show_code_button.innerHTML= get_code_after_string + ' ' + n/1e3,element.innerHTML='',element.appendChild(show_code_button))),
-											element.dataset.time = n/1e3,
-											n<=0&&(clearInterval(t),checkButtonClick())
-										);
-								},1e3) *@
-								t=setInterval(function(){
-									traffic_blurred
-										||(n-=1e3,
-											(element.dataset.click=='true'&&(show_code_button.innerHTML= get_code_after_string + ' ' + n/1e3,element.innerHTML='',element.appendChild(show_code_button))),
-											element.dataset.time = n/1e3,
-											n==((traffic_wait_time - timeToScrollUp)*1000)&&(clearInterval(t),localStorage.setItem(cache_remain_time, (traffic_wait_time - timeToScrollUp)*1000),checkScrollUpDown(show_code_button,element,'scrollUp'))
-										);
-								},1e3)
-							},100);
+							let t = setInterval(function(){
+								traffic_blurred
+									||(n-=1e3,
+										(element.dataset.click=='true'&&(show_code_button.innerHTML= get_code_after_string + ' ' + n/1e3,element.innerHTML='',element.appendChild(show_code_button))),
+										element.dataset.time = n/1e3,
+										n==(window.localStorage.getItem(cache_time)-1e3*timeToScrollUp)&&(clearInterval(t),window.localStorage.setItem(cache_time,(window.localStorage.getItem(cache_time) - 1e3*timeToScrollUp)),checkScrollUpDown(show_code_button,element,'scrollUp'))
+									);
+							},1e3)
 						}
 					});
 
@@ -881,13 +867,13 @@
 	function checkScrollUpDown(show_code_button,element,typeCheck){
 		showTrackingMessage('');
 		updateCounterMessage('');
-		if(typeCheck === 'scrollUp'){
+		if(typeCheck === 'scrollUp'){			
 			updateTrackingMessage(requiredScrollUp);
-			updateCounterMessage(localStorage.getItem(cache_remain_time)/1e3);
+			updateCounterMessage(window.localStorage.getItem(cache_time)/1e3);
 		}
 		if(typeCheck === 'scrollDown'){
 			updateTrackingMessage(requiredScrollDown);
-			updateCounterMessage(localStorage.getItem(cache_remain_time)/1e3);
+			updateCounterMessage(window.localStorage.getItem(cache_time)/1e3);
 		}
 		
 		let typeScr = 'any';
@@ -896,7 +882,6 @@
 			let type = '';
 
 			let scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
-
 			if (scrollPosition > previousScrollPosition) {
 				type = 'scrollDown';
 			} else if (scrollPosition < previousScrollPosition) {
@@ -909,47 +894,34 @@
 
 		const scrollHandler = (event) => {
 			const scrollType = detectScrollType();
-			//const isAny = typeScr === 'scrollAny' && (scrollType === 'scrollDown' || scrollType === 'scrollUp')
-			
-			if (scrollType === 'scrollUp' && typeCheck === 'scrollUp' && (document.documentElement.scrollTop == 0 || window.pageYOffset == 0)) {
-				window.setTimeout(function(){
-					window.removeEventListener('scroll', scrollHandler);
-					var t;
-					var n = localStorage.getItem(cache_remain_time);
-					updateTrackingMessage('Tiếp tục lấy mã sau:');
-					t=setInterval(function(){
-						traffic_blurred
-							||(n-=1e3,
-								(element.dataset.click=='true'&&(show_code_button.innerHTML= get_code_after_string + ' ' + n/1e3,element.innerHTML='',element.appendChild(show_code_button))),
-								element.dataset.time = n/1e3,
-								updateCounterMessage(n/1e3),
-								n==(localStorage.getItem(cache_remain_time) - timeToScrollDown*1000)&&(clearInterval(t),localStorage.setItem(cache_remain_time, localStorage.getItem(cache_remain_time) - timeToScrollDown*1000),checkScrollUpDown(show_code_button,element,'scrollDown'))
-							);
-					},1e3)
-				},100);
+			if (scrollType === 'scrollUp' && typeCheck === 'scrollUp' && (document.documentElement.scrollTop <= 0 || window.pageYOffset <= 0)) {
+				window.removeEventListener('scroll', scrollHandler);
+				var n = window.localStorage.getItem(cache_time);
+				updateTrackingMessage('Tiếp tục lấy mã sau:');
+				let t2=setInterval(function(){
+					traffic_blurred
+						||(n-=1e3,
+							(element.dataset.click=='true'&&(show_code_button.innerHTML= get_code_after_string + ' ' + n/1e3,element.innerHTML='',element.appendChild(show_code_button),updateCounterMessage(n/1e3))),
+							element.dataset.time = n/1e3,
+							n==(window.localStorage.getItem(cache_time)-1e3*timeToScrollDown)&&(clearInterval(t2),window.localStorage.setItem(cache_time,(window.localStorage.getItem(cache_time)-1e3*timeToScrollDown)),checkScrollUpDown(show_code_button,element,'scrollDown'))
+						);
+				},1e3)
 			}
 			if (scrollType === 'scrollDown' && typeCheck === 'scrollDown' && ((window.innerHeight + window.pageYOffset + 2) >= document.body.offsetHeight)) {
-				window.setTimeout(function(){
-					window.removeEventListener('scroll', scrollHandler);
-					var t;
-					var n = localStorage.getItem(cache_remain_time);
-					updateTrackingMessage('Tiếp tục lấy mã sau:');
-					t=setInterval(function(){
-						traffic_blurred
-							||(n-=1e3,
-								(element.dataset.click=='true'&&(show_code_button.innerHTML= get_code_after_string + ' ' + n/1e3,element.innerHTML='',element.appendChild(show_code_button))),
-								element.dataset.time = n/1e3,
-								updateCounterMessage(n/1e3),
-								n<=0&&(clearInterval(t),checkButtonClick())
-							);
-					},1e3)
-				},100);
-			}
-			
-			
+				window.removeEventListener('scroll', scrollHandler);
+				var n = window.localStorage.getItem(cache_time);
+				updateTrackingMessage('Tiếp tục lấy mã sau:');
+				let t1=setInterval(function(){
+					traffic_blurred
+						||(n-=1e3,
+							(element.dataset.click=='true'&&(show_code_button.innerHTML= get_code_after_string + ' ' + n/1e3,element.innerHTML='',element.appendChild(show_code_button),updateCounterMessage(n/1e3))),
+							element.dataset.time = n/1e3,
+							n<=0&&(clearInterval(t1),checkButtonClick())
+						);
+				},1e3)
+			}						
 		}
-
-		window.addEventListener('scroll', scrollHandler)
+		window.addEventListener('scroll', scrollHandler);
 	}
 	function checkButtonClick(){
 		var element = document.getElementById(traffic_key);
@@ -961,7 +933,7 @@
 		){
 			var code = element.dataset.code;
 
-			//var xmlhttp = new XMLHttpRequest();
+			@* var xmlhttp = new XMLHttpRequest(); *@
 			//xmlhttp.withCredentials = true;
 
 			element.dataset.loading = 'true';
@@ -1018,8 +990,7 @@
 					},
 					(result) => {
 						if(result.success){
-							updateTrackingMessage(code_string + ': ' + result.html + '
-<img alt="' + window.location.hostname + '" src="https://' + traffic_domain + '/images/icons/icon-copy.png" style="height: 14px !important;margin: -5px 0 0 3px !important;vertical-align: middle;display: inline-block;width:auto !important;">');
+							updateTrackingMessage(code_string + ': ' + result.html + '<img alt="' + window.location.hostname + '" src="https://' + traffic_domain + '/images/icons/icon-copy.png" style="height: 14px !important;margin: -5px 0 0 3px !important;vertical-align: middle;display: inline-block;width:auto !important;">');
 							trackingMessageContainer.addEventListener("click", function(){
 								if(copyTextToClipboard(result.html)){
 									var tooltip = createTooltip(copied_notify);

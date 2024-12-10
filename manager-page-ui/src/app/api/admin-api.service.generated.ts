@@ -383,6 +383,57 @@ export class AdminApiCampainApiClient {
         }
         return _observableOf(null as any);
     }
+
+    /**
+     * @return Success
+     */
+    getThongKeView(): Observable<ThongKeView> {
+        let url_ = this.baseUrl + "/api/admin/campain/thongkeview";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetThongKeView(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetThongKeView(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ThongKeView>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ThongKeView>;
+        }));
+    }
+
+    protected processGetThongKeView(response: HttpResponseBase): Observable<ThongKeView> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ThongKeView.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
 }
 
 @Injectable()
@@ -501,24 +552,26 @@ export class AdminApiCodeManagerApiClient {
     }
 
     /**
-     * @param trafficid (optional) 
+     * @param body (optional) 
      * @return Success
      */
-    getCode(trafficid?: string | null | undefined): Observable<string> {
-        let url_ = this.baseUrl + "/api/admin/codemanager/getcode?";
-        if (trafficid !== undefined && trafficid !== null)
-            url_ += "trafficid=" + encodeURIComponent("" + trafficid) + "&";
+    getCode(body?: { [key: string]: any; } | undefined): Observable<string> {
+        let url_ = this.baseUrl + "/api/admin/codemanager/getcode";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(body);
+
         let options_ : any = {
+            body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
+                "Content-Type": "application/json",
                 "Accept": "text/plain"
             })
         };
 
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
             return this.processGetCode(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
@@ -621,7 +674,7 @@ export class AdminApiKeySearchApiClient {
     /**
      * @return Success
      */
-    getThongKeView(): Observable<ThongKeView> {
+    getThongKeView2(): Observable<ThongKeView> {
         let url_ = this.baseUrl + "/api/admin/keyseo/thongkeview";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -634,11 +687,11 @@ export class AdminApiKeySearchApiClient {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetThongKeView(response_);
+            return this.processGetThongKeView2(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetThongKeView(response_ as any);
+                    return this.processGetThongKeView2(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<ThongKeView>;
                 }
@@ -647,7 +700,7 @@ export class AdminApiKeySearchApiClient {
         }));
     }
 
-    protected processGetThongKeView(response: HttpResponseBase): Observable<ThongKeView> {
+    protected processGetThongKeView2(response: HttpResponseBase): Observable<ThongKeView> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -974,10 +1027,13 @@ export class AdminApiShortLinkApiClient {
     }
 
     /**
+     * @param searchType (optional) 
      * @return Success
      */
-    getThongKeClickByDate(): Observable<number> {
-        let url_ = this.baseUrl + "/api/admin/shortlink/thongkeClickByDate";
+    getThongKeClickByDate(searchType?: string | null | undefined): Observable<number> {
+        let url_ = this.baseUrl + "/api/admin/shortlink/thongkeClickByDate?";
+        if (searchType !== undefined && searchType !== null)
+            url_ += "searchType=" + encodeURIComponent("" + searchType) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -1003,6 +1059,58 @@ export class AdminApiShortLinkApiClient {
     }
 
     protected processGetThongKeClickByDate(response: HttpResponseBase): Observable<number> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    thongkeAllClickInDay(): Observable<number> {
+        let url_ = this.baseUrl + "/api/admin/shortlink/thongkeAllClickInDay";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processThongkeAllClickInDay(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processThongkeAllClickInDay(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<number>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<number>;
+        }));
+    }
+
+    protected processThongkeAllClickInDay(response: HttpResponseBase): Observable<number> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1376,6 +1484,7 @@ export class CampainDto implements ICampainDto {
     id?: string;
     keyToken?: string | undefined;
     flatform?: string | undefined;
+    timeOnSitePerView?: number;
 
     constructor(data?: ICampainDto) {
         if (data) {
@@ -1391,6 +1500,7 @@ export class CampainDto implements ICampainDto {
             this.id = _data["id"];
             this.keyToken = _data["keyToken"];
             this.flatform = _data["flatform"];
+            this.timeOnSitePerView = _data["timeOnSitePerView"];
         }
     }
 
@@ -1406,6 +1516,7 @@ export class CampainDto implements ICampainDto {
         data["id"] = this.id;
         data["keyToken"] = this.keyToken;
         data["flatform"] = this.flatform;
+        data["timeOnSitePerView"] = this.timeOnSitePerView;
         return data;
     }
 }
@@ -1414,6 +1525,7 @@ export interface ICampainDto {
     id?: string;
     keyToken?: string | undefined;
     flatform?: string | undefined;
+    timeOnSitePerView?: number;
 }
 
 export class CheckCodeRequest implements ICheckCodeRequest {

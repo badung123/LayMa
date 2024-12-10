@@ -16,6 +16,8 @@ namespace LayMa.WebApp.Controllers
         [HttpGet("/{id}")]
         public async Task<IActionResult> Index(string id)
         {
+			//updateView
+			//cứ vào là tính 1 lượt view
             ViewBag.Id = id;
 			var url = _configuration.GetValue<string>("API_URL");
 			ViewBag.ApiUrl = url;

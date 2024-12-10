@@ -11326,7 +11326,7 @@ section#contact form#contactForm :-ms-input-placeholder {
     margin: 0 auto;
     padding: 45px 8.542vw 80px;
     border-radius: 20px;
-    background: var(--GREEN-BOX-3, radial-gradient(69.87% 70.25% at 50% 49.92%, rgba(73, 217, 123, 0.50) 0%, #FFF 100%));
+    background: var(--GREEN-BOX-3, radial-gradient(69.87% 70.25% at 50% 49.92%, #fff 0%, #FFF 100%));
     box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.25);
 }
 
@@ -11477,7 +11477,7 @@ section#contact form#contactForm :-ms-input-placeholder {
 }
 
 .bg-img {
-    background: url("https://yeumoney.com/theme_v2/assets/img/bg-section.webp") no-repeat top center;
+    background: #fff;
     background-size: cover;
     padding: 50px 0 77px;
     flex: 1 0 auto;
@@ -11487,7 +11487,7 @@ section#contact form#contactForm :-ms-input-placeholder {
     display: block;
     padding: 59px 76px 74px 80px;
     border-radius: 20px;
-    background: var(--GREEN-BOX-2, radial-gradient(69.87% 70.25% at 50% 49.92%, rgba(73, 217, 123, 0.50) 0%, #FFF 100%));
+    background: var(--GREEN-BOX-2, radial-gradient(69.87% 70.25% at 50% 49.92%, #ffc800 0%, #FFF 100%));
     box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.25);
     margin: 41px auto 0;
 }
@@ -11504,16 +11504,17 @@ section#contact form#contactForm :-ms-input-placeholder {
 
     .box-color.-icon::before {
         content: "";
-        width: 269px;
+        width: 369px;
         height: 114px;
         display: inline-block;
-        background: url("https://yeumoney.com/theme_v2/assets/img/bg-decor.webp") no-repeat top center;
+        background: url("../assets/img/logo3.png") no-repeat top center;
         background-size: cover;
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
         pointer-events: none;
+        opacity: 0.2;
     }
 
     .box-color > * {
@@ -11535,7 +11536,7 @@ section#contact form#contactForm :-ms-input-placeholder {
 
 @media (max-width: 767px) {
     .bg-img {
-        padding: 20px 0 0;
+        padding: 50px 0 7;
     }
 
     .box-color {
@@ -11546,7 +11547,7 @@ section#contact form#contactForm :-ms-input-placeholder {
     }
 
         .box-color.-icon::before {
-            width: 85px;
+            width: 200px;
             height: 57px;
         }
 
@@ -11555,7 +11556,8 @@ section#contact form#contactForm :-ms-input-placeholder {
             font-size: 14px;
         }
 }
-* heading */
+* heading *
+
 .heading {
     text-align: center;
 }
@@ -11574,8 +11576,8 @@ section#contact form#contactForm :-ms-input-placeholder {
     justify-content: center;
     align-items: center;
     border-radius: 20px;
-    border: 3px solid var(--STROKE-1, #02CB8A);
-    background: linear-gradient(326deg, rgba(73, 217, 123, 0.50) -51%, #FFF 114.62%);
+    border: 3px solid #ffc800;
+    background: linear-gradient(326deg, #ffc800 -51%, #FFF 114.62%);
     box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.25);
     text-transform: uppercase;
 }
@@ -11585,8 +11587,8 @@ section#contact form#contactForm :-ms-input-placeholder {
         font-size: 20px;
         padding: 6px 9px 7px 9px;
         border-radius: 10px;
-        border: 2px solid var(--STROKE-1, #02CB8A);
-        background: var(--GREEN-BOX-2, linear-gradient(315deg, rgba(73, 217, 123, 0.50) 0%, #FFF 100%));
+        border: 2px solid #ffc800;
+        background: var(--GREEN-BOX-2, linear-gradient(315deg, #ffc800 0%, #FFF 100%));
         min-width: 60%;
     }
 }
@@ -11745,14 +11747,14 @@ section#contact form#contactForm :-ms-input-placeholder {
 
     .box-form-button .btn-primary {
         border-radius: 5px;
-        border: 1px solid var(--GREY-1, #4D4D4D);
-        background: #02D274;
+        border: 1px solid #ffc800;
+        background: #ffc800;
     }
 
     .box-form-button .btn-success {
         border-radius: 5px;
-        border: 1px solid var(--GREY-1, #4D4D4D);
-        background: var(--Hyperlink, #0B7281);
+        border: 1px solid #dc3545;
+        background: #dc3545;
     }
 
 .box-form input::-ms-input-placeholder {
@@ -11791,14 +11793,14 @@ section#contact form#contactForm :-ms-input-placeholder {
 
 .box-video-title {
     border-radius: 10px;
-    border: 1px solid var(--GREY-1, #4D4D4D);
-    background: #F5FFF9;
+    border: 1px solid #ffc800;
+    background: #ffc800;
     text-align: center;
     font-size: 18px;
     font-style: normal;
     font-weight: 700;
     line-height: normal;
-    color: #01D46D;
+    color: #3b3030;
     padding: 5px 15px;
     margin: 30px 0 20px;
 }
@@ -11825,8 +11827,8 @@ section#contact form#contactForm :-ms-input-placeholder {
 .portfolio-image {
     height: 318px;
     border-radius: 20px;
-    border: 3px solid var(--STROKE-1, #02CB8A);
-    background: var(--GREEN-BOX-2, linear-gradient(315deg, rgba(73, 217, 123, 0.50) 0%, #FFF 100%));
+    border: 3px solid #ffc800;
+    background: var(--GREEN-BOX-2, linear-gradient(315deg, #fff 0%, #FFF 100%));
     box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.25);
     padding: 18px 24px;
     display: flex;
@@ -11860,13 +11862,13 @@ section#contact form#contactForm :-ms-input-placeholder {
     font-size: 24px;
     font-weight: 600;
     border-radius: 10px 10px 0px 0px;
-    border: 1px solid var(--STROKE-1, #02CB8A);
-    background: var(--GRADIENT-1, linear-gradient(113deg, #01D46D 24.15%, #02C49B 84.38%, #008D73 152.29%));
+    border: 1px solid #cca000;
+    background: var(--GRADIENT-1, linear-gradient(113deg, #cca000 24.15%, #ffc800 84.38%, #fff4cc 152.29%));
     margin: 0;
 }
 
 .box-table-wrap {
-    border: solid 1px #02CB8A;
+    border: solid 1px #cca000;
     border-radius: 5px;
     border-top-left-radius: 0;
     overflow: hidden;
@@ -11888,8 +11890,8 @@ section#contact form#contactForm :-ms-input-placeholder {
     }
 
         .tbl-base thead th {
-            background: #9AFFC3;
-            border-bottom: solid 1px #02CB8A;
+            background: #fff4cc;
+            border-bottom: solid 1px #cca000;
             font-weight: 600;
             color: #4d4d4d;
             text-align: center;
@@ -11898,14 +11900,14 @@ section#contact form#contactForm :-ms-input-placeholder {
         }
 
             .tbl-base thead th:not(:last-child) {
-                border-right: solid 1px #02CB8A;
+                border-right: solid 1px #cca000;
             }
 
     .tbl-base tbody {
     }
 
         .tbl-base tbody tr {
-            background: #C6FFDD;
+            background: #fff4cc;
             font-size: 16px;
             color: #4d4d4d;
         }
@@ -11916,7 +11918,7 @@ section#contact form#contactForm :-ms-input-placeholder {
             }
 
                 .tbl-base tbody tr td:not(:last-child) {
-                    border-right: solid 1px #02CB8A;
+                    border-right: solid 1px #cca000;
                 }
 
 @media (max-width: 767px) {

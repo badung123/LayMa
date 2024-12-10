@@ -100,12 +100,12 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 
         [HttpGet]
         [Route("thongkeClickByDate")]
-        public async Task<ActionResult<int>> GetThongKeClickByDate()
+        public async Task<ActionResult<int>> GetThongKeClickByDate(string searchType)
         {
 			var countClick = 0;
             var userId = User.GetUserId();
 			var date = DateTime.Now;
-            var start = new DateTime(date.Year, date.Month, 1);
+            var start = searchType == "Day" ? date.Date : (searchType == "Month" ? new DateTime(date.Year, date.Month, 1) : new DateTime(date.Year, 1, 1));
             var end = DateTime.Now;
 			//get list token short link
 			var listTokenShortLinkOfUser = await _unitOfWork.ShortLinks.GetListShortLinkIDOfUser(userId);
@@ -113,13 +113,24 @@ namespace LayMa.WebAPI.Controllers.AdminApi
             {
                 foreach (var item in listTokenShortLinkOfUser)
                 {
-					var count = await _unitOfWork.ViewDetails.CountClickByDateRange(start, end, item);
+					var count = await _unitOfWork.ViewDetails.CountClickByDateRangeAndShortLink(start, end, item);
 					countClick += count;
                 }
             }
             //count click thanh cong
             return Ok(countClick);
         }
-
+        [HttpGet]
+        [Route("thongkeAllClickInDay")]
+        public async Task<ActionResult<int>> thongkeAllClickInDay()
+        {
+            var date = DateTime.Now;
+            var start = date.Date;
+            var end = date.Date.AddDays(1);
+            //get list token short link
+            var count = await _unitOfWork.ViewDetails.CountClickByDateRange(start, end);
+            //count click thanh cong
+            return Ok(count);
+        }
     }
 }

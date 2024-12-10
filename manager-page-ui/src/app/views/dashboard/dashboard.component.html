@@ -4,9 +4,14 @@
     <c-row>
       <c-col sm="5">
         <h4 class="card-title mb-0" id="traffic">Thống kê</h4>
-        <div class="small text-body-secondary">October 2024</div>
+        <div class="small text-body-secondary">{{stringDate}}</div>
       </c-col>
-      <c-col class="d-none d-md-block" sm="7">
+      
+    </c-row>
+  </c-card-body>
+  <c-card-footer>
+    <c-row>
+      <c-col class="d-md-block" sm="7">
         <form [formGroup]="trafficRadioGroup">
           <c-button-group class="float-end me-3" role="group">
             <input
@@ -64,8 +69,6 @@
         </form>
       </c-col>
     </c-row>
-  </c-card-body>
-  <c-card-footer>
     <c-row class="text-center mb-2" [xl]="5" [lg]="4" [sm]="2" [xs]="1" [gutter]="4">
       <c-col>
         <div class="text-body-secondary">Tổng lượt xem</div>
@@ -87,7 +90,7 @@
         <div class="fw-semibold text-truncate">{{balance}} đ</div>
         <!-- <c-progress class="mt-2" thin color="danger" value="80" aria-label="New users" /> -->
       </c-col>
-      <c-col class="d-none d-xl-block">
+      <c-col class="d-xl-block">
         <div class="text-body-secondary">Số view còn lại trong ngày</div>
         <div class="fw-semibold text-truncate">{{thongkeviewconlai}}</div>
         <!-- <c-progress class="mt-2" thin value="40" aria-label="Bounce rate" /> -->
@@ -135,7 +138,7 @@
                   <div class="d-flex justify-content-between">
                     <div class="float-end ms-1 text-nowrap">
                       <small class="text-body-secondary">
-                        {{ item.viewCount * 500 }}
+                        {{ item.viewCount * 1000 }}
                       </small>
                     </div>
                   </div>

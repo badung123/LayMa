@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static LayMa.Core.Constants.Permissions;
 
 namespace LayMa.Data.Repositories
 {
@@ -22,11 +23,16 @@ namespace LayMa.Data.Repositories
 		{
 			return new List<ViewDetail>();
 		}
-		public async Task<int> CountClickByDateRange(DateTime start, DateTime end, Guid shortLinkId)
+		public async Task<int> CountClickByDateRangeAndShortLink(DateTime start, DateTime end, Guid shortLinkId)
 		{
 			var count = await _context.ViewDetails.Where(x => x.ShortLinkId == shortLinkId && x.DateCreated >= start && x.DateCreated <= end).CountAsync();
 			return count;
 		}
+		public async Task<int> CountClickByDateRange(DateTime start, DateTime end)
+		{
+            var count = await _context.ViewDetails.Where(x =>x.DateCreated >= start && x.DateCreated <= end).CountAsync();
+            return count;
+        }
 
     }
 }

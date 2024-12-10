@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using LayMa.Core.Domain.Bank;
 using LayMa.Core.Domain.Campain;
+using LayMa.Core.Interface;
 using LayMa.Core.Model.Campain;
 using LayMa.Core.Model.KeySearch;
 using LayMa.Core.Repositories;
@@ -34,11 +35,25 @@ namespace LayMa.Data.Repositories
 			if (key == null) return Guid.Empty;
 			return key.Id;
 		}
+		public async Task<Guid> GetCampainIdRandomByOldID(Guid oldId)
+		{
+			var key = await _context.Campains.Where(x=> x.Id != oldId).OrderBy(x => Guid.NewGuid()).FirstOrDefaultAsync();
+			if (key == null) return Guid.Empty;
+			return key.Id;
+		}
 		public async Task<string> GetFlatformByCampainId(Guid campainId)
 		{
 			var campain = await _context.Campains.Where(x => x.Id == campainId).FirstOrDefaultAsync();
 			if (campain == null) return string.Empty;
 			return campain.Flatform;
 		}
-	}
+        public async Task<ThongKeView> GetThongKeView()
+        {
+            var thongkeview = new ThongKeView();
+            var query = _context.Campains.Where(x => x.Status).AsQueryable();
+            thongkeview.MaxViewDay = await query.SumAsync(x => x.ViewPerDay);
+			thongkeview.ViewedInDay = 0;
+            return thongkeview;
+        }
+    }
 }

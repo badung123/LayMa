@@ -14,7 +14,9 @@ namespace LayMa.Core.Repositories
 	{
 		Task<CampainDto> GetCampainByKeyToken(string key);
 		Task<Guid> GetCampainIdRandom();
+		Task<Guid> GetCampainIdRandomByOldID(Guid oldId);
 		Task<string> GetFlatformByCampainId(Guid campainId);
+        Task<ThongKeView> GetThongKeView();
 
-	}
+    }
 }

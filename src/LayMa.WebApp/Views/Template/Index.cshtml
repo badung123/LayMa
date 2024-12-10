@@ -89,7 +89,7 @@
 
 					<div class="box-form-button mt-5">
 						<button type="submit" class="btn btn-primary" id="btn-xac-nhan" onclick="confirm();">Xác nhận</button>
-						<a id="btn-baoloi" class="btn btn-success" href="#">Đổi nhiệm vụ</a>
+						<a id="btn-baoloi" class="btn btn-success" onclick="clickDoiNhiemVu();">Đổi nhiệm vụ</a>
 					</div>
 					@* <div>
 					<input type="text" name="keyword" class="form-control" style="display: none" id="keyword" value="">
@@ -156,6 +156,74 @@
 					font-size: 22px;
 					margin-top: -5px;
 				}
+				/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 200px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+  position: relative;
+  background-color: #fefefe;
+  margin: auto;
+  padding: 0;
+  border: 1px solid #888;
+  width: 50%;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+}
+
+/* The Close Button */
+.close {
+  color: white;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.closeNhiemVu {
+	color: white;
+	float: right;
+	font-size: 28px;
+	font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.closeNhiemVu:hover,
+.closeNhiemVu:focus {
+	color: #000;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.modal-header {
+  padding: 2px 16px;
+					background-color: #5cb85c;
+  color: white;
+}
+
+.modal-body {padding: 2px 16px;text-align:center}
+
+.modal-footer {
+  padding: 2px 16px;
+					background-color: #5cb85c;
+  color: white;
+}
 			</style>
 
 			
@@ -165,32 +233,130 @@
 			<!-- --------------------------------- Kết quả -------------------------------- -->
 
 			<span id="ketqua"></span>
-
-			
 		</div>
 	</div>
 </section>
+<div id="myModalThongbao" class="modal">
+	<div class="modal-content">
+		<div id="modalHeader" class="modal-header">
+			<h2>Thông báo</h2>
+			<span class="close">&times;</span>
+		</div>
+		<div class="modal-body">
+			<p id="noidung"></p>
+		</div>
+		<div id="modalFooter" class="modal-footer">
+			<button type="submit" class="btn btn-success" id="redirect">OK</button>
+			<button type="submit" class="btn btn-primary" id="closeThongBao" onclick="closeThongBao();">Đóng</button>
+		</div>
+	</div>
+</div>
+<div id="myModalNhiemVu" class="modal">
+	<div class="modal-content">
+		<div id="modalHeaderNhiemVu" class="modal-header">
+			<h2>Đổi Nhiệm Vụ</h2>
+			<span class="closeNhiemVu">&times;</span>
+		</div>
+		<div class="modal-body">
+			<p id="noidungNhiemVu">Bạn có chắc muốn đổi nhiệm vụ?</p>
+		</div>
+		<div id="modalFooterNhiemVu" class="modal-footer">
+			<button type="submit" class="btn btn-primary" onclick="doiNhiemVu();">Xác nhận</button>
+			<button type="submit" class="btn btn-success" onclick="closeDoiNhiemVu();">Đóng</button>
+		</div>
+	</div>
+</div>
 <script>
+	// Get the modal
+	var modalThongbao = document.getElementById("myModalThongbao");
+
+	// Get the <span> element that closes the modal
+	var spanThongbao = document.getElementsByClassName("close")[0];
+
+	// When the user clicks on <span> (x), close the modal
+	spanThongbao.onclick = function() {
+	  modalThongbao.style.display = "none";
+	}
+	// Get the modal
+	var modalNhiemVu = document.getElementById("myModalNhiemVu");
+
+	// Get the <span> element that closes the modal
+	var spanNhiemVu = document.getElementsByClassName("closeNhiemVu")[0];
+
+	// When the user clicks on <span> (x), close the modal
+	spanNhiemVu.onclick = function () {
+		modalNhiemVu.style.display = "none";
+	}
+	function displayError(error){
+		modalThongbao.style.display = "block";
+		document.getElementById("modalHeader").style.backgroundColor = "red";
+		document.getElementById("modalFooter").style.backgroundColor = "red";
+		document.getElementById("noidung").innerHTML = error;
+	}
+	function displaySuccess(noidung){
+		modalThongbao.style.display = "block";
+		document.getElementById("modalHeader").style.backgroundColor = "#5cb85c";
+		document.getElementById("modalFooter").style.backgroundColor = "#5cb85c";
+		document.getElementById("noidung").innerHTML = noidung;
+	}
 	function confirm() {
 		var code = document.getElementById("codeInput").value;
+		if(code == null || code == ""){
+			displayError("Bạn chưa nhập mã code");
+		}
 		var tokenId = document.getElementById("tokenId").innerHTML;
+		
 		var campainId = document.getElementById("campainId").innerHTML;
+		if (campainId == null || campainId == "") {
+			displayError("Chiến dịch không tồn tại");
+		}
 		var postData = {
 			"Code":code,
 			"Token":tokenId,
 			"CampainId":campainId
 		};
 		$.ajax({
-			url: '@Html.Raw(ViewData["ApiUrl"])' + '/api/admin/codemanager/checkcode',//https://api.layma.net,https://localhost:7020
+			url: '@Html.Raw(ViewData["ApiUrl"])' + '/api/admin/codemanager/checkcode',
 			type: 'POST',
 			contentType: 'application/json',
 			data: JSON.stringify(postData),
-			success: function () {
-				//viet them logic redirect,aleart ở đây
-				alert('checkcode thanh cong');
+			success: function (result) {
+				displaySuccess("Nhập code thành công");
+				spanThongbao.style.display = "none"; 
+				document.getElementById("closeThongBao").style.display = "none";
+				document.getElementById("redirect").onclick = function(){
+					window.open(result);
+				}				
 			},
-			error: function () {
-				alert('error');
+			error: function (error) {
+				displayError(error.responseText);
+				document.getElementById("redirect").style.display = "none";
+			}
+		});
+	}
+	function clickDoiNhiemVu() {
+		modalNhiemVu.style.display = "block";
+	}
+	function closeDoiNhiemVu() {
+		modalNhiemVu.style.display = "none";
+	}
+	function closeThongBao() {
+		modalThongbao.style.display = "none";
+	}
+	function doiNhiemVu() {
+		modalNhiemVu.style.display = "none";
+		var tokenId = document.getElementById("tokenId").innerHTML
+		$.ajax({
+			url: '@Html.Raw(ViewData["ApiUrl"])' + '/api/admin/mission/changeMission',
+			type: 'POST',
+			contentType: 'application/json',
+			data: { token: tokenId },
+			success: function (result) {
+				window.location.reload();
+			},
+			error: function (error) {
+				displayError(error.responseText);
+				document.getElementById("redirect").style.display = "none";
 			}
 		});
 	}

@@ -49,6 +49,15 @@ export class UtilityService {
     let yyyymmdd = y + m + d;
     return yyyymmdd;
   }
+  getDateFormat(x) {
+    let y = x.getFullYear().toString();
+    let m = (x.getMonth() + 1).toString();
+    let d = x.getDate().toString();
+    d.length == 1 && (d = '0' + d);
+    m.length == 1 && (m = '0' + m);
+    let yyyymmdd = d + '-' + m + '-' + y;
+    return yyyymmdd;
+  }
 
   getAllProperties = (obj: object) => {
     const data = {};

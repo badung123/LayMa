@@ -59,12 +59,12 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 			{
 				return BadRequest("Invalid request");
 			}
-			//string ip = HttpContext.GetServerVariable("REMOTE_HOST");
-			//if (ip == null)
-			//{
-			//	ip = this.HttpContext.GetServerVariable("REMOTE_ADDR");
-			//}
-			//var ips = HttpContext.Request.GetIpAddress();
+			string ip = HttpContext.GetServerVariable("REMOTE_HOST");
+			if (ip == null)
+			{
+				ip = this.HttpContext.GetServerVariable("REMOTE_ADDR");
+			}
+			var ips = HttpContext.Request.GetIpAddress();
 			//var keysearhID = await _unitOfWork.KeySearchs.GetKeySearchIDByKey(request.Key);
 			//if (keysearhID == null)
 			//{
@@ -100,8 +100,8 @@ namespace LayMa.WebAPI.Controllers.AdminApi
             var viewDetail = new ViewDetail()
 			{
 				Id = Guid.NewGuid(),
-				Device = "",
-				IPAddress = "",
+				Device = ips,
+				IPAddress = ip,
 				ShortLinkId = shortLink.Id,
 				DateCreated = DateTime.Now,
 				DateModified = DateTime.Now
@@ -109,7 +109,7 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 			_unitOfWork.ViewDetails.Add(viewDetail);
 			
 			var result = await _unitOfWork.CompleteAsync();
-			return result > 0 ? Ok() : BadRequest();
+			return result > 0 ? Ok(shortLink.OriginLink) : BadRequest("Nhập code không thành công");
 
 		}
 
