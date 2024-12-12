@@ -72,7 +72,16 @@ export class LoginComponent implements OnDestroy,OnInit{
         this.tokenSerivce.saveRefreshToken(res.refreshToken);
         this.tokenSerivce.saveUser(res);
         //Redirect to dashboard
-        this.router.navigate([UrlConstants.HOME]);
+        var loggedInUser = this.tokenSerivce.getUser();
+        if (loggedInUser) {
+          if (loggedInUser.roles.includes("User")) {
+            this.router.navigate([UrlConstants.HOME]);
+          }
+          if (loggedInUser.roles.includes("Admin")) {
+            this.router.navigate([UrlConstants.CAMPAIN]);
+          }
+        }
+        
 
       },
       error: (error: any) => {

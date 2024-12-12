@@ -61,12 +61,12 @@
 					<div id="halt"></div>
 
 					<p class="box-google-note">Nếu không vào được trang vui lòng đổi trình duyệt khác hoặc xoá cache trình duyệt</p>
-					<span><img src="https://yeumoney.com/theme_v2/assets/img/img-tim-kiem-03.webp" alt="" class="img-fluid"></span>
+					<span><img src="/uploads/img-tim-kiem-03.webp" alt="" class="img-fluid"></span>
 					<p class="box-google-note">(Trang 1 không thấy thì tìm qua trang 2 nhé)</p>
 				</div>
 				<p class="box-step-title fadeInUp visible">Bước 4: Cuộn chậm từ trên xuống tìm nút như hình bên dưới và sau đó click vào</p>
 				<p class="box-step-getCode fadeInUp mt-1 visible">
-					<span><img src="https://yeumoney.com/theme_v2/assets/img/img-get-code.webp" alt="" class="img-fluid"></span>
+					<span><img src="/uploads/laymabutton.png" alt="" class="img-fluid"></span>
 					<span class="text-danger">(Nếu không thấy nút lấy mã, vui lòng trở lại <br class="is-visibleSp">Google và bấm vào website 1 lần nữa)</span>
 				</p>
 				<p class="box-step-title fadeInUp visible">Bước 5: Sao chép mã hiện ra và nhập vào ô bên dưới</p>
@@ -76,6 +76,15 @@
 			{
 				<p class="box-step-title fadeInUp visible">Bước 1: Mở tab mới, truy cập <a href="@Model.UrlFacebook" target="_blank">liên kết</a></p>
 				<p class="box-step-title fadeInUp visible">Bước 2: Truy cập liên kết trong bài viết Facebook</p>
+				<span><img src="/uploads/anhFB.png" alt="" class="img-fluid"></span>
+				<p class="box-google-note">(Truy cập link như trong hình)</p>
+				<p class="box-step-title fadeInUp visible">Bước 3: Khi website mở ra,hãy cuộn chậm từ trên xuống tìm nút như hình bên dưới và sau đó click vào</p>
+				<p class="box-step-getCode fadeInUp mt-1 visible">
+					<span><img src="/uploads/laymabutton.png" alt="" class="img-fluid"></span>
+					<span class="text-danger">(Nếu không thấy nút lấy mã, vui lòng trở lại <br class="is-visibleSp">Facebook và bấm vào link website 1 lần nữa)</span>
+				</p>
+				<p class="box-step-title fadeInUp visible">Bước 4: Sao chép mã hiện ra và nhập vào ô bên dưới</p>
+				<a id="xuong"></a>
 			}
 			
 			<div class="box-form">
@@ -325,6 +334,7 @@
 				spanThongbao.style.display = "none"; 
 				document.getElementById("closeThongBao").style.display = "none";
 				document.getElementById("redirect").onclick = function(){
+					modalThongbao.style.display = "none";
 					window.open(result);
 				}				
 			},
@@ -345,12 +355,15 @@
 	}
 	function doiNhiemVu() {
 		modalNhiemVu.style.display = "none";
-		var tokenId = document.getElementById("tokenId").innerHTML
+		var tokenId = document.getElementById("tokenId").innerHTML;
+		var postData = {
+			"Token": tokenId,
+		};
 		$.ajax({
 			url: '@Html.Raw(ViewData["ApiUrl"])' + '/api/admin/mission/changeMission',
 			type: 'POST',
 			contentType: 'application/json',
-			data: { token: tokenId },
+			data: JSON.stringify(postData),
 			success: function (result) {
 				window.location.reload();
 			},

@@ -11,7 +11,7 @@ namespace LayMa.Core.Repositories
 {
 	public interface IMissionRepository : IRepository<Mission, Guid>
 	{
-		Task<Mission> GetMissionByUserId(Guid userId);
+		Task<Mission> GetMissionByUserId(Guid userId, Guid shortlinkID);
 		Task UpdateIsChange(Guid missionId);
 	}
 }

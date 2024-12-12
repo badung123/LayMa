@@ -95,7 +95,7 @@ namespace LayMa.Api.Controllers.AdminApi
             var allPermissions = new List<RoleClaimsDto>();
             if (roles.Contains(Roles.Admin))
             {
-                var types = typeof(Permissions).GetTypeInfo().DeclaredNestedTypes;
+                var types = typeof(AdminPermissions).GetTypeInfo().DeclaredNestedTypes;
                 foreach (var type in types)
                 {
                     allPermissions.GetPermissions(type);
@@ -104,14 +104,13 @@ namespace LayMa.Api.Controllers.AdminApi
             }
             else
             {
-                foreach (var roleName in roles)
-                {
-                    var role = await _roleManager.FindByNameAsync(roleName);
-                    var claims = await _roleManager.GetClaimsAsync(role);
-                    var roleClaimValues = claims.Select(x => x.Value).ToList();
-                    permissions.AddRange(roleClaimValues);
-                }
-            }
+				var types = typeof(Permissions).GetTypeInfo().DeclaredNestedTypes;
+				foreach (var type in types)
+				{
+					allPermissions.GetPermissions(type);
+				}
+				permissions.AddRange(allPermissions.Select(x => x.Value));
+			}
             return permissions.Distinct().ToList();
         }
 
@@ -161,7 +160,14 @@ namespace LayMa.Api.Controllers.AdminApi
                 var err = rs.Errors.Select(a => a.Description);
                 return BadRequest(new RegistrationResponse { Errors = err });
             }
-            return Ok(new RegistrationResponse
+			var res = await _userManager.AddToRoleAsync(user, "User");
+			if (!res.Succeeded)
+			{
+				var err = res.Errors.Select(a => a.Description);
+				return BadRequest(new RegistrationResponse { Errors = err });
+			}
+
+			return Ok(new RegistrationResponse
             {
                 IsSuccessful = true
             });

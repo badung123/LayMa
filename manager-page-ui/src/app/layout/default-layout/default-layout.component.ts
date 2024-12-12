@@ -66,23 +66,23 @@ export class DefaultLayoutComponent implements OnInit{
     var user = this.tokenService.getUser();
     if (user == null) this.router.navigate([UrlConstants.LOGIN]);
     var permissions = JSON.parse(user.permissions);
+    
     for (var index = 0; index < navItems.length; index++) {
-      for (
-        var childIndex = 0;
-        childIndex < navItems[index].children?.length;
-        childIndex++
+      if (
+        navItems[index].attributes &&
+        permissions.filter(
+          (x) =>
+            x == navItems[index].attributes['policyName']
+        ).length == 0
       ) {
-        if (
-          navItems[index].children[childIndex].attributes &&
-          permissions.filter(
-            (x) =>
-              x == navItems[index].children[childIndex].attributes['policyName']
-          ).length == 0
-        ) {
-          navItems[index].children[childIndex].class = 'hidden';
-        }
+        navItems[index].class = 'd-none';
       }
+      else{
+        navItems[index].class = '';
+      }
+      
     }
     this.navItems = navItems;
+    console.log(this.navItems);
   }
 }

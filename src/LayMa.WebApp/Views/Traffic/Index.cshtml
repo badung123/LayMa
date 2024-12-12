@@ -525,8 +525,8 @@
 			
 
 			var element = document.getElementById(traffic_key);
-			var numberPositionRandom = Math.floor(Math.random() * 12);
-			var widthRan = Math.floor(numberPositionRandom *100 /12) + 1;
+			var numberPositionRandom = Math.floor(Math.random() * 9) + 4;
+			var widthRan = Math.floor(numberPositionRandom *100 /12);
 			var numberFloatRandom = Math.floor((Math.random() * 2));
 			var styleFloat = numberFloatRandom == 0 ? 'left' : 'right';
 			var styleRandom = document.createElement('style');

@@ -73,7 +73,7 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 			var check = await _unitOfWork.CodeManagers.CheckCode(request.Code, Guid.Parse(request.CampainId));
             if (!check)
             {
-				return BadRequest("Invalid request");
+				return BadRequest("Code đã được dùng hoặc không hợp lệ");
 			}
 			//tiến hành update
 			//get UserID by token key

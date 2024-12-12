@@ -16,6 +16,7 @@ namespace LayMa.Core.Repositories
 		Task<Guid> GetCampainIdRandom();
 		Task<Guid> GetCampainIdRandomByOldID(Guid oldId);
 		Task<string> GetFlatformByCampainId(Guid campainId);
+		Task<Campain> GetCampainByID(Guid campainId);
         Task<ThongKeView> GetThongKeView();
 
     }

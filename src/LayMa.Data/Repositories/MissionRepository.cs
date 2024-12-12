@@ -21,9 +21,9 @@ namespace LayMa.Data.Repositories
 		{
 			_mapper = mapper;
 		}
-		public async Task<Mission> GetMissionByUserId(Guid userId)
+		public async Task<Mission> GetMissionByUserId(Guid userId,Guid shortlinkID)
 		{
-			return await _context.Missions.Where(x => x.UserId == userId && x.IsActive).FirstOrDefaultAsync();
+			return await _context.Missions.Where(x => x.UserId == userId && x.ShortLinkId == shortlinkID && x.IsActive).FirstOrDefaultAsync();
 		}
 		public async Task UpdateIsChange(Guid missionId)
 		{

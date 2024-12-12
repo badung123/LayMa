@@ -17,6 +17,9 @@ export const navItems: INavData[] = [
     name: 'Link Rút Gọn',
     url: '/shortlink/list',
     iconComponent: { name: 'cil-cursor' },
+    attributes: {
+      "policyName": "Permissions.ShortLink.View"
+    },
     children: [
       {
         name: 'Tạo link rút gọn',
@@ -47,5 +50,47 @@ export const navItems: INavData[] = [
     attributes: {
       "policyName": "Permissions.WithDraw.Create"
     }
-  }
+  },
+  {
+    name: 'Chiến dịch',
+    url: '/campain/google',
+    iconComponent: { name: 'cil-cursor' },
+    attributes: {
+      "policyName": "Permissions.Campain.View"
+    },
+    children: [
+      {
+        name: 'Chiến dịch google',
+        url: '/campain/google',
+        icon: 'nav-icon-bullet',
+        attributes: {
+          "policyName": "Permissions.Campain.View"
+        }
+      },
+      {
+        name: 'Chiến dịch facebook',
+        url: '/campain/facebook',
+        icon: 'nav-icon-bullet',
+        attributes: {
+          "policyName": "Permissions.Campain.View"
+        }
+      }
+    ]
+  },
+  {
+    name: 'Quản lý rút tiền',
+    url: '/withdrawmanager',
+    iconComponent: { name: 'cil-puzzle' },
+    attributes: {
+      "policyName": "Permissions.AdminWithDraw.View"
+    }
+  },
+  {
+    name: 'Quản lý người dùng',
+    url: '/user',
+    iconComponent: { name: 'cil-puzzle' },
+    attributes: {
+      "policyName": "Permissions.Users.View"
+    }
+  },
 ];

@@ -26,10 +26,10 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 			}
 			var userId = shortLink.UserId;
 			//get mission by userid
-			var mission = await _unitOfWork.Missions.GetMissionByUserId(userId);
+			var mission = await _unitOfWork.Missions.GetMissionByUserId(userId,shortLink.Id);
 			if (mission == null) return BadRequest("Không tìm thấy nhiệm vụ nào cho bạn");
 			//get flatform
-			var campain = await _unitOfWork.Campains.GetByIdAsync(mission.CampainId);
+			var campain = await _unitOfWork.Campains.GetCampainByID(mission.CampainId);
 			if (campain == null) return BadRequest("Không có chiến dịch phù hợp");
 			var missionDto = new MissionDto()
 			{
@@ -46,20 +46,20 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 		}
 		[HttpPost]
 		[Route("changeMission")]
-		public async Task<ActionResult> ChangeMission(string token)
+		public async Task<ActionResult> ChangeMission([FromBody] ChangeMissionRequest request)
 		{
-			var shortLink = await _unitOfWork.ShortLinks.GetByTokenAsync(token);
+			var shortLink = await _unitOfWork.ShortLinks.GetByTokenAsync(request.Token);
 			if (shortLink == null)
 			{
 				return BadRequest("Link rút gọn không tồn tại");
 			}
 			var userId = shortLink.UserId;
 			//get mission by userid
-			var mission = await _unitOfWork.Missions.GetMissionByUserId(userId);
+			var mission = await _unitOfWork.Missions.GetMissionByUserId(userId, shortLink.Id);
 			if (mission == null) return BadRequest("Không tìm thấy nhiệm vụ nào cho bạn");
 			//update mission isactive = false
 			await _unitOfWork.Missions.UpdateIsChange(mission.Id);
-			var campainId = await _unitOfWork.Campains.GetCampainIdRandomByOldID(mission.Id);
+			var campainId = await _unitOfWork.Campains.GetCampainIdRandomByOldID(mission.CampainId);
 			if (campainId == Guid.Empty) return BadRequest("Hiện tại không có chiến dịch nào phù hợp");
 			var newMissionId = Guid.NewGuid();
 			var newMission = new Mission()
@@ -67,14 +67,14 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 				Id = newMissionId,
 				CampainId = campainId,
 				ShortLinkId = shortLink.Id,
-				TokenUrl = token,
-				ShortLink = shortLink.Link,
+				TokenUrl = request.Token,
+				ShortLink = shortLink.OriginLink,
 				UserId = userId,
 				DateCreated = DateTime.Now,
 				DateModified = DateTime.Now,
 				IsActive = true
 			};
-			_unitOfWork.Missions.Add(mission);
+			_unitOfWork.Missions.Add(newMission);
 			var result = await _unitOfWork.CompleteAsync();
 			return Ok();
 		}

@@ -29,6 +29,18 @@ export const routes: Routes = [
         path: 'withdraw',
         loadChildren: () => import('./views/withdraw/routes').then((m) => m.routes)
       },
+      {
+        path: 'campain',
+        loadChildren: () => import('./views/campain/routes').then((m) => m.routes)
+      },
+      {
+        path: 'user',
+        loadChildren: () => import('./views/user/routes').then((m) => m.routes)
+      },
+      {
+        path: 'withdrawmanager',
+        loadChildren: () => import('./views/withdrawmanager/routes').then((m) => m.routes)
+      },
     ]
   },
   { path: '**', redirectTo: 'dashboard' }

@@ -31,13 +31,13 @@ namespace LayMa.Data.Repositories
 		}
 		public async Task<Guid> GetCampainIdRandom()
 		{
-			var key = await _context.Campains.OrderBy(x => Guid.NewGuid()).FirstOrDefaultAsync();
+			var key = await _context.Campains.Where(x=> x.Status).OrderBy(x => Guid.NewGuid()).FirstOrDefaultAsync();
 			if (key == null) return Guid.Empty;
 			return key.Id;
 		}
 		public async Task<Guid> GetCampainIdRandomByOldID(Guid oldId)
 		{
-			var key = await _context.Campains.Where(x=> x.Id != oldId).OrderBy(x => Guid.NewGuid()).FirstOrDefaultAsync();
+			var key = await _context.Campains.Where(x=> x.Id != oldId && x.Status).OrderBy(x => Guid.NewGuid()).FirstOrDefaultAsync();
 			if (key == null) return Guid.Empty;
 			return key.Id;
 		}
@@ -47,7 +47,13 @@ namespace LayMa.Data.Repositories
 			if (campain == null) return string.Empty;
 			return campain.Flatform;
 		}
-        public async Task<ThongKeView> GetThongKeView()
+		public async Task<Campain> GetCampainByID(Guid campainId)
+		{
+			var campain = await _context.Campains.Where(x => x.Id == campainId).FirstOrDefaultAsync();
+			if (campain == null) return null;
+			return campain;
+		}
+		public async Task<ThongKeView> GetThongKeView()
         {
             var thongkeview = new ThongKeView();
             var query = _context.Campains.Where(x => x.Status).AsQueryable();
