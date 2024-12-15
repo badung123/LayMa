@@ -12,6 +12,8 @@ using System.Text.Json;
 using LayMa.Core.Model.System;
 using LayMa.Core.Constants;
 using AutoMapper;
+using YamlDotNet.Core.Tokens;
+using LayMa.WebAPI.Extensions;
 
 namespace LayMa.Api.Controllers.AdminApi
 {
@@ -118,6 +120,7 @@ namespace LayMa.Api.Controllers.AdminApi
         [Route("register")]
         public async Task<ActionResult<RegistrationResponse>> Register([FromBody] RegisterRequest request)
         {
+            var frefix = "layma_";
             //Authentication
             if (request == null)
             {
@@ -139,13 +142,18 @@ namespace LayMa.Api.Controllers.AdminApi
 
             var passwordHasher = new PasswordHasher<AppUser>();
             var userId = Guid.NewGuid();
-            var user = new AppUser()
+            string code = "";
+            code = code.GenerateLinkToken(8);
+
+			var user = new AppUser()
             {
                 Id = userId,
                 Email = request.Email,
                 NormalizedEmail = request.Email.ToUpper(),
                 UserName = request.UserName,
-                NormalizedUserName = request.UserName.ToUpper(),
+                Agent = request.Refcode != "" ? request.Refcode : string.Empty,
+                RefCode = frefix + code,
+				NormalizedUserName = request.UserName.ToUpper(),
                 IsActive = true,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 LockoutEnabled = false,

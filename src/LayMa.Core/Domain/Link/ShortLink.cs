@@ -22,6 +22,8 @@ namespace LayMa.Core.Domain.Link
 		[Required]
 		[MaxLength(500)]
 		public required string OriginLink { get; set; }
+        [MaxLength(500)]
+        public string Origin { get; set; }
         public int ViewCount { get; set; }
         public required string Token { get; set; }
 		public DateTime DateCreated { get; set; }

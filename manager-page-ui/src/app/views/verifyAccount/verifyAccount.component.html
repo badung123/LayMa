@@ -1,0 +1,81 @@
+
+<c-row>
+  <c-col xs="12">
+    <c-card class="mb-4">
+      <c-card-header>
+        <strong>XÁC MINH TÀI KHOẢN</strong>
+      </c-card-header>
+      <c-card-body class="p-4">
+        <c-row class="mb-4 text-center">
+          <div style="width: 100%;">
+            <button *ngIf="!isVerify" cButton color="warning">CHƯA XÁC MINH</button>
+            <button *ngIf="isVerify" cButton color="success">ĐÃ XÁC MINH <svg cIcon name="cil-check" size="xl"></svg></button>
+          </div>
+          <div style="width: 100%;">
+            <span *ngIf="!isVerify">Tài khoản chưa được xác minh.</span>
+            <span *ngIf="isVerify">Tài khoản đã xác minh</span>
+          </div>
+        </c-row>
+        
+        <c-row class="mb-4"  *ngIf="!isVerify">
+          <c-col xs>
+            <c-card class="mx-4">
+              <c-card-body class="p-4">
+                <ul class="pl-3" style="background-color: red;">
+                  <li>Không duyệt các nội dung 18+, vi phạm pháp luật Việt Nam</li>
+                  <li>Trong thời gian xét duyệt, bắt buộc phải có link rút gọn của layma trong nguồn của bạn</li>
+                  <li>Các bạn gắn link rút gọn layma.net ở đâu thì nguồn ở đó. Ví dụ fanpage, youtube</li>
+                  <li>Phải có ảnh đính kèm chứng minh bạn bạn là chủ nguồn đó</li>
+                  <li>Vui lòng để lại thông tin liên hệ như email, số điện thoại, Facebook hoặc telegram để chúng tôi liên hệ khi có vấn đề cần thiết</li>
+                </ul>
+              </c-card-body>
+            </c-card>
+            
+          </c-col>
+          
+        </c-row>
+        <c-row class="mb-4"  *ngIf="!isVerify">
+          <c-col xs>
+            <c-card class="mx-4">
+              <c-card-body class="p-4">
+                <form cForm [formGroup]="verifyAccountForm" (ngSubmit)="verifyAccount()">                 
+                  
+                  
+                  <div cFormFloating class="mb-3">
+                    <input
+                    cFormControl formControlName="origin"
+                      id="floatingInputValue"
+                      type="text"
+                      value=""
+                    />
+                    <label cLabel for="floatingInputValue">Nguồn</label>
+                  </div>  
+                  <div cFormFloating class="mb-3">
+                    <input
+                    cFormControl formControlName="contact"
+                    id="floatingInputValue"
+                    type="text"
+                    value=""
+                  />
+                  <label cLabel for="floatingInputValue">Liên hệ</label>
+                  </div>                   
+                  <c-input-group class="mb-3">
+                    <input cFormControl id="inputGroupFile02" type="file" />
+                    <label cInputGroupText for="inputGroupFile02">
+                      Upload
+                    </label>
+                  </c-input-group>                                               
+                  <div class="d-grid">
+                    <button cButton color="success" type="submit">XÁC MINH</button>
+                  </div>
+                </form>
+                
+              </c-card-body>
+            </c-card>
+          </c-col>
+          
+        </c-row>               
+      </c-card-body>
+    </c-card>
+  </c-col> 
+</c-row>

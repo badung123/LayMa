@@ -38,6 +38,7 @@ export class RegisterComponent implements OnDestroy,OnInit{
       this.registerForm = this.fb.group({
         userName: new FormControl('', Validators.required),
         password: new FormControl('', Validators.required),
+        refcode: new  FormControl(''),
         email: new FormControl('', Validators.required),
         confirmPassword: new FormControl('', Validators.required),
       });
@@ -61,6 +62,7 @@ export class RegisterComponent implements OnDestroy,OnInit{
         this.alertService.showError('Email không được để trống');
         return;
       }
+      let refcode = this.registerForm.controls['refcode'].value;
       if(!this.utilService.validateEmail(email)){
         this.alertService.showError('Email không đúng định dạng');
         return;
@@ -80,6 +82,7 @@ export class RegisterComponent implements OnDestroy,OnInit{
         userName: this.registerForm.controls['userName'].value,
         password: this.registerForm.controls['password'].value,
         email: this.registerForm.controls['email'].value,
+        refcode:refcode,
         confirmPassword: this.registerForm.controls['confirmPassword'].value,
       }); 
       this.authApiClient.register(request)

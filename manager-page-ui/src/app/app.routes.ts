@@ -41,6 +41,14 @@ export const routes: Routes = [
         path: 'withdrawmanager',
         loadChildren: () => import('./views/withdrawmanager/routes').then((m) => m.routes)
       },
+      {
+        path: 'agent',
+        loadChildren: () => import('./views/agent/routes').then((m) => m.routes)
+      },
+      {
+        path: 'verifyAccount',
+        loadChildren: () => import('./views/verifyAccount/routes').then((m) => m.routes)
+      },
     ]
   },
   { path: '**', redirectTo: 'dashboard' }

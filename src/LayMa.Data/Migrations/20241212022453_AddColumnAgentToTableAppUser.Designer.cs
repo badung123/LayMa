@@ -4,6 +4,7 @@ using LayMa.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LayMa.Data.Migrations
 {
     [DbContext(typeof(LayMaContext))]
-    partial class LayMaContextModelSnapshot : ModelSnapshot
+    [Migration("20241212022453_AddColumnAgentToTableAppUser")]
+    partial class AddColumnAgentToTableAppUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -202,7 +205,9 @@ namespace LayMa.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Agent");
+                    b.HasIndex("Agent")
+                        .IsUnique()
+                        .HasFilter("[Agent] IS NOT NULL");
 
                     b.ToTable("AppUsers");
                 });

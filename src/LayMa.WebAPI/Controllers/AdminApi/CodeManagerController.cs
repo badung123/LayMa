@@ -5,6 +5,7 @@ using LayMa.Core.Interface;
 using LayMa.Core.Model.Auth;
 using LayMa.Core.Model.CodeManager;
 using LayMa.Core.Utilities;
+using LayMa.Data.Migrations;
 using LayMa.WebAPI.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -90,7 +91,13 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 			}
 			//get User and update balane
 			user.Balance += 1000;
-			await _userManager.UpdateAsync(user);
+    //        if (!string.IsNullOrEmpty(user.Agent))
+    //        {
+				//var agent = await _userManager.
+				////find đại lý
+    //            // cộng 100 đ cho đại lý
+    //        }
+            await _userManager.UpdateAsync(user);
 			//update viewcount in shortlink
 			await _unitOfWork.ShortLinks.UpdateViewCount(shortLink.Id);
 			//update code đã dùng

@@ -1958,6 +1958,7 @@ export enum ProcessStatus {
 export class RegisterRequest implements IRegisterRequest {
     userName?: string | undefined;
     email?: string | undefined;
+    refcode?: string | undefined;
     password?: string | undefined;
     confirmPassword?: string | undefined;
 
@@ -1974,6 +1975,7 @@ export class RegisterRequest implements IRegisterRequest {
         if (_data) {
             this.userName = _data["userName"];
             this.email = _data["email"];
+            this.refcode = _data["refcode"];
             this.password = _data["password"];
             this.confirmPassword = _data["confirmPassword"];
         }
@@ -1990,6 +1992,7 @@ export class RegisterRequest implements IRegisterRequest {
         data = typeof data === 'object' ? data : {};
         data["userName"] = this.userName;
         data["email"] = this.email;
+        data["refcode"] = this.refcode;
         data["password"] = this.password;
         data["confirmPassword"] = this.confirmPassword;
         return data;
@@ -1999,6 +2002,7 @@ export class RegisterRequest implements IRegisterRequest {
 export interface IRegisterRequest {
     userName?: string | undefined;
     email?: string | undefined;
+    refcode?: string | undefined;
     password?: string | undefined;
     confirmPassword?: string | undefined;
 }

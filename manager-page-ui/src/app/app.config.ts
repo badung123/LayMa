@@ -23,6 +23,7 @@ import { HTTP_INTERCEPTORS,HttpClientModule } from '@angular/common/http';
 import { AuthGuard } from './shared/auth.guard';
 import { BroadcastService } from 'src/app/shared/services/boardcast.service';
 import { UtilityService } from './shared/services/utility.service';
+import { UploadService } from './shared/services/upload.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -49,6 +50,7 @@ export const appConfig: ApplicationConfig = {
     MessageService,
     AlertService,
     UtilityService,
+    UploadService,
     AdminApiAuthApiClient,
     TokenStorageService,
     AdminApiTokenApiClient,

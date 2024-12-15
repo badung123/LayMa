@@ -6,11 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace LayMa.Core.Domain.Identity
 {
     [Table("AppUsers")]
-    public class AppUser : IdentityUser<Guid>
+	[Index(nameof(Agent))]
+	public class AppUser : IdentityUser<Guid>
     {
         public bool IsActive { get; set; }
         public string? RefreshToken { get; set; }
@@ -20,5 +22,6 @@ namespace LayMa.Core.Domain.Identity
         public double Balance { get; set; }
         public string? UserTelegram { get; set; }
         public string? RefCode { get; set; }
-    }
+		public string? Agent { get; set; }
+	}
 }

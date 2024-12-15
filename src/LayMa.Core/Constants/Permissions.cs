@@ -22,10 +22,20 @@ namespace LayMa.Core.Constants
 		}
 		public static class WithDraw
 		{
-			[Description("Xem Url")]
+			[Description("Xem rút tiền")]
 			public const string View = "Permissions.WithDraw.View";
-			[Description("Tạo Url")]
+			[Description("Tạo lệnh rút tiền")]
 			public const string Create = "Permissions.WithDraw.Create";
 		}
-	}
+		public static class Agent
+		{
+			[Description("Xem thống kê đại lý")]
+			public const string View = "Permissions.Agent.View";
+		}
+        public static class VerifyAccount
+        {
+            [Description("Xác minh tài khoản")]
+            public const string View = "Permissions.VerifyAccount.Create";
+        }
+    }
 }

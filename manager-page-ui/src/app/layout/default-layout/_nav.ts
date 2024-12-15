@@ -1,6 +1,7 @@
 import { INavData } from '@coreui/angular';
 
 export const navItems: INavData[] = [
+  //User
   {
     name: 'Thống kê',
     url: '/dashboard',
@@ -40,6 +41,14 @@ export const navItems: INavData[] = [
     ]
   },
   {
+    name: 'Đại lý',
+    url: '/agent',
+    iconComponent: { name: 'cil-people' },
+    attributes: {
+      "policyName": "Permissions.Agent.View"
+    }
+  },
+  {
     name: 'Rút tiền',
     url: '/withdraw',
     iconComponent: { name: 'cil-puzzle' },
@@ -51,6 +60,15 @@ export const navItems: INavData[] = [
       "policyName": "Permissions.WithDraw.Create"
     }
   },
+  {
+    name: 'Xác minh tài khoản',
+    url: '/verifyAccount',
+    iconComponent: { name: 'cil-check' },
+    attributes: {
+      "policyName": "Permissions.VerifyAccount.Create"
+    }
+  },
+  //Admin
   {
     name: 'Chiến dịch',
     url: '/campain/google',
