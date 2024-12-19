@@ -6,10 +6,6 @@ export const navItems: INavData[] = [
     name: 'Thống kê',
     url: '/dashboard',
     iconComponent: { name: 'cil-speedometer' },
-    badge: {
-      color: 'info',
-      text: 'NEW'
-    },
     attributes: {
       "policyName": "Permissions.Dashboard.View"
     }
@@ -52,10 +48,6 @@ export const navItems: INavData[] = [
     name: 'Rút tiền',
     url: '/withdraw',
     iconComponent: { name: 'cil-puzzle' },
-    badge: {
-      color: 'info',
-      text: 'NEW'
-    },
     attributes: {
       "policyName": "Permissions.WithDraw.Create"
     }

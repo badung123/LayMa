@@ -92,16 +92,22 @@
 }
 
 body {
-  margin: 0;
-  font-family: var(--bs-body-font-family);
-  font-size: var(--bs-body-font-size);
-  font-weight: var(--bs-body-font-weight);
-  line-height: var(--bs-body-line-height);
-  color: var(--bs-body-color);
-  text-align: var(--bs-body-text-align);
-  background-color: var(--bs-body-bg);
-  -webkit-text-size-adjust: 100%;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    margin: 0;
+    font-family: var(--bs-body-font-family);
+    font-size: var(--bs-body-font-size);
+    font-weight: var(--bs-body-font-weight);
+    line-height: var(--bs-body-line-height);
+    color: var(--bs-body-color);
+    text-align: var(--bs-body-text-align);
+    /*background-color: var(--bs-body-bg);*/
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    background: url(../assets/img/background_yellow.jpg);
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    display: flex;
+    flex-direction: column
 }
 
 hr {
@@ -3818,14 +3824,14 @@ textarea.form-control-lg {
 }
 
 .navbar-toggler {
-  padding: var(--bs-navbar-toggler-padding-y) var(--bs-navbar-toggler-padding-x);
-  font-size: var(--bs-navbar-toggler-font-size);
-  line-height: 1;
-  color: var(--bs-navbar-color);
-  background-color: transparent;
-  border: var(--bs-border-width) solid var(--bs-navbar-toggler-border-color);
-  border-radius: var(--bs-navbar-toggler-border-radius);
-  transition: var(--bs-navbar-toggler-transition);
+    padding: var(--bs-navbar-toggler-padding-y) var(--bs-navbar-toggler-padding-x);
+    font-size: var(--bs-navbar-toggler-font-size);
+    line-height: 1;
+    color: #000;
+    background-color: #ffc800;
+    border: var(--bs-border-width) solid var(--bs-navbar-toggler-border-color);
+    border-radius: var(--bs-navbar-toggler-border-radius);
+    transition: var(--bs-navbar-toggler-transition);
 }
 @media (prefers-reduced-motion: reduce) {
   .navbar-toggler {
@@ -8157,7 +8163,7 @@ textarea.form-control-lg {
 
 .bg-light {
   --bs-bg-opacity: 1;
-  background-color: rgba(var(--bs-light-rgb), var(--bs-bg-opacity)) !important;
+  /*background-color: rgba(var(--bs-light-rgb), var(--bs-bg-opacity)) !important;*/
 }
 
 .bg-dark {
@@ -10878,7 +10884,7 @@ p {
 #mainNav {
   padding-top: 1rem;
   padding-bottom: 1rem;
-  background-color: #212529;
+  background-color: #ffffff;
 }
 #mainNav .navbar-toggler {
   padding: 0.75rem;
@@ -10895,12 +10901,12 @@ p {
   text-transform: uppercase;
 }
 #mainNav .navbar-brand img {
-  height: 5rem;
+  height: 3rem;
 }
 #mainNav .navbar-nav .nav-item .nav-link {
   font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   font-size: 0.95rem;
-  color: #fff;
+  color: #000;
   letter-spacing: 0.0625em;
 }
 #mainNav .navbar-nav .nav-item .nav-link.active, #mainNav .navbar-nav .nav-item .nav-link:hover {
@@ -10926,7 +10932,7 @@ p {
   #mainNav.navbar-shrink {
     padding-top: 1rem;
     padding-bottom: 1rem;
-    background-color: #212529;
+    background-color: #ffffff;
   }
   #mainNav.navbar-shrink .navbar-brand {
     font-size: 1.25em;
@@ -10943,15 +10949,15 @@ p {
   }
 }
 header.masthead {
-  padding-top: 10.5rem;
-  padding-bottom: 6rem;
-  text-align: center;
-  color: #fff;
-  background-image: url("../assets/img/header-bg.jpg");
-  background-repeat: no-repeat;
-  background-attachment: scroll;
-  background-position: center center;
-  background-size: cover;
+    padding-top: 10.5rem;
+    padding-bottom: 6rem;
+    text-align: center;
+    color: #fff;
+    background-image: url("../assets/img/header-bg.webp");
+    background-repeat: no-repeat;
+    background-attachment: scroll;
+    background-position: center center;
+    background-size: cover;
 }
 header.masthead .masthead-subheading {
   font-size: 1.5rem;
@@ -11017,7 +11023,7 @@ header.masthead .masthead-heading {
 #portfolio .portfolio-item .portfolio-caption {
   padding: 1.5rem;
   text-align: center;
-  background-color: #fff;
+  /*background-color: #fff;*/
 }
 #portfolio .portfolio-item .portfolio-caption .portfolio-caption-heading {
   font-size: 1.5rem;
@@ -11477,7 +11483,7 @@ section#contact form#contactForm :-ms-input-placeholder {
 }
 
 .bg-img {
-    background: #fff;
+    /*background: #fff;*/
     background-size: cover;
     padding: 50px 0 77px;
     flex: 1 0 auto;
@@ -11504,7 +11510,7 @@ section#contact form#contactForm :-ms-input-placeholder {
 
     .box-color.-icon::before {
         content: "";
-        width: 369px;
+        width: 430px;
         height: 114px;
         display: inline-block;
         background: url("../assets/img/logo3.png") no-repeat top center;
@@ -11514,7 +11520,7 @@ section#contact form#contactForm :-ms-input-placeholder {
         left: 50%;
         transform: translate(-50%, -50%);
         pointer-events: none;
-        opacity: 0.2;
+        opacity: 0.3;
     }
 
     .box-color > * {
@@ -11536,7 +11542,7 @@ section#contact form#contactForm :-ms-input-placeholder {
 
 @media (max-width: 767px) {
     .bg-img {
-        padding: 50px 0 7;
+        padding: 100px 0 7px;
     }
 
     .box-color {
@@ -11547,7 +11553,7 @@ section#contact form#contactForm :-ms-input-placeholder {
     }
 
         .box-color.-icon::before {
-            width: 200px;
+            width: 230px;
             height: 57px;
         }
 
@@ -11838,7 +11844,7 @@ section#contact form#contactForm :-ms-input-placeholder {
 #mainNav {
     padding-top: 1rem;
     padding-bottom: 1rem;
-    background-color: #212529;
+    background-color: #ffffff;
 }
 /* tbl-base */
 .w26per {

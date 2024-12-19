@@ -5,6 +5,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { AlertService } from 'src/app/shared/services/alert.service';
 import { AdminApiShortLinkApiClient, ShortLinkInListDto, ShortLinkInListDtoPagedResult } from 'src/app/api/admin-api.service.generated';
 import { CommonModule, NgStyle } from '@angular/common';
+import { DialogService, DynamicDialogComponent } from 'primeng/dynamicdialog';
 import {
   FormBuilder,
   FormControl,
@@ -14,6 +15,7 @@ import {
   ReactiveFormsModule,
   Validators
 } from '@angular/forms';
+import { ShortlinkNoteComponent } from './shortlinknote.component';
 //import { AdminApiShortLinkApiClient, AdminApiTestApiClient, CreateShortLinkDto } from 'src/app/api/admin-api.service.generatesrc';
 
 @Component({
@@ -21,7 +23,7 @@ import {
     templateUrl: './listshortlink.component.html',
     styleUrls: ['./listshortlink.component.scss'],
     standalone: true,
-    imports: [ContainerComponent, RowComponent, ColComponent, TextColorDirective, CardComponent,CardHeaderComponent, CardBodyComponent, FormDirective, InputGroupComponent, InputGroupTextDirective, IconDirective, FormControlDirective, ButtonDirective,CommonModule,ReactiveFormsModule,FormsModule,TableDirective]
+    imports: [ContainerComponent, RowComponent, ColComponent, TextColorDirective, CardComponent,CardHeaderComponent, CardBodyComponent, FormDirective, InputGroupComponent, InputGroupTextDirective, IconDirective, FormControlDirective, ButtonDirective,CommonModule,ReactiveFormsModule,FormsModule,TableDirective,ShortlinkNoteComponent]
 })
 export class ListShortLinkComponent implements OnInit, OnDestroy{
     //System variables
@@ -35,7 +37,8 @@ export class ListShortLinkComponent implements OnInit, OnDestroy{
     public items: ShortLinkInListDto[];
     public keyword: string = '';
     constructor(private alertService: AlertService,
-      private shortlinkApiClient: AdminApiShortLinkApiClient
+      private shortlinkApiClient: AdminApiShortLinkApiClient,
+      public dialogService: DialogService,
     ) {}
     ngOnDestroy(): void {
       this.ngUnsubscribe.next();
@@ -58,6 +61,24 @@ export class ListShortLinkComponent implements OnInit, OnDestroy{
           console.log(error);
           this.alertService.showError('Có lỗi xảy ra');
         },
+      });
+    }
+    showModalUpdateNguon(shortlinkId: string,link: string ){
+      console.log(shortlinkId);
+      const ref = this.dialogService.open(ShortlinkNoteComponent, {
+        data: {
+          id: shortlinkId,
+          link: link
+        },
+        header: 'Cập nhật nguồn link rút gọn',
+        width: '70%'
+      });
+      const dialogRef = this.dialogService.dialogComponentRefMap.get(ref);
+      const dynamicComponent = dialogRef?.instance as DynamicDialogComponent;
+      const ariaLabelledBy = dynamicComponent.getAriaLabelledBy();
+      dynamicComponent.getAriaLabelledBy = () => ariaLabelledBy;
+      ref.onClose.subscribe((data: any) => {
+        this.loadData();  
       });
     }
     

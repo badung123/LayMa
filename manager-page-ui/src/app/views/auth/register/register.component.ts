@@ -1,4 +1,4 @@
-import { Component,OnDestroy, OnInit } from '@angular/core';
+import { Component,inject,OnDestroy, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -6,7 +6,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   AdminApiAuthApiClient,
   RegisterRequest,
@@ -34,7 +34,8 @@ export class RegisterComponent implements OnDestroy,OnInit{
     private utilService: UtilityService,
     private authApiClient: AdminApiAuthApiClient,
     private alertService: AlertService,
-    private router: Router) { 
+    private router: Router,
+    private routeParam: ActivatedRoute) { 
       this.registerForm = this.fb.group({
         userName: new FormControl('', Validators.required),
         password: new FormControl('', Validators.required),
@@ -44,7 +45,6 @@ export class RegisterComponent implements OnDestroy,OnInit{
       });
     }
     ngOnInit(): void {
-      
     }
     
     ngOnDestroy(): void {
@@ -62,7 +62,7 @@ export class RegisterComponent implements OnDestroy,OnInit{
         this.alertService.showError('Email không được để trống');
         return;
       }
-      let refcode = this.registerForm.controls['refcode'].value;
+      let refcode = this.routeParam.snapshot.queryParamMap.get('refcode');
       if(!this.utilService.validateEmail(email)){
         this.alertService.showError('Email không đúng định dạng');
         return;
@@ -82,7 +82,7 @@ export class RegisterComponent implements OnDestroy,OnInit{
         userName: this.registerForm.controls['userName'].value,
         password: this.registerForm.controls['password'].value,
         email: this.registerForm.controls['email'].value,
-        refcode:refcode,
+        refcode: refcode == null ? '' : refcode,
         confirmPassword: this.registerForm.controls['confirmPassword'].value,
       }); 
       this.authApiClient.register(request)

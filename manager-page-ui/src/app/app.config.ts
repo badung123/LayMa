@@ -12,7 +12,7 @@ import {
 import { DropdownModule, SidebarModule } from '@coreui/angular';
 import { IconSetService } from '@coreui/icons-angular';
 import { routes } from './app.routes';
-import { ADMIN_API_BASE_URL, AdminApiAuthApiClient, AdminApiTokenApiClient,AdminApiTestApiClient, AdminApiShortLinkApiClient, AdminApiKeySearchApiClient, AdminApiBankTransactionApiClient, AdminApiCampainApiClient } from './api/admin-api.service.generated';
+import { ADMIN_API_BASE_URL, AdminApiAuthApiClient, AdminApiTokenApiClient,AdminApiTestApiClient, AdminApiShortLinkApiClient, AdminApiKeySearchApiClient, AdminApiBankTransactionApiClient, AdminApiCampainApiClient, AdminApiUserApiClient } from './api/admin-api.service.generated';
 import { environment } from './../environments/environment';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
@@ -21,9 +21,11 @@ import { TokenStorageService } from './shared/services/token-storage.service';
 import { TokenInterceptor } from './shared/interceptors/token.interceptor';
 import { HTTP_INTERCEPTORS,HttpClientModule } from '@angular/common/http';
 import { AuthGuard } from './shared/auth.guard';
-import { BroadcastService } from 'src/app/shared/services/boardcast.service';
+import { BroadcastService } from './shared/services/boardcast.service';
 import { UtilityService } from './shared/services/utility.service';
 import { UploadService } from './shared/services/upload.service';
+import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
+import { CalendarModule } from 'primeng/calendar';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -45,13 +47,15 @@ export const appConfig: ApplicationConfig = {
       withViewTransitions(),
       withHashLocation()
     ),    
-    importProvidersFrom(SidebarModule, DropdownModule,ToastModule,HttpClientModule),
+    importProvidersFrom(SidebarModule, DropdownModule,ToastModule,HttpClientModule,DynamicDialogModule),
     IconSetService,
     MessageService,
     AlertService,
     UtilityService,
     UploadService,
+    DialogService,
     AdminApiAuthApiClient,
+    AdminApiUserApiClient,
     TokenStorageService,
     AdminApiTokenApiClient,
     TokenStorageService,

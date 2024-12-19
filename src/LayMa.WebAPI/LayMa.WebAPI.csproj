@@ -19,4 +19,8 @@
     <ProjectReference Include="..\LayMa.Data\LayMa.Data.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
 </Project>

@@ -1,7 +1,8 @@
-import { DOCUMENT, NgStyle } from '@angular/common';
+import { DOCUMENT, NgStyle ,CommonModule} from '@angular/common';
 import { Component, DestroyRef, effect, inject, OnDestroy, OnInit, Renderer2, signal, WritableSignal } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule,FormsModule } from '@angular/forms';
 import { ChartOptions } from 'chart.js';
+import { CalendarModule } from 'primeng/calendar';
 import {
   AvatarComponent,
   ButtonDirective,
@@ -17,7 +18,8 @@ import {
   ProgressComponent,
   RowComponent,
   TableDirective,
-  TextColorDirective
+  TextColorDirective,
+  FormControlDirective
 } from '@coreui/angular';
 import { ChartjsComponent } from '@coreui/angular-chartjs';
 import { IconDirective } from '@coreui/icons-angular';
@@ -25,13 +27,13 @@ import { DashboardChartsData, IChartProps } from './dashboard-charts-data';
 import { Subject, takeUntil } from 'rxjs';
 import { UtilityService } from 'src/app/shared/services/utility.service';
 import { AlertService } from 'src/app/shared/services/alert.service';
-import { AdminApiCampainApiClient, AdminApiKeySearchApiClient, AdminApiShortLinkApiClient, ShortLinkInListDto, ShortLinkInListDtoPagedResult, ThongKeView } from 'src/app/api/admin-api.service.generated';
+import { AdminApiCampainApiClient, AdminApiKeySearchApiClient, AdminApiShortLinkApiClient, ShortLinkInListDto, ShortLinkInListDtoPagedResult, ThongKeView, ThongKeViewClick } from 'src/app/api/admin-api.service.generated';
 
 @Component({
   templateUrl: 'dashboard.component.html',
   styleUrls: ['dashboard.component.scss'],
   standalone: true,
-  imports: [ TextColorDirective, CardComponent, CardBodyComponent, RowComponent, ColComponent, ButtonDirective, IconDirective, ReactiveFormsModule, ButtonGroupComponent, FormCheckLabelDirective, ChartjsComponent, NgStyle, CardFooterComponent, GutterDirective, ProgressBarDirective, ProgressComponent, CardHeaderComponent, TableDirective, AvatarComponent]
+  imports: [ TextColorDirective, CardComponent, CardBodyComponent,FormsModule, RowComponent,FormControlDirective, ColComponent, ButtonDirective, IconDirective, ReactiveFormsModule, ButtonGroupComponent, FormCheckLabelDirective, ChartjsComponent, NgStyle, CardFooterComponent, GutterDirective, ProgressBarDirective, ProgressComponent, CardHeaderComponent, TableDirective, AvatarComponent,CalendarModule,CommonModule]
 })
 export class DashboardComponent implements OnInit, OnDestroy {
 
@@ -46,8 +48,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
   public balance: number = 0;
   public hoahong: number = 0;
   public tongview: number = 0;
+  public tongclick: number = 0;
   public tongthunhap: number = 0;
   public stringDate: string;
+  public rangeDates: any;
+  public from: Date;
+  public to: Date;
   constructor(private alertService: AlertService,
     private shortlinkApiClient: AdminApiShortLinkApiClient,
     private thognkeApiClient: AdminApiCampainApiClient,
@@ -63,7 +69,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   });
   public chart: Array<IChartProps> = [];
   public trafficRadioGroup = new FormGroup({
-    trafficRadio: new FormControl('Month')
+    trafficRadio: new FormControl('Day')
   });
 
   ngOnInit(): void {
@@ -71,7 +77,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     //this.updateChartOnColorModeChange();
     this.loadBalance();
     this.loadTopLink();
-    this.loadTongViewByRangeDate('Month');
+    this.loadTongViewByRangeDate('Day');
     this.loadThongkeView();
   }
   ngOnDestroy(): void {
@@ -123,12 +129,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
   loadTongViewByRangeDate(value: string){
     this.getStringDate(value);
-    this.shortlinkApiClient.getThongKeClickByDate(value)
+    this.shortlinkApiClient.getThongKeClickByDate(this.from,this.to)
     .pipe(takeUntil(this.ngUnsubscribe))
     .subscribe({
-      next: (response: number) => {
-        this.tongview = response;
-        this.tongthunhap = response *1000;
+      next: (response: ThongKeViewClick) => {
+        this.tongclick = response.click;
+        this.tongthunhap = response.click *1000;
+        this.tongview = response.view;
       },
       error: (error: any) => {
         console.log(error);
@@ -137,20 +144,32 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
   }
   setTrafficPeriod(value: string): void {
-    this.loadTongViewByRangeDate(value);
+    
+    if (value != "CustomDay") {
+      this.loadTongViewByRangeDate(value);
+    }
+    
   }
   getStringDate(value: string){
-    var currentDate = new Date();
+    var currentDateFrom = new Date();
+    var currentDateTo = new Date();
     if (value == 'Day') {
-      this.stringDate = 'Ngày ' + this.utilService.getDateFormat(currentDate)
-    } else if(value == 'Month') {
-      var firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)
-      var lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0)
-      this.stringDate = 'Từ ngày ' + this.utilService.getDateFormat(firstDay) + ' đến ' + this.utilService.getDateFormat(lastDay)
+      currentDateFrom.setUTCHours(0,0,0,0);
+      this.from = currentDateFrom;
+      currentDateTo.setUTCHours(0,0,0,0);
+      currentDateTo.setDate(currentDateTo.getDate() + 1)
+      this.to = currentDateTo;
+    } else if(value == 'Yesterday') {
+      currentDateFrom.setUTCHours(0,0,0,0);
+      this.to = currentDateFrom;
+      currentDateTo.setUTCHours(0,0,0,0);
+      currentDateTo.setDate(currentDateTo.getDate() - 1)
+      this.from = currentDateTo;
     }
     else{
-      this.stringDate = 'Năm ' + currentDate.getFullYear()
+      
     }
+    this.stringDate = 'Từ ngày ' + this.utilService.getDateFormat(this.from) + ' đến ' + this.utilService.getDateFormat(this.to)
   }
 
   handleChartRef($chartRef: any) {
@@ -178,5 +197,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.mainChartRef().update();
       });
     }
+  }
+  changeDateRange(event){
+    console.log(event);
+    console.log(this.rangeDates);
   }
 }

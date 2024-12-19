@@ -23,5 +23,9 @@ namespace LayMa.Core.Domain.Identity
         public string? UserTelegram { get; set; }
         public string? RefCode { get; set; }
 		public string? Agent { get; set; }
-	}
+        public string? Origin { get; set; }
+        public string? OriginImage { get; set; }
+        public bool IsVerify { get; set; }
+        public DateTime? VerifyDateTime { get; set; }
+    }
 }

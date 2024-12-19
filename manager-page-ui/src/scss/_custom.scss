@@ -15,3 +15,40 @@
 .select-week .calendar-row.current {
   cursor: pointer;
 }
+.sidebar-nav .nav-link {
+  color: rgb(230 232 10 / 87%) !important;
+}
+.sidebar-nav .nav-icon {
+  color: rgb(230 232 10 / 87%) !important;
+}
+.btn-check:checked + .btn, :not(.btn-check) + .btn:active, .btn:first-child:active, .btn.active, .btn.show {
+  color: #212631 !important;
+  background-color: #dbe20c !important;
+}
+.card-header{
+  background-color: #dbe20c;
+}
+[data-coreui-theme=dark] .dark\:bg-light, [data-coreui-theme=dark] .dark\:bg-light:not([class*="dark:"]), .bg-light {
+  background: url(../assets/images/background_yellow.jpg) !important;
+  background-position: center;
+background-size: cover !important;
+background-repeat: no-repeat !important;
+}
+[data-coreui-theme=dark] .dark\:bg-primary, [data-coreui-theme=dark] .dark\:bg-primary:not([class*="dark:"]), .bg-primary {
+  --cui-bg-opacity: 1;
+  color: #000 !important;
+  background-color: #dbe20c !important;
+}
+.remove_dot{
+  list-style-type:none;
+}
+.remove_dot .input-group {
+  max-width: 60%;
+}
+@media (max-width: 600px){
+  .remove_dot .input-group {
+    max-width: 100%;
+  }
+
+}
+

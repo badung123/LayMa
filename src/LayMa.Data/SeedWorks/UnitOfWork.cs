@@ -26,6 +26,8 @@ namespace LayMa.Data.SeedWorks
             BankTransactions = new BankTransactionRepository(context, mapper);
             Campains = new CampainRepository(context, mapper);
             Missions = new MissionRepository(context, mapper);
+            Users = new UserRepository(context, mapper);
+            Visitors = new VisitorRepository(context, mapper);
 
 		}
         public IShortLinkRepository ShortLinks { get; private set; }
@@ -35,6 +37,8 @@ namespace LayMa.Data.SeedWorks
         public IBankTransactionRepository BankTransactions { get; private set; }
 		public ICampainRepository Campains { get; private set; }
 		public IMissionRepository Missions { get; private set; }
+        public IUserRepository Users { get; private set; }
+		public IVisitorRepository Visitors { get; private set; }
 		public async Task<int> CompleteAsync()
         {
             return await _context.SaveChangesAsync();

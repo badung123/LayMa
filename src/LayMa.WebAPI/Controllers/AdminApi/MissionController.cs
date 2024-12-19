@@ -24,7 +24,10 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 			{
 				return BadRequest("Link rút gọn không tồn tại");
 			}
-			var userId = shortLink.UserId;
+			//shortLink.View += 1;
+			
+			//await _unitOfWork.ShortLinks.UpdateView(shortLink.Id);
+            var userId = shortLink.UserId;
 			//get mission by userid
 			var mission = await _unitOfWork.Missions.GetMissionByUserId(userId,shortLink.Id);
 			if (mission == null) return BadRequest("Không tìm thấy nhiệm vụ nào cho bạn");

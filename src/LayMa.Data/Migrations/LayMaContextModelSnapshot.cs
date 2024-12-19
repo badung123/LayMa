@@ -155,6 +155,9 @@ namespace LayMa.Data.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsVerify")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime?>("LastLoginDate")
                         .HasColumnType("datetime2");
 
@@ -168,6 +171,12 @@ namespace LayMa.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NormalizedUserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Origin")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OriginImage")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PasswordHash")
@@ -199,6 +208,9 @@ namespace LayMa.Data.Migrations
 
                     b.Property<string>("UserTelegram")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("VerifyDateTime")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -296,6 +308,11 @@ namespace LayMa.Data.Migrations
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
 
+                    b.Property<string>("Origin")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
                     b.Property<string>("OriginLink")
                         .IsRequired()
                         .HasMaxLength(500)
@@ -307,6 +324,9 @@ namespace LayMa.Data.Migrations
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("View")
+                        .HasColumnType("int");
 
                     b.Property<int>("ViewCount")
                         .HasColumnType("int");

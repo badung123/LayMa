@@ -17,13 +17,13 @@
                 <span cInputGroupText>&#64;</span>
                 <input autoComplete="email" cFormControl formControlName="email" placeholder="Email" [email]="true" />
               </c-input-group>
-              <span style="color: red;">  (Mã giới thiệu có thể để trống)</span>
+              <!-- <span style="color: red;">  (Mã giới thiệu có thể để trống)</span>
               <c-input-group class="mb-3">
                 <span cInputGroupText>
                   <svg cIcon name="cil-user-follow"></svg>
                 </span>               
                 <input autoComplete="refcode" cFormControl formControlName="refcode" placeholder="Mã giới thiệu" />
-              </c-input-group>
+              </c-input-group> -->
               <c-input-group class="mb-3">
                 <span cInputGroupText>
                   <svg cIcon name="cilLockLocked"></svg>
@@ -37,7 +37,7 @@
                 <input autoComplete="new-password" cFormControl formControlName="confirmPassword" placeholder="Nhập lại mật khẩu" type="password" />
               </c-input-group>
               <div class="d-grid">
-                <button cButton color="success" type="submit">Đăng ký</button>
+                <button cButton color="warning" type="submit">Đăng ký</button>
               </div>
             </form>
           </c-card-body>

@@ -100,25 +100,30 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 
         [HttpGet]
         [Route("thongkeClickByDate")]
-        public async Task<ActionResult<int>> GetThongKeClickByDate(string searchType)
+        public async Task<ActionResult<ThongKeViewClick>> GetThongKeClickByDate(DateTime from,DateTime to)
         {
 			var countClick = 0;
-            var userId = User.GetUserId();
-			var date = DateTime.Now;
-            var start = searchType == "Day" ? date.Date : (searchType == "Month" ? new DateTime(date.Year, date.Month, 1) : new DateTime(date.Year, 1, 1));
-            var end = DateTime.Now;
+			var countView = 0;
+			var userId = User.GetUserId();
 			//get list token short link
 			var listTokenShortLinkOfUser = await _unitOfWork.ShortLinks.GetListShortLinkIDOfUser(userId);
             if (listTokenShortLinkOfUser.Count > 0)
             {
                 foreach (var item in listTokenShortLinkOfUser)
                 {
-					var count = await _unitOfWork.ViewDetails.CountClickByDateRangeAndShortLink(start, end, item);
-					countClick += count;
-                }
+					var countC = await _unitOfWork.ViewDetails.CountClickByDateRangeAndShortLink(from, to, item);
+					countClick += countC;
+					var countV = await _unitOfWork.Visitors.CountViewByDateRangeAndShortLink(from, to, item);
+					countView += countV;
+
+				}
             }
             //count click thanh cong
-            return Ok(countClick);
+            return Ok(new ThongKeViewClick
+			{
+				Click = countClick,
+				View = countView
+			});
         }
         [HttpGet]
         [Route("thongkeAllClickInDay")]
@@ -131,6 +136,16 @@ namespace LayMa.WebAPI.Controllers.AdminApi
             var count = await _unitOfWork.ViewDetails.CountClickByDateRange(start, end);
             //count click thanh cong
             return Ok(count);
+        }
+        [HttpPost]
+        [Route("updateNguon")]
+        public async Task<ActionResult> UpdateNguon([FromBody] UpdateNguon request)
+        {
+            //get list token short link
+            await _unitOfWork.ShortLinks.UpdateOriginOfShortLink(request.Origin, request.ShortlinkId);
+			_unitOfWork.CompleteAsync();
+            //count click thanh cong
+            return Ok();
         }
     }
 }

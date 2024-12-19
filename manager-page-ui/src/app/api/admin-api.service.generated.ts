@@ -724,6 +724,68 @@ export class AdminApiKeySearchApiClient {
 }
 
 @Injectable()
+export class AdminApiMediaApiClient {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(ADMIN_API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ?? "";
+    }
+
+    /**
+     * @param type (optional) 
+     * @return Success
+     */
+    uploadImage(type?: string | null | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/admin/media?";
+        if (type !== undefined && type !== null)
+            url_ += "type=" + encodeURIComponent("" + type) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUploadImage(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUploadImage(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processUploadImage(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return _observableOf(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+}
+
+@Injectable()
 export class AdminApiMissionApiClient {
     private http: HttpClient;
     private baseUrl: string;
@@ -1079,13 +1141,20 @@ export class AdminApiShortLinkApiClient {
     }
 
     /**
-     * @param searchType (optional) 
+     * @param from (optional) 
+     * @param to (optional) 
      * @return Success
      */
-    getThongKeClickByDate(searchType?: string | null | undefined): Observable<number> {
+    getThongKeClickByDate(from?: Date | undefined, to?: Date | undefined): Observable<ThongKeViewClick> {
         let url_ = this.baseUrl + "/api/admin/shortlink/thongkeClickByDate?";
-        if (searchType !== undefined && searchType !== null)
-            url_ += "searchType=" + encodeURIComponent("" + searchType) + "&";
+        if (from === null)
+            throw new Error("The parameter 'from' cannot be null.");
+        else if (from !== undefined)
+            url_ += "from=" + encodeURIComponent(from ? "" + from.toISOString() : "") + "&";
+        if (to === null)
+            throw new Error("The parameter 'to' cannot be null.");
+        else if (to !== undefined)
+            url_ += "to=" + encodeURIComponent(to ? "" + to.toISOString() : "") + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -1103,14 +1172,14 @@ export class AdminApiShortLinkApiClient {
                 try {
                     return this.processGetThongKeClickByDate(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<number>;
+                    return _observableThrow(e) as any as Observable<ThongKeViewClick>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<number>;
+                return _observableThrow(response_) as any as Observable<ThongKeViewClick>;
         }));
     }
 
-    protected processGetThongKeClickByDate(response: HttpResponseBase): Observable<number> {
+    protected processGetThongKeClickByDate(response: HttpResponseBase): Observable<ThongKeViewClick> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1121,8 +1190,7 @@ export class AdminApiShortLinkApiClient {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+            result200 = ThongKeViewClick.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -1176,6 +1244,58 @@ export class AdminApiShortLinkApiClient {
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
     
             return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    updateNguon(body?: UpdateNguon | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/admin/shortlink/updateNguon";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdateNguon(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdateNguon(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processUpdateNguon(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return _observableOf(null as any);
             }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
@@ -1350,6 +1470,190 @@ export class AdminApiTokenApiClient {
         if (status === 200) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             return _observableOf(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+}
+
+@Injectable()
+export class AdminApiUserApiClient {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(ADMIN_API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ?? "";
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    verifyUser(body?: VerifyUserRequest | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/admin/user/addVerify";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processVerifyUser(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processVerifyUser(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processVerifyUser(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return _observableOf(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    getInfoVerify(): Observable<VerifyUserInfo> {
+        let url_ = this.baseUrl + "/api/admin/user/getInfoVerify";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetInfoVerify(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetInfoVerify(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<VerifyUserInfo>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<VerifyUserInfo>;
+        }));
+    }
+
+    protected processGetInfoVerify(response: HttpResponseBase): Observable<VerifyUserInfo> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = VerifyUserInfo.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+}
+
+@Injectable()
+export class AdminApiVisitorApiClient {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(ADMIN_API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ?? "";
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    saveVisitor(body?: { [key: string]: any; } | undefined): Observable<string> {
+        let url_ = this.baseUrl + "/api/admin/visitor";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processSaveVisitor(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processSaveVisitor(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<string>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<string>;
+        }));
+    }
+
+    protected processSaveVisitor(response: HttpResponseBase): Observable<string> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
@@ -2056,8 +2360,10 @@ export interface IRegistrationResponse {
 }
 
 export class ShortLinkInListDto implements IShortLinkInListDto {
+    id?: string;
     link?: string | undefined;
     originLink?: string | undefined;
+    origin?: string | undefined;
     viewCount?: number;
     token?: string | undefined;
     dateCreated?: Date;
@@ -2074,8 +2380,10 @@ export class ShortLinkInListDto implements IShortLinkInListDto {
 
     init(_data?: any) {
         if (_data) {
+            this.id = _data["id"];
             this.link = _data["link"];
             this.originLink = _data["originLink"];
+            this.origin = _data["origin"];
             this.viewCount = _data["viewCount"];
             this.token = _data["token"];
             this.dateCreated = _data["dateCreated"] ? new Date(_data["dateCreated"].toString()) : <any>undefined;
@@ -2092,8 +2400,10 @@ export class ShortLinkInListDto implements IShortLinkInListDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
         data["link"] = this.link;
         data["originLink"] = this.originLink;
+        data["origin"] = this.origin;
         data["viewCount"] = this.viewCount;
         data["token"] = this.token;
         data["dateCreated"] = this.dateCreated ? this.dateCreated.toISOString() : <any>undefined;
@@ -2103,8 +2413,10 @@ export class ShortLinkInListDto implements IShortLinkInListDto {
 }
 
 export interface IShortLinkInListDto {
+    id?: string;
     link?: string | undefined;
     originLink?: string | undefined;
+    origin?: string | undefined;
     viewCount?: number;
     token?: string | undefined;
     dateCreated?: Date;
@@ -2227,6 +2539,46 @@ export interface IThongKeView {
     viewConLaiTrongNgay?: number;
 }
 
+export class ThongKeViewClick implements IThongKeViewClick {
+    click?: number;
+    view?: number;
+
+    constructor(data?: IThongKeViewClick) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.click = _data["click"];
+            this.view = _data["view"];
+        }
+    }
+
+    static fromJS(data: any): ThongKeViewClick {
+        data = typeof data === 'object' ? data : {};
+        let result = new ThongKeViewClick();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["click"] = this.click;
+        data["view"] = this.view;
+        return data;
+    }
+}
+
+export interface IThongKeViewClick {
+    click?: number;
+    view?: number;
+}
+
 export class TokenRequest implements ITokenRequest {
     accessToken?: string | undefined;
     refreshToken?: string | undefined;
@@ -2265,6 +2617,142 @@ export class TokenRequest implements ITokenRequest {
 export interface ITokenRequest {
     accessToken?: string | undefined;
     refreshToken?: string | undefined;
+}
+
+export class UpdateNguon implements IUpdateNguon {
+    shortlinkId?: string;
+    origin?: string | undefined;
+
+    constructor(data?: IUpdateNguon) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.shortlinkId = _data["shortlinkId"];
+            this.origin = _data["origin"];
+        }
+    }
+
+    static fromJS(data: any): UpdateNguon {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateNguon();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["shortlinkId"] = this.shortlinkId;
+        data["origin"] = this.origin;
+        return data;
+    }
+}
+
+export interface IUpdateNguon {
+    shortlinkId?: string;
+    origin?: string | undefined;
+}
+
+export class VerifyUserInfo implements IVerifyUserInfo {
+    contact?: string | undefined;
+    origin?: string | undefined;
+    thumnail?: string | undefined;
+    isVerify?: boolean;
+    readonly isWaitingVerify?: boolean;
+
+    constructor(data?: IVerifyUserInfo) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.contact = _data["contact"];
+            this.origin = _data["origin"];
+            this.thumnail = _data["thumnail"];
+            this.isVerify = _data["isVerify"];
+            (<any>this).isWaitingVerify = _data["isWaitingVerify"];
+        }
+    }
+
+    static fromJS(data: any): VerifyUserInfo {
+        data = typeof data === 'object' ? data : {};
+        let result = new VerifyUserInfo();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["contact"] = this.contact;
+        data["origin"] = this.origin;
+        data["thumnail"] = this.thumnail;
+        data["isVerify"] = this.isVerify;
+        data["isWaitingVerify"] = this.isWaitingVerify;
+        return data;
+    }
+}
+
+export interface IVerifyUserInfo {
+    contact?: string | undefined;
+    origin?: string | undefined;
+    thumnail?: string | undefined;
+    isVerify?: boolean;
+    isWaitingVerify?: boolean;
+}
+
+export class VerifyUserRequest implements IVerifyUserRequest {
+    origin?: string | undefined;
+    contact?: string | undefined;
+    thumbnail?: string | undefined;
+
+    constructor(data?: IVerifyUserRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.origin = _data["origin"];
+            this.contact = _data["contact"];
+            this.thumbnail = _data["thumbnail"];
+        }
+    }
+
+    static fromJS(data: any): VerifyUserRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new VerifyUserRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["origin"] = this.origin;
+        data["contact"] = this.contact;
+        data["thumbnail"] = this.thumbnail;
+        return data;
+    }
+}
+
+export interface IVerifyUserRequest {
+    origin?: string | undefined;
+    contact?: string | undefined;
+    thumbnail?: string | undefined;
 }
 
 export class SwaggerException extends Error {

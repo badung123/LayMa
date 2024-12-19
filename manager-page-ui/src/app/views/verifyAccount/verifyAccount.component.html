@@ -8,11 +8,13 @@
       <c-card-body class="p-4">
         <c-row class="mb-4 text-center">
           <div style="width: 100%;">
-            <button *ngIf="!isVerify" cButton color="warning">CHƯA XÁC MINH</button>
+            <button *ngIf="!isVerify && !isWaitingVerify" cButton color="warning">CHƯA XÁC MINH</button>
+            <button *ngIf="!isVerify && isWaitingVerify" cButton color="warning">CHỜ XÁC MINH</button>
             <button *ngIf="isVerify" cButton color="success">ĐÃ XÁC MINH <svg cIcon name="cil-check" size="xl"></svg></button>
           </div>
           <div style="width: 100%;">
-            <span *ngIf="!isVerify">Tài khoản chưa được xác minh.</span>
+            <span *ngIf="!isVerify && !isWaitingVerify">Tài khoản chưa được xác minh.</span>
+            <span *ngIf="!isVerify && isWaitingVerify">Tài khoản đang trong quá trình xác minh.</span>
             <span *ngIf="isVerify">Tài khoản đã xác minh</span>
           </div>
         </c-row>
@@ -46,7 +48,7 @@
                     cFormControl formControlName="origin"
                       id="floatingInputValue"
                       type="text"
-                      value=""
+                      value="{{origin}}"
                     />
                     <label cLabel for="floatingInputValue">Nguồn</label>
                   </div>  
@@ -55,18 +57,23 @@
                     cFormControl formControlName="contact"
                     id="floatingInputValue"
                     type="text"
-                    value=""
+                    value="{{contact}}"
                   />
                   <label cLabel for="floatingInputValue">Liên hệ</label>
                   </div>                   
                   <c-input-group class="mb-3">
-                    <input cFormControl id="inputGroupFile02" type="file" />
+                    <input class="d-none" formControlName="thumbnail"/>
+                    <input cFormControl id="inputGroupFile02" type="file" (change)="onFileChange($event)"/>
                     <label cInputGroupText for="inputGroupFile02">
                       Upload
                     </label>
-                  </c-input-group>                                               
+                  </c-input-group>
+                  <div *ngIf="thumbnailImage" class="field col-12 md:col-6">
+                    <p-image [src]="thumbnailImage" [preview]="true" width="250">
+                    </p-image>
+                  </div>                                              
                   <div class="d-grid">
-                    <button cButton color="success" type="submit">XÁC MINH</button>
+                    <button cButton color="warning" type="submit">XÁC MINH</button>
                   </div>
                 </form>
                 

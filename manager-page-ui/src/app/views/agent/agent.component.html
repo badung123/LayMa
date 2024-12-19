@@ -1,1 +1,71 @@
-<h1>Đây là trang đại lý</h1>
+
+<c-row>
+    <c-col xs="12">
+      <c-card class="mb-4">
+        <c-card-header>
+          <h2><strong>ĐẠI LÝ - THÀNH VIÊN CẤP DƯỚI</strong></h2>
+        </c-card-header>
+        <c-card-body>
+            <c-row>
+                <c-col xs>
+                  <c-card class="mb-4">
+                    <c-card-header>Quy định vể chính sách hoa hồng</c-card-header>
+                    <c-card-body>
+                        <ul class="pl-3">
+                            <li>Hãy mời bạn bè và người thân tham gia kiếm tiền và đăng ký tài khoản dưới link của bạn thì mỗi 1 lượt bạn bè của bạn có 1 lượt nhập mã thành công bạn sẽ nhận được <strong>100đ</strong> và hưởng đến suốt đời.</li>
+                            <li>Mỗi 1 người chỉ được phép đăng ký 1 tài khoản, ai <strong>cố tình đăng ký từ 2 tài khoản trở lên</strong> và <strong>REF</strong> cho nhau thì vi phạm chính sách hoa hồng sẽ không được thanh toán.</li>
+                            <li>Dưới đây là liên kết giới thiệu của bạn.</li>
+                            <li class="remove_dot">
+                                <c-input-group class="mb-3">
+                                    <input aria-describedby="button-copy"
+                                    cFormControl
+                                    [disabled]="true"
+                                    />
+                                    <button cButton color="warning" id="button-copy" type="button">
+                                        <i class="pi pi-copy" style="font-size: 1.5rem"></i>
+                                    </button>
+                                  </c-input-group>
+                            </li>
+                        </ul>
+                    </c-card-body>
+                  </c-card>
+                </c-col>
+              </c-row>
+          <c-row>
+            <c-col xs>
+              <c-card class="mb-4">
+                <c-card-header>
+                    Danh sách thành viên cấp dưới
+                </c-card-header>
+                <c-card-body>
+                  <table
+                    [hover]="true"
+                    [responsive]="true"
+                    [striped]="true"
+                    align="middle"
+                    cTable
+                    class="mb-0 border"
+                  >
+                    <thead class="text-nowrap text-truncate">
+                    <tr>
+                      <th class="bg-body-tertiary text-center ">
+                       
+                      </th>
+                      <th class="bg-body-tertiary">STT</th>
+                      <th class="bg-body-tertiary text-center">Thành viên</th>
+                      <th class="bg-body-tertiary">Ngày tạo</th>
+                      <th class="bg-body-tertiary text-center">Xem chi tiết</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                  </table>
+                </c-card-body>
+              </c-card>
+            </c-col>
+          </c-row>                   
+        </c-card-body>
+      </c-card>
+    </c-col> 
+  </c-row>
+  

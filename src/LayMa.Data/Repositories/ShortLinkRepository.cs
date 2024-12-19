@@ -69,5 +69,17 @@ namespace LayMa.Data.Repositories
             var query = await _context.ShortLinks.Where(x => x.UserId == userId).Select(x=> x.Id).ToListAsync();
 			return query;
         }
+		public async Task UpdateOriginOfShortLink(string origin, Guid shortlinkId)
+		{
+            var link = await _context.ShortLinks.FirstOrDefaultAsync(x => x.Id == shortlinkId);
+            link.Origin = origin;
+            _context.ShortLinks.Update(link);
+        }
+        public async Task UpdateView(Guid id)
+        {
+            var link = await _context.ShortLinks.FirstOrDefaultAsync(x => x.Id == id);
+            link.View += 1;
+            _context.ShortLinks.Update(link);
+        }
     }
 }
