@@ -3,7 +3,7 @@ import { IconDirective } from '@coreui/icons-angular';
 import { ContainerComponent, RowComponent, ColComponent, TextColorDirective, CardComponent, CardBodyComponent, FormDirective, InputGroupComponent, InputGroupTextDirective, FormControlDirective, ButtonDirective, CardHeaderComponent, TableDirective, FormFloatingDirective, FormLabelDirective, FormSelectDirective } from '@coreui/angular';
 import { Subject, takeUntil } from 'rxjs';
 import { AlertService } from '../../shared/services/alert.service';
-import { AdminApiBankTransactionApiClient, BankTransactionInListDto, BankTransactionInListDtoPagedResult, CreateBankTransactionDto,ProcessStatus } from '../../api/admin-api.service.generated';
+import { AdminApiUserApiClient, AgentListDto, AgentListDtoPagedResult, ShortLinkInListDtoPagedResult } from '../../api/admin-api.service.generated';
 import { CommonModule, NgStyle } from '@angular/common';
 import {
   FormBuilder,
@@ -15,6 +15,9 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
+import { UrlConstants } from 'src/app/shared/constants/url.constants';
+import { TokenStorageService } from 'src/app/shared/services/token-storage.service';
+import { Clipboard } from "@angular/cdk/clipboard";
 //import { AdminApiShortLinkApiClient, AdminApiTestApiClient, CreateShortLinkDto } from 'src/app/api/admin-api.service.generatesrc';
 
 
@@ -30,18 +33,20 @@ export class AgentComponent implements OnInit, OnDestroy{
     private ngUnsubscribe = new Subject<void>();
     //Paging variables
     public pageIndex: number = 1;
-    public pageSize: number = 5;
+    public pageSize: number = 10;
     public totalCount: number;
+    public btn1text: string = "Sao chép";
 
     //Business variables
-    public histories: BankTransactionInListDto[];
+    public listAgent: AgentListDto[];
     public keyword: string = '';
-    public accountName: string;
-    public processStatus = ProcessStatus;
+    public linkRef: string;
     constructor(private fb: FormBuilder,
       private router: Router,
+      private clipboard: Clipboard,
       private alertService: AlertService,
-      private bankTransactionApiClient: AdminApiBankTransactionApiClient,
+      private userApiClient: AdminApiUserApiClient,
+      private tokenService: TokenStorageService
     ) {
     }
     ngOnDestroy(): void {
@@ -49,6 +54,33 @@ export class AgentComponent implements OnInit, OnDestroy{
       this.ngUnsubscribe.complete();
     }
   
-    ngOnInit() {   
+    ngOnInit() {
+      var loggedInUser = this.tokenService.getUser();
+      if (loggedInUser) {
+        this.linkRef = UrlConstants.REFCODE_URL + loggedInUser.code;
+      }
+      this.loadData();
+    }
+    loadData(){
+      this.userApiClient.getListAgentByUserId(this.pageIndex,this.pageSize,this.keyword)
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe({
+              next: (response: AgentListDtoPagedResult) => {
+                this.listAgent = response.results!;
+                console.log(this.listAgent);
+                this.totalCount = response.rowCount!;
+              },
+              error: (error: any) => {
+                console.log(error);
+                this.alertService.showError('Có lỗi xảy ra');
+              },
+            });
+    }
+    copyToClipboard() {
+      this.clipboard.copy(this.linkRef);
+      this.btn1text = "Đã sao chép";
+      setTimeout(() => {
+        this.btn1text = "Sao chép";
+      }, 2000);
     }
 }

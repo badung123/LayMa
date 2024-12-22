@@ -9,8 +9,10 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   AdminApiAuthApiClient,
+  ForgotPasswordRequest,
   RegisterRequest,
   RegistrationResponse,
+  ResetPasswordRequest,
 } from 'src/app/api/admin-api.service.generated';
 import { AlertService } from 'src/app/shared/services/alert.service';
 import { UrlConstants } from 'src/app/shared/constants/url.constants';
@@ -18,17 +20,16 @@ import { Subject, takeUntil } from 'rxjs';
 import { IconDirective } from '@coreui/icons-angular';
 import { ContainerComponent, RowComponent, ColComponent, TextColorDirective, CardComponent, CardBodyComponent, FormDirective, InputGroupComponent, InputGroupTextDirective, FormControlDirective, ButtonDirective } from '@coreui/angular';
 import { UtilityService } from 'src/app/shared/services/utility.service';
-import { forEach } from 'lodash-es';
 
 @Component({
-    selector: 'app-register',
-    templateUrl: './register.component.html',
-    styleUrls: ['./register.component.scss'],
+    selector: 'app-resetPassword',
+    templateUrl: './resetPassword.component.html',
+    styleUrls: ['./resetPassword.component.scss'],
     standalone: true,
     imports: [ContainerComponent, RowComponent, ColComponent, TextColorDirective, CardComponent, CardBodyComponent, FormDirective, InputGroupComponent, InputGroupTextDirective, IconDirective, FormControlDirective, ButtonDirective,ReactiveFormsModule]
 })
-export class RegisterComponent implements OnDestroy,OnInit{
-  registerForm: FormGroup;
+export class ResetPasswordComponent implements OnDestroy,OnInit{
+  resetPasswordForm: FormGroup;
   private ngUnsubscribe = new Subject<void>();
   constructor(private fb: FormBuilder,
     private utilService: UtilityService,
@@ -36,12 +37,9 @@ export class RegisterComponent implements OnDestroy,OnInit{
     private alertService: AlertService,
     private router: Router,
     private routeParam: ActivatedRoute) { 
-      this.registerForm = this.fb.group({
-        userName: new FormControl('', Validators.required),
+      this.resetPasswordForm = this.fb.group({
         password: new FormControl('', Validators.required),
-        refcode: new  FormControl(''),
-        email: new FormControl('', Validators.required),
-        confirmPassword: new FormControl('', Validators.required),
+        confirmPassword: new FormControl('', Validators.required)
       });
     }
     ngOnInit(): void {
@@ -51,26 +49,8 @@ export class RegisterComponent implements OnDestroy,OnInit{
       this.ngUnsubscribe.next();
       this.ngUnsubscribe.complete();
     }
-    dangnhap(){
-      this.router.navigate([UrlConstants.LOGIN]);
-    }
-    register() {
-      let userName = this.registerForm.controls['userName'].value;
-      if (userName == null || userName == '') {
-        this.alertService.showError('Tên đăng nhập không được để trống');
-        return;
-      }
-      let email = this.registerForm.controls['email'].value;
-      if (email == null || email == '') {
-        this.alertService.showError('Email không được để trống');
-        return;
-      }
-      let refcode = this.routeParam.snapshot.queryParamMap.get('refcode');
-      if(!this.utilService.validateEmail(email)){
-        this.alertService.showError('Email không đúng định dạng');
-        return;
-      }
-      let password = this.registerForm.controls['password'].value;
+    resetPassword() {
+      let password = this.resetPasswordForm.controls['password'].value;
       if (password == null || password == '') {
         this.alertService.showError('Mật khẩu không được để trống');
         return;
@@ -79,34 +59,39 @@ export class RegisterComponent implements OnDestroy,OnInit{
         this.alertService.showError('Mật khẩu ít nhất 8 ký tự');
         return;
       }
-      let confirmPassword = this.registerForm.controls['confirmPassword'].value;
+      let confirmPassword = this.resetPasswordForm.controls['confirmPassword'].value;
       if (password != confirmPassword) {
         this.alertService.showError('Mật khẩu không giống nhau');
         return;
       }
-
-      var request: RegisterRequest = new RegisterRequest({
-        userName: this.registerForm.controls['userName'].value,
-        password: this.registerForm.controls['password'].value,
-        email: this.registerForm.controls['email'].value,
-        refcode: refcode == null ? '' : refcode,
-        confirmPassword: this.registerForm.controls['confirmPassword'].value,
+      let email = this.routeParam.snapshot.queryParamMap.get('email');
+      if (email == null || email == '') {
+        this.alertService.showError('Email không đúng.Vui lòng kiểm tra lại');
+        return;
+      }
+      if(!this.utilService.validateEmail(email)){
+        this.alertService.showError('Email không đúng định dạng');
+        return;
+      }      
+      let token = this.routeParam.snapshot.queryParamMap.get('token');
+      if (token == null || token == '') {
+        this.alertService.showError('Token chưa chính xác');
+        return;
+      }
+      var request: ResetPasswordRequest = new ResetPasswordRequest({
+        email: email,
+        password: this.resetPasswordForm.controls['password'].value,
+        token: token
       }); 
-      this.authApiClient.register(request)
+      this.authApiClient.resetPassword(request)
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe({
-        next: (res: RegistrationResponse) => {
-          //Redirect to dashboard
+        next: (res: any) => {
+          //Redirect to login
           this.router.navigate([UrlConstants.LOGIN]);
-  
         },
-        error: (error: RegistrationResponse) => {         
-          if (error != null) {
-            error.errors.forEach(description => {
-              this.alertService.showError(description);
-            });  
-          }
-                 
+        error: (error: any) => {         
+          this.alertService.showError(error);                
         },
       });
     }

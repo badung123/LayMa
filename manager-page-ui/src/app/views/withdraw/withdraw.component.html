@@ -102,8 +102,9 @@
                     <th class="bg-body-tertiary">Tên TK</th>
                     <th class="bg-body-tertiary text-center">Số TK</th>
                     <th class="bg-body-tertiary">Ngân Hàng</th>
-                    <th class="bg-body-tertiary text-center">Tạo lúc</th>
-                    <th class="bg-body-tertiary">Trạng thái</th>
+                    <th class="bg-body-tertiary">Số Tiền</th>
+                    <th class="bg-body-tertiary text-center">Tạo lLúc</th>
+                    <th class="bg-body-tertiary">Trạng Thái</th>
                   </tr>
                   </thead>
                   <tbody>
@@ -120,6 +121,9 @@
                         </td>
                         <td>
                           <div>{{ item.bankName }}</div>
+                        </td>
+                        <td>
+                          <div style="color: red;">{{ item.money }}</div>
                         </td>
                         <td class="text-center">
                           {{ item.dateCreated | date: 'dd/MM/yyyy hh:mm:ss'}}

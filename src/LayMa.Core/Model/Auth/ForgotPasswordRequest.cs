@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace LayMa.Core.Model.Auth
 {
-    public class AuthenticatedResult
-    {
-		public string? Token { get; set; }
-        public string? RefreshToken { get; set; }
+	public class ForgotPasswordRequest
+	{
+        public required string Email { get; set; }
     }
 }

@@ -18,6 +18,7 @@ namespace LayMa.Core.Interface
 		IMissionRepository Missions { get; }
         IUserRepository Users { get; }
 		IVisitorRepository Visitors { get; }
+		ITransactionLogRepository TransactionLogs { get; }
 		Task<int> CompleteAsync();
     }
 }

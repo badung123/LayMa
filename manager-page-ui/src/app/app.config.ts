@@ -26,6 +26,7 @@ import { UtilityService } from './shared/services/utility.service';
 import { UploadService } from './shared/services/upload.service';
 import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
 import { CalendarModule } from 'primeng/calendar';
+import { ClipboardModule } from "@angular/cdk/clipboard";
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -47,7 +48,7 @@ export const appConfig: ApplicationConfig = {
       withViewTransitions(),
       withHashLocation()
     ),    
-    importProvidersFrom(SidebarModule, DropdownModule,ToastModule,HttpClientModule,DynamicDialogModule),
+    importProvidersFrom(SidebarModule, DropdownModule,ToastModule,HttpClientModule,DynamicDialogModule,ClipboardModule),
     IconSetService,
     MessageService,
     AlertService,

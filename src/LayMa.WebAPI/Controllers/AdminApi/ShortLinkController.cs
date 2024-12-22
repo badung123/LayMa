@@ -143,7 +143,7 @@ namespace LayMa.WebAPI.Controllers.AdminApi
         {
             //get list token short link
             await _unitOfWork.ShortLinks.UpdateOriginOfShortLink(request.Origin, request.ShortlinkId);
-			_unitOfWork.CompleteAsync();
+			await _unitOfWork.CompleteAsync();
             //count click thanh cong
             return Ok();
         }

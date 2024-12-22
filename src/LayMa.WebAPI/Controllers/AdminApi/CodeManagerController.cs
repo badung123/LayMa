@@ -1,6 +1,7 @@
 ﻿using Azure.Core;
 using LayMa.Core.Domain.Identity;
 using LayMa.Core.Domain.Link;
+using LayMa.Core.Domain.Transaction;
 using LayMa.Core.Interface;
 using LayMa.Core.Model.Auth;
 using LayMa.Core.Model.CodeManager;
@@ -88,23 +89,15 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 			if (user == null || user.IsActive == false)
 			{
 				return BadRequest("User không hợp lệ");
-			}
-			//get User and update balane
-			user.Balance += 1000;
-    //        if (!string.IsNullOrEmpty(user.Agent))
-    //        {
-				//var agent = await _userManager.
-				////find đại lý
-    //            // cộng 100 đ cho đại lý
-    //        }
-            await _userManager.UpdateAsync(user);
+			}	
+			// phải nằm trong transaction
 			//update viewcount in shortlink
 			await _unitOfWork.ShortLinks.UpdateViewCount(shortLink.Id);
 			//update code đã dùng
 			await _unitOfWork.CodeManagers.UpdateIsUsed(request.Code, Guid.Parse(request.CampainId));
-            
-            //insert view detail
-            var viewDetail = new ViewDetail()
+
+			//insert view detail
+			var viewDetail = new ViewDetail()
 			{
 				Id = Guid.NewGuid(),
 				Device = ips,
@@ -114,7 +107,46 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 				DateModified = DateTime.Now
 			};
 			_unitOfWork.ViewDetails.Add(viewDetail);
-			
+			//get User and update balane
+			await _unitOfWork.Users.UpdateBalanceCount(user.Id,1000);
+			//TODO: update vào bảng transation
+			var transLogUser = new TransactionLog
+			{
+				Id = Guid.NewGuid(),
+				UserId = user.Id,
+				UserName = user.UserName,
+				Amount = 1000,
+				OldBalance = Int64.Parse(user.Balance.ToString()),
+				CreatedBy = user.UserName,
+				Description = "Nhận thưởng nhập code thành công link rút gọn : " + shortLink.Link,
+				TranSactionType = TranSactionType.ClickCode,
+				DateCreated = DateTime.Now,
+				DateModified = DateTime.Now
+			};
+			_unitOfWork.TransactionLogs.Add(transLogUser);
+			if (!string.IsNullOrEmpty(user.Agent))
+			{
+				var agent = await _unitOfWork.Users.GetUserAgentByRefcode(user.Agent);
+				if (agent != null)
+				{
+					await _unitOfWork.Users.UpdateBalanceCount(agent.Id, 100);
+					//TODO: update vào bảng transation
+					var transLogAgent = new TransactionLog
+					{
+						Id = Guid.NewGuid(),
+						UserId = agent.Id,
+						UserName = agent.UserName,
+						Amount = 100,
+						OldBalance = Int64.Parse(user.Balance.ToString()),
+						CreatedBy = agent.UserName,
+						Description = "Nhận thưởng hoa hồng thành công link rút gọn : " + shortLink.Link + " của tài khoản " + user.UserName,
+						TranSactionType = TranSactionType.Commission,
+						DateCreated = DateTime.Now,
+						DateModified = DateTime.Now
+					};
+					_unitOfWork.TransactionLogs.Add(transLogAgent);
+				}
+			}
 			var result = await _unitOfWork.CompleteAsync();
 			return result > 0 ? Ok(shortLink.OriginLink) : BadRequest("Nhập code không thành công");
 

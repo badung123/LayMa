@@ -1,5 +1,5 @@
 import { NgStyle, NgTemplateOutlet } from '@angular/common';
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input, OnInit } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 import {
@@ -37,7 +37,7 @@ import { TokenStorageService } from 'src/app/shared/services/token-storage.servi
   standalone: true,
   imports: [ContainerComponent, HeaderTogglerDirective, SidebarToggleDirective, IconDirective, HeaderNavComponent, NavItemComponent, NavLinkDirective, RouterLink, RouterLinkActive, NgTemplateOutlet, BreadcrumbRouterComponent, ThemeDirective, DropdownComponent, DropdownToggleDirective, TextColorDirective, AvatarComponent, DropdownMenuDirective, DropdownHeaderDirective, DropdownItemDirective, BadgeComponent, DropdownDividerDirective, ProgressBarDirective, ProgressComponent, NgStyle]
 })
-export class DefaultHeaderComponent extends HeaderComponent {
+export class DefaultHeaderComponent extends HeaderComponent implements OnInit{
 
   readonly #colorModeService = inject(ColorModeService);
   readonly colorMode = this.#colorModeService.colorMode;
@@ -52,13 +52,22 @@ export class DefaultHeaderComponent extends HeaderComponent {
     const currentMode = this.colorMode();
     return this.colorModes.find(mode => mode.name === currentMode)?.icon ?? 'cilSun';
   });
+  public userName: string = "";
+  public email: string = "";
 
   constructor(private classToggler: ClassToggleService,
     private tokenService: TokenStorageService,
     private router: Router) {
-    super();
+    super(); 
   }
-
+  ngOnInit() {
+    var loggedInUser = this.tokenService.getUser();
+    console.log(loggedInUser);
+    if (loggedInUser) {
+      this.userName = loggedInUser.firstName;
+      this.email = loggedInUser.email;
+    } 
+  }
   
   logout() {
     this.tokenService.signOut();

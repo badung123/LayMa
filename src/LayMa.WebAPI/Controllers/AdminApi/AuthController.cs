@@ -14,6 +14,9 @@ using LayMa.Core.Constants;
 using AutoMapper;
 using YamlDotNet.Core.Tokens;
 using LayMa.WebAPI.Extensions;
+using LayMa.Core.Utilities;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using System.Text.Encodings.Web;
 
 namespace LayMa.Api.Controllers.AdminApi
 {
@@ -26,18 +29,21 @@ namespace LayMa.Api.Controllers.AdminApi
         private readonly ITokenService _tokenService;
         private readonly RoleManager<IdentityRole<Guid>> _roleManager;
         private readonly IMapper _mapper;
-        public AuthController(UserManager<AppUser> userManager,
+		private IMailService _mailService = null;
+		public AuthController(UserManager<AppUser> userManager,
             SignInManager<AppUser> signInManager,
             ITokenService tokenService,
             RoleManager<IdentityRole<Guid>> roleManager,
-            IMapper mapper)
+            IMapper mapper,
+			IMailService mailService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _tokenService = tokenService;
             _roleManager = roleManager;
             _mapper = mapper;
-        }
+			_mailService = mailService;
+		}
 
         [HttpPost]
         [Route("login")]
@@ -48,18 +54,30 @@ namespace LayMa.Api.Controllers.AdminApi
             {
                 return BadRequest("Invalid request");
             }
-
-            var user = await _userManager.FindByNameAsync(request.UserName);
-            if (user == null || user.IsActive == false)
+            var isEmail = request.UserName.IsValidEmail();
+            var user = new AppUser();
+            if (isEmail) {
+				user = await _userManager.FindByEmailAsync(request.UserName);
+				if (user == null || user.IsActive == false)
+				{
+					return BadRequest("Email không tồn tại.Vui lòng thử lại");
+				}
+			}
+            else
             {
-                return Unauthorized();
-            }
+				user = await _userManager.FindByNameAsync(request.UserName);
+				if (user == null || user.IsActive == false)
+				{
+					return BadRequest("Tên đăng nhập không tồn tại");
+				}
+			}
+            
 
-            var result = await _signInManager.PasswordSignInAsync(request.UserName, request.Password, false, true);
+            var result = await _signInManager.PasswordSignInAsync(user.UserName, request.Password, false, true);
             if (!result.Succeeded)
             {
-                return Unauthorized();
-            }
+				return BadRequest("Mật khẩu không đúng.Vui lòng thử lại");
+			}
 
             //Authorization
             var roles = await _userManager.GetRolesAsync(user);
@@ -70,6 +88,8 @@ namespace LayMa.Api.Controllers.AdminApi
                     new Claim(UserClaims.Id, user.Id.ToString()),
                     new Claim(ClaimTypes.NameIdentifier, user.UserName),
                     new Claim(ClaimTypes.Name, user.UserName),
+					new Claim(UserClaims.UserName, user.UserName),
+					new Claim(UserClaims.Code,user.RefCode == null ? "":user.RefCode),
                     new Claim(UserClaims.Roles, string.Join(";", roles)),
                     new Claim(UserClaims.Permissions, JsonSerializer.Serialize(permissions)),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
@@ -180,5 +200,56 @@ namespace LayMa.Api.Controllers.AdminApi
                 IsSuccessful = true
             });
         }
-    }
+		[HttpPost]
+		[Route("forgotPassword")]
+		public async Task<ActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request)
+		{
+			if (request == null) return BadRequest("Dữ liệu truyền lên không đúng");
+            if (!request.Email.IsValidEmail()) return BadRequest("Email không đúng định dạng");
+
+			//check User exist
+			var user = await _userManager.FindByEmailAsync(request.Email);
+
+            if (user == null) return BadRequest("Tài khoản không tồn tại");
+            await SendForgotPasswordEmail(request.Email,user);
+            //var mailData = new MailData
+            //{
+            //    EmailToId = request.Email,
+            //    EmailToName = "test",
+            //    EmailBody = "test1",
+            //    EmailSubject = "test2"
+            //};
+            //_mailService.SendMail(mailData);
+
+			return Ok();
+		}
+		private async Task SendForgotPasswordEmail(string? email, AppUser? user)
+		{
+			// Generate the reset password token
+			var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            // Build the password reset link which must include the Callback URL
+            // Build the password reset link
+            //var passwordResetLink = Url.Action("ResetPassword", "Account",
+            //new { Email = email, Token = token }, protocol: HttpContext.Request.Scheme);
+            var passwordResetLink = "http://localhost:4200/#/auth/resetPassword?email=" + email + "&token="+token;
+			//Send the Confirmation Email to the User Email Id
+			await MailUtils.SendMailGoogleSmtp(email, "Làm Mới Mật Khẩu", $"Làm mới mật khẩu của bạn bằng cách nhấn vào <a href='{HtmlEncoder.Default.Encode(passwordResetLink)}'>đường dẫn</a>. ở đây");
+		}
+		[HttpPost]
+		[Route("resetPassword")]
+		public async Task<ActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
+		{
+			if (request == null) return BadRequest("Dữ liệu truyền lên không đúng");
+
+			if (!request.Email.IsValidEmail()) return BadRequest("Email không đúng định dạng");
+
+			var user = await _userManager.FindByEmailAsync(request.Email);
+			if (user == null) return BadRequest("Tài khoản không tồn tại");
+
+			var result = await _userManager.ResetPasswordAsync(user, request.Token, request.Password);
+			if (!result.Succeeded) return BadRequest("Đổi mật khẩu chưa thành công");
+
+			return Ok();
+		}
+	}
 }

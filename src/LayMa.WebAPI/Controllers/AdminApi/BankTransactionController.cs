@@ -33,11 +33,18 @@ namespace LayMa.WebAPI.Controllers.AdminApi
         //[Authorize(ShortLinks.Create)]
         public async Task<IActionResult> CreateBankTransaction([FromBody] CreateBankTransactionDto request)
         {
-            //check thoi gian toi thieu tao lenh rut
-            var userId = User.GetUserId();
+			//check thoi gian toi thieu tao lenh rut
+			if (request == null)
+			{
+				return BadRequest("Invalid request");
+			}
+
+			var userId = User.GetUserId();
             var user = await _userManager.FindByIdAsync(userId.ToString());
             if (user == null) return BadRequest("User không tồn tại");
-            var transaction = _mapper.Map<CreateBankTransactionDto, TransactionBank>(request);
+            if (user.Balance < 50000) return BadRequest("Rút tối thiểu 50.000 VNĐ");
+			if (user.Balance < request.Money) return BadRequest("Số dư không đủ");
+			var transaction = _mapper.Map<CreateBankTransactionDto, TransactionBank>(request);
             transaction.DateCreated = DateTime.Now;
             transaction.DateModified = DateTime.Now;
             transaction.UserId = userId;

@@ -38,7 +38,7 @@ builder.Services.AddCors(o => o.AddPolicy(LaymaCorsPolicy, builder =>
 builder.Services.AddDbContext<LayMaContext>(options =>
                 options.UseSqlServer(connectionString));
 
-builder.Services.AddIdentity<AppUser, IdentityRole<Guid>>(options => options.SignIn.RequireConfirmedAccount = false)
+builder.Services.AddIdentity<AppUser, IdentityRole<Guid>>(options => options.SignIn.RequireConfirmedAccount = false).AddDefaultTokenProviders()
     .AddEntityFrameworkStores<LayMaContext>();
 
 builder.Services.Configure<IdentityOptions>(options =>
@@ -84,10 +84,12 @@ foreach (var service in services)
 //Authen and author
 builder.Services.Configure<JwtTokenSettings>(configuration.GetSection("JwtTokenSettings"));
 builder.Services.Configure<MediaSettings>(configuration.GetSection("MediaSettings"));
+builder.Services.Configure<MailSettings>(configuration.GetSection("MailSettings"));
 builder.Services.AddScoped<SignInManager<AppUser>, SignInManager<AppUser>>();
 builder.Services.AddScoped<UserManager<AppUser>, UserManager<AppUser>>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IShortLinkService, ShortLinkService>();
+builder.Services.AddTransient<IMailService, MailService>();
 builder.Services.AddScoped<RoleManager<IdentityRole<Guid>>, RoleManager<IdentityRole<Guid>>>();
 
 builder.Services.AddControllers();

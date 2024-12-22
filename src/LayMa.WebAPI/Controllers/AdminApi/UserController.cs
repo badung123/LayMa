@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using LayMa.Core.Domain.Identity;
+using LayMa.Core.Interface;
+using LayMa.Core.Model;
 using LayMa.Core.Model.Auth;
 using LayMa.Core.Model.User;
 using LayMa.WebAPI.Extensions;
@@ -15,11 +17,14 @@ namespace LayMa.WebAPI.Controllers.AdminApi
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
-        public UserController(UserManager<AppUser> userManager,
-            SignInManager<AppUser> signInManager)
+		private readonly IUnitOfWork _unitOfWork;
+		public UserController(UserManager<AppUser> userManager,
+            SignInManager<AppUser> signInManager,
+			IUnitOfWork unitOfWork)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpPost]
@@ -53,5 +58,18 @@ namespace LayMa.WebAPI.Controllers.AdminApi
             };
             return Ok(ob);
         }
-    }
+		[HttpGet]
+		[Route("getListAgentByUserId")]
+		public async Task<ActionResult<PagedResult<AgentListDto>>> GetListAgentByUserId(int pageIndex, int pageSize = 10, string? keySearch = "")
+		{
+			var userId = User.GetUserId();
+			var user = await _userManager.FindByIdAsync(userId.ToString());
+			if (user == null) return BadRequest("Tài khoản không tồn tại hoặc hết hạn đăng nhập");
+            var refcode = user.RefCode != null ? user.RefCode : "";
+
+			var listAgent = await _unitOfWork.Users.GetAllPaging(refcode, pageIndex, pageSize, keySearch);
+
+			return Ok(listAgent);
+		}
+	}
 }

@@ -86,13 +86,16 @@ export class LoginComponent implements OnDestroy,OnInit{
       },
       error: (error: any) => {
         console.log(error);
-        this.alertService.showError('Đăng nhập không đúng.');
+        this.alertService.showError(error);
         this.loading = false;
       },
     });
   }
   clickRegister(){
     this.router.navigate([UrlConstants.REGISTER]);
+  }
+  clickForgetPassword(){
+    this.router.navigate([UrlConstants.FORGETPASSWORD]);
   }
 
 }

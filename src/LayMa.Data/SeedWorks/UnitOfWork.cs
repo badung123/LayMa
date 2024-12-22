@@ -28,7 +28,7 @@ namespace LayMa.Data.SeedWorks
             Missions = new MissionRepository(context, mapper);
             Users = new UserRepository(context, mapper);
             Visitors = new VisitorRepository(context, mapper);
-
+            TransactionLogs = new TransactionLogRepository(context, mapper);
 		}
         public IShortLinkRepository ShortLinks { get; private set; }
 		public IKeySearchRepository KeySearchs { get; private set; }
@@ -39,6 +39,7 @@ namespace LayMa.Data.SeedWorks
 		public IMissionRepository Missions { get; private set; }
         public IUserRepository Users { get; private set; }
 		public IVisitorRepository Visitors { get; private set; }
+		public ITransactionLogRepository TransactionLogs { get; private set; }
 		public async Task<int> CompleteAsync()
         {
             return await _context.SaveChangesAsync();

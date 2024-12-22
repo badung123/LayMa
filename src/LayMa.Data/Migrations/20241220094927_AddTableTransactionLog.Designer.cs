@@ -4,6 +4,7 @@ using LayMa.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LayMa.Data.Migrations
 {
     [DbContext(typeof(LayMaContext))]
-    partial class LayMaContextModelSnapshot : ModelSnapshot
+    [Migration("20241220094927_AddTableTransactionLog")]
+    partial class AddTableTransactionLog
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -399,44 +402,6 @@ namespace LayMa.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Missions");
-                });
-
-            modelBuilder.Entity("LayMa.Core.Domain.Transaction.TransactionLog", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<long>("Amount")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DateModified")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("OldBalance")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("TranSactionType")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TransactionLog");
                 });
 
             modelBuilder.Entity("LayMa.Core.Domain.Visitor.Visitor", b =>

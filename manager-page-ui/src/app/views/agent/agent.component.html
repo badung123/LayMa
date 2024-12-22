@@ -20,9 +20,11 @@
                                     <input aria-describedby="button-copy"
                                     cFormControl
                                     [disabled]="true"
+                                    value="{{linkRef}}"
                                     />
-                                    <button cButton color="warning" id="button-copy" type="button">
-                                        <i class="pi pi-copy" style="font-size: 1.5rem"></i>
+                                    <button cButton color="warning" id="button-copy" type="button" (click)="copyToClipboard()">
+                                        {{btn1text}}
+                                        <!-- <i class="pi pi-copy" style="font-size: 1.5rem"></i> -->
                                     </button>
                                   </c-input-group>
                             </li>
@@ -48,16 +50,38 @@
                   >
                     <thead class="text-nowrap text-truncate">
                     <tr>
-                      <th class="bg-body-tertiary text-center ">
-                       
-                      </th>
-                      <th class="bg-body-tertiary">STT</th>
+                      <th class="bg-body-tertiary"></th>
                       <th class="bg-body-tertiary text-center">Thành viên</th>
-                      <th class="bg-body-tertiary">Ngày tạo</th>
-                      <th class="bg-body-tertiary text-center">Xem chi tiết</th>
+                      <th class="bg-body-tertiary text-center">Trạng Thái</th>
+                      <th class="bg-body-tertiary text-center">Xác Minh</th>
                     </tr>
                     </thead>
                     <tbody>
+                        @for (item of listAgent; track item.memberId; let i = $index) {
+                            <tr>
+                                <td>
+                                    <button cButton color="secondary">Thống Kê</button> 
+                                </td>
+                              <td>
+                                {{ item.userName }}
+                                <div class="small text-body-secondary text-nowrap">
+                                <span>
+                                  Tạo lúc: {{ item.dateCreated | date: 'dd/MM/yyyy hh:mm:ss'}}
+                                </span>
+                                </div>
+                              </td>
+                              <td class="text-center">
+                                <button *ngIf="item.isActive" cButton color="primary">Hoạt động</button>
+                                <button *ngIf="!item.isActive" cButton color="danger">Đã khóa</button>                                 
+                                
+                              </td>
+                              <td class="text-center">                               
+                                <button *ngIf="item.isVerify" cButton color="success">Đã Xác Minh</button>
+                                <button *ngIf="!item.isVerify" cButton color="warning">Chưa Xác Minh</button>
+                              </td>
+                              
+                            </tr>
+                          }
                     </tbody>
                   </table>
                 </c-card-body>
