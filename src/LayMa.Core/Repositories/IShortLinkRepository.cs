@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LayMa.Core.Domain.Transaction;
 
 namespace LayMa.Core.Repositories
 {
@@ -19,5 +20,6 @@ namespace LayMa.Core.Repositories
 		Task<List<Guid>> GetListShortLinkIDOfUser(Guid userId);
         Task UpdateOriginOfShortLink(string origin, Guid shortlinkId);
         Task UpdateView(Guid id);
-    }
+		Task<PagedResult<LogShortLinkDto>> GetAllLogPaging(DateTime from, DateTime to,int pageIndex = 1, int pageSize = 10, string? userName = "",int type = -1);
+	}
 }

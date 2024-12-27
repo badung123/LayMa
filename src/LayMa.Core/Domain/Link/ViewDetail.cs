@@ -16,7 +16,9 @@ namespace LayMa.Core.Domain.Link
 		public Guid ShortLinkId { get; set; }
 		public string? IPAddress { get; set; }
         public string? Device { get; set; }
-        public DateTime DateCreated { get; set; }
+		public string? DeviceScreen { get; set; }
+		public string? UserAgent { get; set; }
+		public DateTime DateCreated { get; set; }
 		public DateTime? DateModified { get; set; }
 	}
 }

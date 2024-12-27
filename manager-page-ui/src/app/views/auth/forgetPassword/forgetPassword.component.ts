@@ -12,13 +12,13 @@ import {
   ForgotPasswordRequest,
   RegisterRequest,
   RegistrationResponse,
-} from 'src/app/api/admin-api.service.generated';
-import { AlertService } from 'src/app/shared/services/alert.service';
-import { UrlConstants } from 'src/app/shared/constants/url.constants';
+} from '../../../api/admin-api.service.generated';
+import { AlertService } from '../../../shared/services/alert.service';
+import { UrlConstants } from '../../../shared/constants/url.constants';
 import { Subject, takeUntil } from 'rxjs';
 import { IconDirective } from '@coreui/icons-angular';
 import { ContainerComponent, RowComponent, ColComponent, TextColorDirective, CardComponent, CardBodyComponent, FormDirective, InputGroupComponent, InputGroupTextDirective, FormControlDirective, ButtonDirective } from '@coreui/angular';
-import { UtilityService } from 'src/app/shared/services/utility.service';
+import { UtilityService } from '../../../shared/services/utility.service';
 
 @Component({
     selector: 'app-forgetPassword',

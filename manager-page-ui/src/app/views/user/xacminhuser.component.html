@@ -1,0 +1,26 @@
+
+<c-row>
+    <c-col xs="12">
+      <c-card class="mb-4">
+        <c-card-header>
+          <h2><strong>Quản lý Người dùng</strong></h2>
+        </c-card-header>
+        <c-card-body class="p-4">
+          <c-row >
+            Nguồn <br>
+            <code>{{linkNguon}}</code>
+          </c-row>
+          <c-row>
+            <div class="field col-12 md:col-6">
+              <p-image [src]="thumbnailImage" [preview]="true" width="250">
+              </p-image>
+            </div>
+          </c-row>
+          <div class="d-grid">
+            <button cButton color="warning" (click)="verify()">XÁC MINH</button>
+          </div>               
+        </c-card-body>
+      </c-card>
+    </c-col> 
+  </c-row>
+  

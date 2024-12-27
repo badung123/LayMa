@@ -3,6 +3,7 @@ using LayMa.Core.Domain.Link;
 using LayMa.Core.Repositories;
 using LayMa.Data.SeedWorks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,6 +34,14 @@ namespace LayMa.Data.Repositories
             var count = await _context.ViewDetails.Where(x =>x.DateCreated >= start && x.DateCreated <= end).CountAsync();
             return count;
         }
+		public async Task<bool> CheckIPUserAgent(string ip, string usergent, string screenDevice)
+		{
+			var date = DateTime.Now;
+			var start = date.Date;
+			var end = date.Date.AddDays(1);
+			var isValid = await _context.ViewDetails.Where(x=> start <=x.DateCreated && x.DateCreated < end).AnyAsync(x => x.IPAddress == ip || x.UserAgent == usergent);
+			return !isValid;
+		}
 
-    }
+	}
 }

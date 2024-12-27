@@ -9,8 +9,8 @@ import {
 import { IconDirective } from '@coreui/icons-angular';
 import { ContainerComponent, RowComponent, ColComponent, TextColorDirective, CardComponent,CardHeaderComponent, CardBodyComponent, FormDirective, InputGroupComponent, InputGroupTextDirective, FormControlDirective, ButtonDirective } from '@coreui/angular';
 import { AdminApiShortLinkApiClient, UpdateNguon } from '../../../api/admin-api.service.generated';
-import { AlertService } from 'src/app/shared/services/alert.service';
-import { UrlConstants } from 'src/app/shared/constants/url.constants';
+import { AlertService } from '../../../shared/services/alert.service';
+import { UrlConstants } from '../../../shared/constants/url.constants';
 import { Router } from '@angular/router';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Subject } from 'rxjs';
@@ -37,9 +37,12 @@ export class ShortlinkNoteComponent implements OnInit, OnDestroy{
       
     }
     ngOnDestroy(): void {
-        this.ngUnsubscribe.next();
-        this.ngUnsubscribe.complete();
+      if (this.ref) {
+        this.ref.close();
       }
+      this.ngUnsubscribe.next();
+      this.ngUnsubscribe.complete();
+    }
     
       ngOnInit() {
         this.link = this.config.data.link;   
@@ -61,5 +64,6 @@ export class ShortlinkNoteComponent implements OnInit, OnDestroy{
         },
       });
     }
+    
 
 }

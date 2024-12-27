@@ -8,9 +8,9 @@ import {
 } from '@angular/forms';
 import { IconDirective } from '@coreui/icons-angular';
 import { ContainerComponent, RowComponent, ColComponent, TextColorDirective, CardComponent,CardHeaderComponent, CardBodyComponent, FormDirective, InputGroupComponent, InputGroupTextDirective, FormControlDirective, ButtonDirective } from '@coreui/angular';
-import { AdminApiShortLinkApiClient, CreateShortLinkDto } from 'src/app/api/admin-api.service.generated';
-import { AlertService } from 'src/app/shared/services/alert.service';
-import { UrlConstants } from 'src/app/shared/constants/url.constants';
+import { AdminApiShortLinkApiClient, CreateShortLinkDto } from '../../../api/admin-api.service.generated';
+import { AlertService } from '../../../shared/services/alert.service';
+import { UrlConstants } from '../../../shared/constants/url.constants';
 import { Router } from '@angular/router';
 
 @Component({

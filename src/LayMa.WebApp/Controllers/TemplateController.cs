@@ -21,7 +21,7 @@ namespace LayMa.WebApp.Controllers
             ViewBag.Id = id;
 			var url = _configuration.GetValue<string>("API_URL");
 			ViewBag.ApiUrl = url;
-            string apiUrl = url + "/api/admin/mission?token=" + id; //https://api.layma.net,https://localhost:7020
+			string apiUrl = url + "/api/admin/mission?token=" + id; //https://api.layma.net,https://localhost:7020
 			var table = new TemplateViewModel();
 			using (HttpClient client = new HttpClient())
 			{
@@ -37,6 +37,8 @@ namespace LayMa.WebApp.Controllers
 					var data = await response.Content.ReadAsStringAsync();
 					Console.WriteLine(data);
 					table = Newtonsoft.Json.JsonConvert.DeserializeObject<TemplateViewModel>(data);
+					if (!string.IsNullOrEmpty(table.UrlImage)) table.UrlImage = url + table.UrlImage;
+
 
 				}
 

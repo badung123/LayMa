@@ -1,1 +1,84 @@
-<h1>Đây là chiến dịch facebook</h1>
+
+<c-row>
+    <c-col xs="12">
+      <c-card class="mb-4">
+        <c-card-header>
+          <h2><strong>CHIẾN DỊCH FACEBOOK</strong></h2>
+        </c-card-header>
+        <c-card-body class="p-4">
+            <c-row class="mb-4">
+                <c-col sm="2">
+                    <button cButton class="px-4" color="success" (click)="showAddModal()">
+                        Thêm mới                        
+                      </button>
+                </c-col>
+            </c-row>
+            <c-row>
+                <c-col xs>
+                  <c-card class="mb-4">
+                    <c-card-header>
+                        Danh sách chiến dịch
+                    </c-card-header>
+                    <c-card-body>
+                        <table
+                  [hover]="true"
+                  [responsive]="true"
+                  [striped]="true"
+                  align="middle"
+                  cTable
+                  class="mb-0 border"
+                >
+                  <thead class="text-nowrap text-truncate">
+                  <tr>
+                    <th class="bg-body-tertiary text-center">Domain</th>
+                    <th class="bg-body-tertiary text-center">Giá/View</th>
+                    <th class="bg-body-tertiary text-center">View trong ngày</th>
+                    <th class="bg-body-tertiary text-center">Time lấy mã</th>
+                    <th class="bg-body-tertiary">Trạng thái</th>
+                    <th class="bg-body-tertiary text-center">Ngày tạo</th>
+                    <th class="bg-body-tertiary">Chức năng</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                    @for (item of items; track item.keyToken; let i = $index) {
+                      <tr>
+                        <td class="text-center" style="max-width: 200px;">
+                          <div>{{ item.url  }}</div>
+                        </td>
+                        <td  class="text-center">
+                            {{item.pricePerView}}
+                        </td>
+                        <td class="text-center">
+                          {{item.viewPerDay}}
+                        </td>
+                        <td class="text-center">
+                            {{item.timeOnSitePerView}}
+                        </td>
+                        <td class="text-center">
+                        
+                        </td>
+                        <td class="text-center">
+                            {{ item.dateCreated | date: 'dd/MM/yyyy hh:mm:ss'}}
+                        </td>
+                        <td>
+                            <div>
+                                <button style="margin-right: 10px;" cButton color="warning" (click) ="showEditModal(item.id)">Sửa</button>
+                                <button cButton color="primary" (click) ="showModalDetail(item.id,item.keyToken)">Quản lý</button>
+                            </div>
+                            <div>
+                                
+                            </div>
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+                    </c-card-body>
+                  </c-card>
+                </c-col>
+              </c-row>    
+        </c-card-body>
+      </c-card>
+    </c-col> 
+  </c-row>
+  

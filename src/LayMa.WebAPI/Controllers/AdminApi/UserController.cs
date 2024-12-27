@@ -42,7 +42,27 @@ namespace LayMa.WebAPI.Controllers.AdminApi
             await _userManager.UpdateAsync(user);
             return Ok();
         }
-        [HttpGet]
+		[HttpPost]
+		[Route("adminVerify")]
+		public async Task<ActionResult> VerifyUserByAdmin([FromBody] VerifyOrLockUserRequest request)
+		{
+			var user = await _userManager.FindByIdAsync(request.UserId.ToString());
+			if (user == null) return BadRequest("Tài khoản không tồn tại");
+			user.IsVerify = true;
+			await _userManager.UpdateAsync(user);
+			return Ok();
+		}
+		[HttpPost]
+		[Route("adminlockUser")]
+		public async Task<ActionResult> LockUserByAdmin([FromBody] VerifyOrLockUserRequest request)
+		{
+			var user = await _userManager.FindByIdAsync(request.UserId.ToString());
+			if (user == null) return BadRequest("Tài khoản không tồn tại");
+			user.IsActive = false;
+			await _userManager.UpdateAsync(user);
+			return Ok();
+		}
+		[HttpGet]
         [Route("getInfoVerify")]
         public async Task<ActionResult<VerifyUserInfo>> GetInfoVerify()
         {
@@ -70,6 +90,15 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 			var listAgent = await _unitOfWork.Users.GetAllPaging(refcode, pageIndex, pageSize, keySearch);
 
 			return Ok(listAgent);
+		}
+		[HttpGet]
+		[Route("GetListUser")]
+		public async Task<ActionResult<PagedResult<UserDtoInList>>> GetListUser(int pageIndex, int pageSize = 10, string? keySearch = "")
+		{
+
+			var listUser = await _unitOfWork.Users.GetAllUserPaging(pageIndex, pageSize, keySearch);
+
+			return Ok(listUser);
 		}
 	}
 }

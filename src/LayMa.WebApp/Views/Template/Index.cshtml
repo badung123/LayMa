@@ -74,9 +74,17 @@
 			}
 			else
 			{
-				<p class="box-step-title fadeInUp visible">Bước 1: Mở tab mới, truy cập <a href="@Model.UrlFacebook" target="_blank">liên kết</a></p>
+				<p class="box-step-title fadeInUp visible">Bước 1: Mở tab mới, truy cập liên kết(Vui lòng copy liên kết)</p>
+				
+				<div class="box-linkFB-wrap">
+					<code id="linkFB">@Model.UrlFacebook</code>
+				</div>
+				<div class="box-btn-copy">
+					<button id="copyUrlFB" onclick="copyUrlFB()">Copy</button>
+				</div>
+				
 				<p class="box-step-title fadeInUp visible">Bước 2: Truy cập liên kết trong bài viết Facebook</p>
-				<span><img src="/uploads/anhFB.png" alt="" class="img-fluid"></span>
+				<span><img src="@Model.UrlImage" alt="" class="img-fluid"></span>
 				<p class="box-google-note">(Truy cập link như trong hình)</p>
 				<p class="box-step-title fadeInUp visible">Bước 3: Khi website mở ra,hãy cuộn chậm từ trên xuống tìm nút như hình bên dưới và sau đó click vào</p>
 				<p class="box-step-getCode fadeInUp mt-1 visible">
@@ -122,7 +130,7 @@
 			<div class="box-video fadeInUp visible">
 				<p class="box-video-title fadeInUp visible">VIDEO HƯỚNG DẪN CÁCH LẤY MÃ</p>
 				<div class="box-video-youtube fadeInUp visible">
-					<iframe style="width:100%; aspect-ratio:0.452;" src="https://customer-fr8xnm7my3qm5f02.cloudflarestream.com/dfa1f086b08c4d46402977184d7e85c9/iframe?poster=https%3A%2F%2Fcustomer-fr8xnm7my3qm5f02.cloudflarestream.com%2Fdfa1f086b08c4d46402977184d7e85c9%2Fthumbnails%2Fthumbnail.jpg%3Ftime%3D%26height%3D600"></iframe>
+					<iframe style="width:100%; aspect-ratio:0.452;" src="/uploads/video_fb_hd.mp4"></iframe>
 				</div>
 			</div>
 
@@ -253,6 +261,7 @@
 		</div>
 		<div class="modal-body">
 			<p id="noidung"></p>
+			<p id="countRedirect" style="display:none;font-size:30px"></p>
 		</div>
 		<div id="modalFooter" class="modal-footer">
 			<button type="submit" class="btn btn-success" id="redirect">OK</button>
@@ -592,6 +601,7 @@
 		modalThongbao.style.display = "block";
 		document.getElementById("modalHeader").style.backgroundColor = "red";
 		document.getElementById("modalFooter").style.backgroundColor = "red";
+		document.getElementById("countRedirect").style.display = "none";
 		document.getElementById("noidung").innerHTML = error;
 	}
 	function displaySuccess(noidung){
@@ -611,10 +621,13 @@
 		if (campainId == null || campainId == "") {
 			displayError("Chiến dịch không tồn tại");
 		}
+		var clientInformation = getVisitorInfo();
 		var postData = {
 			"Code":code,
 			"Token":tokenId,
-			"CampainId":campainId
+			"CampainId":campainId,
+			"UserAgent":clientInformation.userAgent,
+			"DeviceScreen":clientInformation.screen
 		};
 		$.ajax({
 			url: '@Html.Raw(ViewData["ApiUrl"])' + '/api/admin/codemanager/checkcode',
@@ -625,10 +638,20 @@
 				displaySuccess("Nhập code thành công");
 				spanThongbao.style.display = "none"; 
 				document.getElementById("closeThongBao").style.display = "none";
-				document.getElementById("redirect").onclick = function(){
-					modalThongbao.style.display = "none";
-					window.open(result);
-				}				
+				document.getElementById("redirect").style.display = "none";
+				document.getElementById("countRedirect").style.display = "block";
+				let n = 3;
+				document.getElementById("countRedirect").innerHTML = n;
+				let t = setInterval(function(){
+					n--;
+					document.getElementById("countRedirect").innerHTML = n;
+					if(n== 0){
+						clearInterval(t)
+						modalThongbao.style.display = "none";
+						window.open(result);
+					}
+				},1e3)
+							
 			},
 			error: function (error) {
 				displayError(error.responseText);
@@ -665,6 +688,19 @@
 			}
 		});
 	}
+	function copyUrlFB() {
+		// Get the text field
+		var copyText = document.getElementById("linkFB");
+
+		@* // Select the text field
+		copyText.select();
+		copyText.setSelectionRange(0, 99999); // For mobile devices *@
+
+		// Copy the text inside the text field
+		navigator.clipboard.writeText(copyText.innerHTML);
+		document.getElementById("copyUrlFB").innerHTML = "Đã copy";
+	}
+	
 	ajaxPost(
 		'@Html.Raw(ViewData["ApiUrl"])' + "/api/admin/visitor",
 		{

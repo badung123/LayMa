@@ -38,8 +38,8 @@ builder.Services.AddCors(o => o.AddPolicy(LaymaCorsPolicy, builder =>
 builder.Services.AddDbContext<LayMaContext>(options =>
                 options.UseSqlServer(connectionString));
 
-builder.Services.AddIdentity<AppUser, IdentityRole<Guid>>(options => options.SignIn.RequireConfirmedAccount = false).AddDefaultTokenProviders()
-    .AddEntityFrameworkStores<LayMaContext>();
+builder.Services.AddIdentity<AppUser, IdentityRole<Guid>>(options => options.SignIn.RequireConfirmedAccount = false)
+    .AddEntityFrameworkStores<LayMaContext>().AddDefaultTokenProviders();
 
 builder.Services.Configure<IdentityOptions>(options =>
 {
@@ -126,6 +126,8 @@ builder.Services.AddAuthentication(o =>
 		IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtTokenSettings:Key"]))
 	};
 });
+builder.Services.Configure<DataProtectionTokenProviderOptions>(o =>
+	   o.TokenLifespan = TimeSpan.FromHours(3));
 
 var app = builder.Build();
 

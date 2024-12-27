@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static LayMa.Core.Constants.AdminPermissions;
+using LayMa.Core.Model.Campain;
 
 namespace LayMa.Core.Repositories
 {
@@ -18,6 +19,7 @@ namespace LayMa.Core.Repositories
 		Task<PagedResult<AgentListDto>> GetAllPaging(string refcode, int pageIndex = 1, int pageSize = 10, string? keySearch = "");
         Task<AppUser?> GetUserAgentByRefcode(string refcode);
 		Task UpdateBalanceCount(Guid userid,double amount);
+		Task<PagedResult<UserDtoInList>> GetAllUserPaging(int pageIndex = 1, int pageSize = 10, string? keySearch = "");
 
 	}
 }

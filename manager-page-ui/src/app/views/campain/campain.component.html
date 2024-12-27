@@ -1,0 +1,75 @@
+
+<c-row>
+  <c-col xs="12">
+    <c-card class="mb-4">
+      <c-card-body>
+        <form cForm [formGroup]="campainForm" (ngSubmit)="saveData()">
+          <c-input-group class="flex-nowrap mb-4" *ngIf="isGoogle">
+            <input aria-describedby="addon-wrapping"
+                   aria-label="key"
+                   cFormControl
+                   formControlName="key"
+                   placeholder="Từ khóa tìm kiếm"
+            />
+          </c-input-group>
+          <c-input-group class="flex-nowrap mb-4">
+            <input aria-describedby="addon-wrapping"
+                   aria-label="urlWeb"
+                   cFormControl
+                   formControlName="urlWeb"
+                   placeholder="Đường dẫn trang web"
+            />
+          </c-input-group>
+          <c-row>
+            <c-col sm="4">
+              <c-input-group class="flex-nowrap mb-4">
+                <input aria-describedby="addon-wrapping"
+                       aria-label="price"
+                       cFormControl
+                       formControlName="price"
+                       placeholder="Nhập tiền thưởng trên mỗi click"
+                       type="number"
+                />
+              </c-input-group>
+            </c-col>
+            <c-col sm="4">
+              <c-input-group class="flex-nowrap mb-4">
+                <input aria-describedby="addon-wrapping"
+                       aria-label="view"
+                       cFormControl
+                       formControlName="view"
+                       placeholder="Số view tối đa trong ngày"
+                       type="number"
+                />
+              </c-input-group>
+            </c-col>
+            <c-col sm="4">
+              <c-input-group class="flex-nowrap mb-4">
+                <input aria-describedby="addon-wrapping"
+                       aria-label="time"
+                       cFormControl
+                       formControlName="time"
+                       placeholder="Thời gian lấy mã"
+                       type="number"
+                />
+              </c-input-group>
+            </c-col>
+          </c-row>
+          <c-input-group class="mb-4">
+            <input class="d-none" formControlName="thumbnail"/>
+            <input cFormControl id="inputGroupFile02" type="file" (change)="onFileChange($event)"/>
+            <label cInputGroupText for="inputGroupFile02">
+              Upload
+            </label>
+          </c-input-group>
+          <div *ngIf="thumbnailImage" class="field col-12 md:col-6">
+            <p-image [src]="thumbnailImage" [preview]="true" width="250">
+            </p-image>
+          </div>        
+          
+          <button cButton color="primary" type="submit" style="margin-top: 20px;">Cập nhật</button>
+        </form>                   
+      </c-card-body>
+    </c-card>
+  </c-col> 
+</c-row>

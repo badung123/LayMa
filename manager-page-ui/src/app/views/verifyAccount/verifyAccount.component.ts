@@ -5,7 +5,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { AlertService } from '../../shared/services/alert.service';
 import { CommonModule, NgStyle } from '@angular/common';
 import { UploadService } from '../../shared/services/upload.service';
-import { environment } from 'src/environments/environment';
+import { environment } from '../../../environments/environment';
 import { ImageModule } from 'primeng/image';
 import {
   FormBuilder,

@@ -3,6 +3,7 @@ using LayMa.Core.Domain.Link;
 using LayMa.Core.Repositories;
 using LayMa.Data.SeedWorks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;

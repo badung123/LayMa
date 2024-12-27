@@ -72,18 +72,19 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 			//{
 			//	return BadRequest("Key Search không hợp lệ");
 			//}
-			var check = await _unitOfWork.CodeManagers.CheckCode(request.Code, Guid.Parse(request.CampainId));
-            if (!check)
-            {
-				return BadRequest("Code đã được dùng hoặc không hợp lệ");
-			}
-			//tiến hành update
-			//get UserID by token key
 			var shortLink = await _unitOfWork.ShortLinks.GetByTokenAsync(request.Token);
-            if (shortLink == null)
-            {
+			if (shortLink == null)
+			{
 				return BadRequest("Link rút gọn không tồn tại");
 			}
+			var check = await _unitOfWork.CodeManagers.CheckCode(request.Code, Guid.Parse(request.CampainId));
+            if (!check) return BadRequest("Code đã được dùng hoặc không hợp lệ");
+			//check 1 ngày 1 user chỉ đc dùng 1 IP,user agent
+			var checkIp = await _unitOfWork.ViewDetails.CheckIPUserAgent(ips, request.UserAgent, request.DeviceScreen);
+			if (!checkIp) return Ok(shortLink.OriginLink);
+			//tiến hành update
+			//get UserID by token key
+			
             var userId = shortLink.UserId;
 			var user = await _userManager.FindByIdAsync(userId.ToString());
 			if (user == null || user.IsActive == false)
@@ -100,11 +101,13 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 			var viewDetail = new ViewDetail()
 			{
 				Id = Guid.NewGuid(),
-				Device = ips,
-				IPAddress = ip,
+				Device = "",
 				ShortLinkId = shortLink.Id,
 				DateCreated = DateTime.Now,
-				DateModified = DateTime.Now
+				DateModified = DateTime.Now,
+				DeviceScreen = request.DeviceScreen,
+				UserAgent = request.UserAgent,
+				IPAddress = ips
 			};
 			_unitOfWork.ViewDetails.Add(viewDetail);
 			//get User and update balane
@@ -120,6 +123,10 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 				CreatedBy = user.UserName,
 				Description = "Nhận thưởng nhập code thành công link rút gọn : " + shortLink.Link,
 				TranSactionType = TranSactionType.ClickCode,
+				ShortLink = shortLink.Link,
+				DeviceScreen = request.DeviceScreen,
+				UserAgent = request.UserAgent,
+				IPAddress = ips,
 				DateCreated = DateTime.Now,
 				DateModified = DateTime.Now
 			};
@@ -138,7 +145,8 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 						UserName = agent.UserName,
 						Amount = 100,
 						OldBalance = Int64.Parse(user.Balance.ToString()),
-						CreatedBy = agent.UserName,
+						CreatedBy = user.UserName,
+						ShortLink = shortLink.Link,
 						Description = "Nhận thưởng hoa hồng thành công link rút gọn : " + shortLink.Link + " của tài khoản " + user.UserName,
 						TranSactionType = TranSactionType.Commission,
 						DateCreated = DateTime.Now,

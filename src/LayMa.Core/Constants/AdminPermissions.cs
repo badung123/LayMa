@@ -46,5 +46,10 @@ namespace LayMa.Core.Constants
 			[Description("Xóa giao dịch rút tiền")]
 			public const string Delete = "Permissions.AdminWithDraw.Delete";
 		}
+		public static class Log
+		{
+			[Description("Xem log")]
+			public const string View = "Permissions.Log.View";
+		}
 	}
 }

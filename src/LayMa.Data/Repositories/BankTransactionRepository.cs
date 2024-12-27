@@ -26,8 +26,9 @@ namespace LayMa.Data.Repositories
         public async Task<PagedResult<BankTransactionInListDto>> GetAllBankTransactionPaging(Guid currentUserId, int pageIndex = 1, int pageSize = 10, string? keySearch = "")
         {
             var query = _context.TransactionBanks.AsQueryable();
-            query = query.Where(x => x.UserId == currentUserId);
-            if (!String.IsNullOrEmpty(keySearch))
+            if (currentUserId != Guid.Empty) query = query.Where(x => x.UserId == currentUserId);
+
+			if (!String.IsNullOrEmpty(keySearch))
             {
                 query = query.Where(x => x.BankName.Contains(keySearch));
             }

@@ -17,6 +17,10 @@ using LayMa.WebAPI.Extensions;
 using LayMa.Core.Utilities;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using System.Text.Encodings.Web;
+using LayMa.Core.Domain.Link;
+using Microsoft.AspNetCore.WebUtilities;
+using System.Text;
+using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 
 namespace LayMa.Api.Controllers.AdminApi
 {
@@ -227,11 +231,12 @@ namespace LayMa.Api.Controllers.AdminApi
 		{
 			// Generate the reset password token
 			var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-            // Build the password reset link which must include the Callback URL
-            // Build the password reset link
-            //var passwordResetLink = Url.Action("ResetPassword", "Account",
-            //new { Email = email, Token = token }, protocol: HttpContext.Request.Scheme);
-            var passwordResetLink = "http://localhost:4200/#/auth/resetPassword?email=" + email + "&token="+token;
+            token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+			// Build the password reset link which must include the Callback URL
+			// Build the password reset link
+			//var passwordResetLink = Url.Action("ResetPassword", "Account",
+			//new { Email = email, Token = token }, protocol: HttpContext.Request.Scheme);
+			var passwordResetLink = "https://quanly.layma.net/#/auth/resetPassword?email=" + email + "&token="+token;
 			//Send the Confirmation Email to the User Email Id
 			await MailUtils.SendMailGoogleSmtp(email, "Làm Mới Mật Khẩu", $"Làm mới mật khẩu của bạn bằng cách nhấn vào <a href='{HtmlEncoder.Default.Encode(passwordResetLink)}'>đường dẫn</a>. ở đây");
 		}
@@ -245,8 +250,8 @@ namespace LayMa.Api.Controllers.AdminApi
 
 			var user = await _userManager.FindByEmailAsync(request.Email);
 			if (user == null) return BadRequest("Tài khoản không tồn tại");
-
-			var result = await _userManager.ResetPasswordAsync(user, request.Token, request.Password);
+            var token = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(request.Token));
+			var result = await _userManager.ResetPasswordAsync(user, token, request.Password);
 			if (!result.Succeeded) return BadRequest("Đổi mật khẩu chưa thành công");
 
 			return Ok();

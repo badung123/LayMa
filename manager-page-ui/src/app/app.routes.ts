@@ -49,6 +49,10 @@ export const routes: Routes = [
         path: 'verifyAccount',
         loadChildren: () => import('./views/verifyAccount/routes').then((m) => m.routes)
       },
+      {
+        path: 'logs',
+        loadChildren: () => import('./views/log/routes').then((m) => m.routes)
+      },
     ]
   },
   { path: '**', redirectTo: 'dashboard' }

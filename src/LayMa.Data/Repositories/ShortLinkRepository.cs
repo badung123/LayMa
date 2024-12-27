@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using LayMa.Core.Domain.Identity;
 using LayMa.Core.Domain.Link;
+using LayMa.Core.Domain.Transaction;
 using LayMa.Core.Model;
 using LayMa.Core.Model.ShortLink;
 using LayMa.Core.Repositories;
@@ -81,5 +82,32 @@ namespace LayMa.Data.Repositories
             link.View += 1;
             _context.ShortLinks.Update(link);
         }
-    }
+		public async Task<PagedResult<LogShortLinkDto>> GetAllLogPaging(DateTime from, DateTime to, int pageIndex = 1, int pageSize = 10, string? userName = "", int type = -1)
+		{
+			var query = _context.TransactionLogs.AsQueryable();
+			query = query.Where(x => x.DateCreated >= from && x.DateCreated <= to);
+			if (!String.IsNullOrEmpty(userName))
+			{
+				query = query.Where(x => x.UserName.Contains(userName));
+			}
+            if (type != -1)
+            {
+				query = query.Where(x => x.TranSactionType == (TranSactionType)type);
+			}
+            var totalRow = await query.CountAsync();
+
+			query = query.OrderByDescending(x => x.DateCreated)
+			   .Skip((pageIndex - 1) * pageSize)
+			   .Take(pageSize);
+
+			return new PagedResult<LogShortLinkDto>
+			{
+				Results = await _mapper.ProjectTo<LogShortLinkDto>(query).ToListAsync(),
+				CurrentPage = pageIndex,
+				RowCount = totalRow,
+				PageSize = pageSize
+			};
+		}
+
+	}
 }

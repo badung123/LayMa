@@ -1,0 +1,19 @@
+
+<c-row>
+  <c-col xs="12">
+    <c-card class="mb-4">
+      <c-card-body>  
+        <strong>Bạn cần tích hợp nhứng mã của hệ thống để chạy các chiến dịch</strong><br>
+        <strong>Hướng dẫn tích hợp</strong><br>
+        <strong>Bước 1: </strong>  Đặt đoạn js: <br>
+        <code>&lt;script src="https://layma.net/Traffic/Index/{{config.data.keyToken}}"&gt; &lt;/script&gt;</code> <br>
+        vào trong thẻ <code>&lt;head&gt; ...&lt;/head&gt;</code>
+        <br>
+        <strong>Bước 2: </strong>  đặt đoạn thẻ <br>
+        <code>&lt;div id="{{config.data.keyToken}}" style="text-align:center"&gt; &lt;/div&gt;</code>    <br>
+        Vào vị trí cuối bài hoặc cuối trang website của bạn <br>
+        <strong>Bước 3: </strong>  Xóa cache(nếu có) và load lại trang
+      </c-card-body>
+    </c-card>
+  </c-col> 
+</c-row>

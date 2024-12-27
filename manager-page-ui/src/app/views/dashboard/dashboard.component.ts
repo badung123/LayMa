@@ -25,9 +25,9 @@ import { ChartjsComponent } from '@coreui/angular-chartjs';
 import { IconDirective } from '@coreui/icons-angular';
 import { DashboardChartsData, IChartProps } from './dashboard-charts-data';
 import { Subject, takeUntil } from 'rxjs';
-import { UtilityService } from 'src/app/shared/services/utility.service';
-import { AlertService } from 'src/app/shared/services/alert.service';
-import { AdminApiCampainApiClient, AdminApiKeySearchApiClient, AdminApiShortLinkApiClient, ShortLinkInListDto, ShortLinkInListDtoPagedResult, ThongKeView, ThongKeViewClick } from 'src/app/api/admin-api.service.generated';
+import { UtilityService } from '../../shared/services/utility.service';
+import { AlertService } from '../../shared/services/alert.service';
+import { AdminApiCampainApiClient, AdminApiKeySearchApiClient, AdminApiShortLinkApiClient, ShortLinkInListDto, ShortLinkInListDtoPagedResult, ThongKeView, ThongKeViewClick } from '../../api/admin-api.service.generated';
 
 @Component({
   templateUrl: 'dashboard.component.html',
@@ -44,16 +44,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
   //System variables
   private ngUnsubscribe = new Subject<void>();
   public items: ShortLinkInListDto[];
-  public thongkeviewconlai: number = 0;
-  public balance: number = 0;
-  public hoahong: number = 0;
-  public tongview: number = 0;
-  public tongclick: number = 0;
-  public tongthunhap: number = 0;
+  public thongkeviewconlai: string = "";
+  public balance: string = "";
+  public hoahong: string = "";
+  public tongview: string = "";
+  public tongclick: string = "";
+  public tongthunhap: string = "";
   public stringDate: string;
-  public rangeDates: any;
+  public rangeDates: Date[] = [new Date(),new Date()];
   public from: Date;
   public to: Date;
+  public isDateRange: Boolean = false;
   constructor(private alertService: AlertService,
     private shortlinkApiClient: AdminApiShortLinkApiClient,
     private thognkeApiClient: AdminApiCampainApiClient,
@@ -76,6 +77,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     //this.initCharts();
     //this.updateChartOnColorModeChange();
     this.loadBalance();
+    this.loadhoahong();
     this.loadTopLink();
     this.loadTongViewByRangeDate('Day');
     this.loadThongkeView();
@@ -106,7 +108,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     .pipe(takeUntil(this.ngUnsubscribe))
     .subscribe({
       next: (response: number) => {
-        this.balance = response;
+        this.balance = new Intl.NumberFormat('vi').format(response);
       },
       error: (error: any) => {
         console.log(error);
@@ -119,7 +121,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     .pipe(takeUntil(this.ngUnsubscribe))
     .subscribe({
       next: (response: ThongKeView) => {
-        this.thongkeviewconlai = response.viewConLaiTrongNgay;
+        this.thongkeviewconlai = new Intl.NumberFormat('vi').format(response.viewConLaiTrongNgay!);
       },
       error: (error: any) => {
         console.log(error);
@@ -133,9 +135,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
     .pipe(takeUntil(this.ngUnsubscribe))
     .subscribe({
       next: (response: ThongKeViewClick) => {
-        this.tongclick = response.click;
-        this.tongthunhap = response.click *1000;
-        this.tongview = response.view;
+        this.tongclick = new Intl.NumberFormat('vi').format(response.click!);
+        this.tongthunhap = new Intl.NumberFormat('vi').format(response.click! *1000);
+        this.tongview = new Intl.NumberFormat('vi').format(response.view!);
       },
       error: (error: any) => {
         console.log(error);
@@ -144,9 +146,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
   }
   setTrafficPeriod(value: string): void {
-    
     if (value != "CustomDay") {
+      this.isDateRange = false;
       this.loadTongViewByRangeDate(value);
+    }
+    else{
+      this.isDateRange = true;
     }
     
   }
@@ -167,7 +172,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.from = currentDateTo;
     }
     else{
-      
     }
     this.stringDate = 'Từ ngày ' + this.utilService.getDateFormat(this.from) + ' đến ' + this.utilService.getDateFormat(this.to)
   }
@@ -199,7 +203,25 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
   changeDateRange(event){
-    console.log(event);
-    console.log(this.rangeDates);
+    if (event[1] != null) {
+      this.from = event[0];
+      this.to = event[1];
+      this.loadTongViewByRangeDate("");
+    }
+    
+  }
+  loadhoahong(){
+    this.shortlinkApiClient.getHoaHongByDate(this.from,this.to)
+    .pipe(takeUntil(this.ngUnsubscribe))
+    .subscribe({
+      next: (response: number) => {
+        this.hoahong = new Intl.NumberFormat('vi').format(response);
+      },
+      error: (error: any) => {
+        console.log(error);
+        this.alertService.showError('Có lỗi xảy ra');
+      },
+    });
+    
   }
 }

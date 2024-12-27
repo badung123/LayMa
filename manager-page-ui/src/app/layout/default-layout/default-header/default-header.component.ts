@@ -28,8 +28,8 @@ import {
 } from '@coreui/angular';
 
 import { IconDirective } from '@coreui/icons-angular';
-import { UrlConstants } from 'src/app/shared/constants/url.constants';
-import { TokenStorageService } from 'src/app/shared/services/token-storage.service';
+import { UrlConstants } from '../../../shared/constants/url.constants';
+import { TokenStorageService } from '../../../shared/services/token-storage.service';
 
 @Component({
   selector: 'app-default-header',
@@ -62,9 +62,8 @@ export class DefaultHeaderComponent extends HeaderComponent implements OnInit{
   }
   ngOnInit() {
     var loggedInUser = this.tokenService.getUser();
-    console.log(loggedInUser);
     if (loggedInUser) {
-      this.userName = loggedInUser.firstName;
+      this.userName = loggedInUser.userName;
       this.email = loggedInUser.email;
     } 
   }

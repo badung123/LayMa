@@ -103,4 +103,12 @@ export const navItems: INavData[] = [
       "policyName": "Permissions.Users.View"
     }
   },
+  {
+    name: 'Logs',
+    url: '/logs',
+    iconComponent: { name: 'cil-puzzle' },
+    attributes: {
+      "policyName": "Permissions.Log.View"
+    }
+  },
 ];

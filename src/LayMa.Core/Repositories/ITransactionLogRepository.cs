@@ -11,5 +11,6 @@ namespace LayMa.Core.Repositories
 {
 	public interface ITransactionLogRepository : IRepository<TransactionLog, Guid>
 	{
+		Task<long> GetHoaHongByDate(Guid userId,DateTime from,DateTime to);
 	}
 }

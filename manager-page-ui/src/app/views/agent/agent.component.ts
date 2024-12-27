@@ -15,8 +15,8 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import { UrlConstants } from 'src/app/shared/constants/url.constants';
-import { TokenStorageService } from 'src/app/shared/services/token-storage.service';
+import { UrlConstants } from '../../shared/constants/url.constants';
+import { TokenStorageService } from '../../shared/services/token-storage.service';
 import { Clipboard } from "@angular/cdk/clipboard";
 //import { AdminApiShortLinkApiClient, AdminApiTestApiClient, CreateShortLinkDto } from 'src/app/api/admin-api.service.generatesrc';
 

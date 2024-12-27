@@ -22,7 +22,11 @@ namespace LayMa.Data.SeedWorks
         {
             _dbSet.AddAsync(entity);
         }
-        public void AddRange(IEnumerable<T> entities)
+		public void Update(T entity)
+		{
+			_dbSet.Update(entity);
+		}
+		public void AddRange(IEnumerable<T> entities)
         {
             _dbSet.AddRange(entities);
         }

@@ -1,1 +1,94 @@
-<h1>Đây là trang quản lý người dùng</h1>
+
+<c-row>
+    <c-col xs="12">
+      <c-card class="mb-4">
+        <c-card-header>
+          <h2><strong>Quản lý Người dùng</strong></h2>
+        </c-card-header>
+        <c-card-body class="p-4">
+            <c-row>
+                <c-col xs>
+                  <c-card class="mb-4">
+                    <c-card-header>
+                        Danh sách người dùng
+                    </c-card-header>
+                    <c-card-body>
+                        <table
+                  [hover]="true"
+                  [responsive]="true"
+                  [striped]="true"
+                  align="middle"
+                  cTable
+                  class="mb-0 border"
+                >
+                  <thead class="text-nowrap text-truncate">
+                  <tr>
+                    <th class="bg-body-tertiary">STT</th>
+                    <th class="bg-body-tertiary text-center">Username</th>
+                    <th class="bg-body-tertiary text-center">Email</th>
+                    <th class="bg-body-tertiary text-center">Số dư</th>
+                    <th class="bg-body-tertiary text-center">Telegram</th>
+                    <th class="bg-body-tertiary text-center">Trạng Thái</th>
+                    <th class="bg-body-tertiary">Xác Minh</th>
+                    <th class="bg-body-tertiary">Chức năng</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                    @for (item of items; track item.id; let i = $index) {
+                      <tr>
+                        <td  class="text-center">
+                            {{i + 1}}
+                        </td>
+                        <td class="text-center">
+                            <div>{{item.userName}}</div>
+                            <div class="small text-body-secondary text-nowrap">
+                            <span>
+                              Tạo lúc: {{ item.dateCreated | date: 'dd/MM/yyyy hh:mm:ss'}}
+                            </span>
+                            </div>
+                        </td>
+                        <td  class="text-center">
+                            {{item.email}}
+                        </td>
+                        <td class="text-center">
+                          {{item.balance}}
+                        </td>
+                        <td class="text-center">
+                            {{item.userTelegram}}
+                          </td>
+                        <td class="text-center">
+                            <button *ngIf="item.isActive" cButton color="success">Hoạt Động</button>
+                            <button *ngIf="!item.isActive" cButton color="danger">Khóa</button>
+                        </td>
+                        <td class="text-center">
+                            <button *ngIf="item.isVerify" cButton color="success">Đã Xác Minh</button>
+                            <button *ngIf="!item.isVerify" cButton color="danger">Chưa Xác Minh</button>
+                        </td>
+                        <td>
+                            <c-dropdown>
+                                <button cButton cDropdownToggle color="secondary">
+                                  Hành động
+                                </button>
+                                <ul cDropdownMenu>
+                                  <li><a cDropdownItem (click)="xacminh(item.isVerify,item.id,item.origin,item.originImage)">Xác minh</a></li>
+                                  <li><a cDropdownItem>Khóa tài khoản</a></li>
+                                  <li><a cDropdownItem>Cộng trừ tiền</a></li>
+                                  <li><a cDropdownItem>Xem đại lý</a></li>
+                                  <li><a cDropdownItem>Xem lịch sử</a></li>
+                                  <li><a cDropdownItem>Xem chi tiết view</a></li>
+                                </ul>
+                              </c-dropdown>
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+                    </c-card-body>
+                  </c-card>
+                </c-col>
+              </c-row>    
+        </c-card-body>
+      </c-card>
+    </c-col> 
+  </c-row>
+  

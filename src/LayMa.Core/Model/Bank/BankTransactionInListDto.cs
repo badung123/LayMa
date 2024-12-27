@@ -11,7 +11,10 @@ namespace LayMa.Core.Model.Bank
 {
     public class BankTransactionInListDto
     {
-        public long Money { get; set; }
+		public Guid Id { get; set; }
+		public Guid UserId { get; set; }
+		public string? UserName { get; set; }
+		public long Money { get; set; }
         public ProcessStatus StatusProcess { get; set; }
         public required string BankAccountName { get; set; }
         public required string BankAccountNumber { get; set; }

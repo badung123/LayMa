@@ -14,5 +14,6 @@ namespace LayMa.Core.Repositories
 		Task<int> CountClickByDateRangeAndShortLink(DateTime start, DateTime end, Guid shortLinkId);
 
         Task<int> CountClickByDateRange(DateTime start, DateTime end);
+		Task<bool> CheckIPUserAgent(string ip, string usergent, string screenDevice);
 	}
 }

@@ -56,6 +56,27 @@ namespace LayMa.Data.Repositories
 				PageSize = pageSize
 			};
 		}
+		public async Task<PagedResult<UserDtoInList>> GetAllUserPaging(int pageIndex = 1, int pageSize = 10, string? keySearch = "")
+		{
+			var query = _context.Users.AsQueryable();
+			if (!String.IsNullOrEmpty(keySearch))
+			{
+				query = query.Where(x => x.UserName.Contains(keySearch));
+			}
+			var totalRow = await query.CountAsync();
+
+			query = query.OrderByDescending(x => x.DateCreated)
+			   .Skip((pageIndex - 1) * pageSize)
+			   .Take(pageSize);
+
+			return new PagedResult<UserDtoInList>
+			{
+				Results = await _mapper.ProjectTo<UserDtoInList>(query).ToListAsync(),
+				CurrentPage = pageIndex,
+				RowCount = totalRow,
+				PageSize = pageSize
+			};
+		}
 
 		public async Task<AppUser?> GetUserAgentByRefcode(string refcode)
 		{

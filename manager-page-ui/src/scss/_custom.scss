@@ -45,6 +45,10 @@ background-repeat: no-repeat !important;
 .remove_dot .input-group {
   max-width: 60%;
 }
+.pdaterange{
+  position: relative;
+  z-index: 2000 !important;
+}
 @media (max-width: 600px){
   .remove_dot .input-group {
     max-width: 100%;

@@ -986,9 +986,7 @@ export class WithDrawComponent implements OnInit, OnDestroy{
         bankAccountNumber:this.withdrawForm.controls['accountNumber'].value.toString(),
         money:this.withdrawForm.controls['amount'].value,
         bankName:this.selectedBank.shortName
-      });
-      console.log(request);
-  
+      }); 
       this.bankTransactionApiClient.createBankTransaction(request)
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe({
@@ -1009,7 +1007,6 @@ export class WithDrawComponent implements OnInit, OnDestroy{
       .subscribe({
         next: (response: BankTransactionInListDtoPagedResult) => {
           this.histories = response.results!;
-          console.log(this.histories);
           this.totalCount = response.rowCount!;
         },
         error: (error: any) => {

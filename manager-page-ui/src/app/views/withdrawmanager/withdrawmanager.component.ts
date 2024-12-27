@@ -1,9 +1,29 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { IconDirective } from '@coreui/icons-angular';
-import { ContainerComponent, RowComponent, ColComponent, TextColorDirective, CardComponent, CardBodyComponent, FormDirective, InputGroupComponent, InputGroupTextDirective, FormControlDirective, ButtonDirective, CardHeaderComponent, TableDirective, FormFloatingDirective, FormLabelDirective, FormSelectDirective } from '@coreui/angular';
+import { ContainerComponent, 
+  RowComponent, 
+  ColComponent, 
+  TextColorDirective, 
+  CardComponent, 
+  CardBodyComponent, 
+  FormDirective, 
+  InputGroupComponent, 
+  InputGroupTextDirective, 
+  FormControlDirective, 
+  ButtonDirective, 
+  CardHeaderComponent, 
+  TableDirective, 
+  FormFloatingDirective, 
+  FormLabelDirective, 
+  FormSelectDirective,
+  DropdownComponent,
+  DropdownItemDirective,
+  DropdownMenuDirective,
+  DropdownToggleDirective, 
+} from '@coreui/angular';
 import { Subject, takeUntil } from 'rxjs';
 import { AlertService } from '../../shared/services/alert.service';
-import { AdminApiBankTransactionApiClient, BankTransactionInListDto, BankTransactionInListDtoPagedResult, CreateBankTransactionDto,ProcessStatus } from '../../api/admin-api.service.generated';
+import { AdminApiBankTransactionApiClient, BankTransactionInListDto, BankTransactionInListDtoPagedResult,ProcessStatus, UpdateStatusRequest } from '../../api/admin-api.service.generated';
 import { CommonModule, NgStyle } from '@angular/common';
 import {
   FormBuilder,
@@ -22,7 +42,7 @@ import { Router } from '@angular/router';
     templateUrl: './withdrawmanager.component.html',
     styleUrls: ['./withdrawmanager.component.scss'],
     standalone: true,
-    imports: [ContainerComponent, RowComponent, ColComponent, TextColorDirective, CardComponent,CardHeaderComponent, CardBodyComponent, FormDirective, InputGroupComponent, InputGroupTextDirective, IconDirective, FormControlDirective, ButtonDirective,CommonModule,ReactiveFormsModule,FormsModule,TableDirective,FormFloatingDirective,FormControlDirective, FormLabelDirective,FormSelectDirective]
+    imports: [ContainerComponent,DropdownComponent,DropdownItemDirective,DropdownMenuDirective,DropdownToggleDirective, RowComponent, ColComponent, TextColorDirective, CardComponent,CardHeaderComponent, CardBodyComponent, FormDirective, InputGroupComponent, InputGroupTextDirective, IconDirective, FormControlDirective, ButtonDirective,CommonModule,ReactiveFormsModule,FormsModule,TableDirective,FormFloatingDirective,FormControlDirective, FormLabelDirective,FormSelectDirective]
 })
 export class WithDrawManagerComponent implements OnInit, OnDestroy{
     //System variables
@@ -33,7 +53,7 @@ export class WithDrawManagerComponent implements OnInit, OnDestroy{
     public totalCount: number;
 
     //Business variables
-    public histories: BankTransactionInListDto[];
+    public items: BankTransactionInListDto[];
     public keyword: string = '';
     public accountName: string;
     public processStatus = ProcessStatus;
@@ -49,9 +69,41 @@ export class WithDrawManagerComponent implements OnInit, OnDestroy{
     }
   
     ngOnInit() {  
+      this.loadData();
     }
 
-    
-    
-
+    loadData(){
+      this.bankTransactionApiClient.getAllPaging(this.pageIndex,this.pageSize,this.keyword)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe({
+        next: (response: BankTransactionInListDtoPagedResult) => {
+          this.items = response.results!;
+          this.totalCount = response.rowCount!;
+          console.log(this.items);
+        },
+        error: (error: any) => {
+          console.log(error);
+          this.alertService.showError('Có lỗi xảy ra');
+        },
+      });
+    }
+    changestatus(status: number,id: string,userId:string,money: number){
+       var request: UpdateStatusRequest = new UpdateStatusRequest({
+          type:status,
+          id:id,
+          userId:userId,
+          money:money
+        });
+      this.bankTransactionApiClient.updateProcessStatus(request)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe({
+        next: (response: any) => {
+          this.loadData();
+        },
+        error: (error: any) => {
+          console.log(error);
+          this.alertService.showError('Có lỗi xảy ra');
+        },
+      });
+    }
 }

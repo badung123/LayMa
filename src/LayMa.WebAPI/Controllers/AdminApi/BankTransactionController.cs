@@ -10,6 +10,9 @@ using Microsoft.AspNetCore.Mvc;
 using LayMa.Core.Model.Bank;
 using LayMa.Core.Domain.Link;
 using LayMa.Core.Domain.Bank;
+using LayMa.Core.Domain.Transaction;
+using static LayMa.Core.Constants.AdminPermissions;
+using static LayMa.Core.Constants.Permissions;
 
 namespace LayMa.WebAPI.Controllers.AdminApi
 {
@@ -42,7 +45,7 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 			var userId = User.GetUserId();
             var user = await _userManager.FindByIdAsync(userId.ToString());
             if (user == null) return BadRequest("User không tồn tại");
-            if (user.Balance < 50000) return BadRequest("Rút tối thiểu 50.000 VNĐ");
+            if (request.Money < 50000) return BadRequest("Rút tối thiểu 50.000 VNĐ");
 			if (user.Balance < request.Money) return BadRequest("Số dư không đủ");
 			var transaction = _mapper.Map<CreateBankTransactionDto, TransactionBank>(request);
             transaction.DateCreated = DateTime.Now;
@@ -65,18 +68,50 @@ namespace LayMa.WebAPI.Controllers.AdminApi
             var result = await _unitOfWork.BankTransactions.GetAllBankTransactionPaging(userId, pageIndex, pageSize, keySearch);
             return Ok(result);
         }
-        [HttpPost]
+		[HttpGet]
+		[Route("allpaging")]
+		//[Authorize(ShortLinks.View)]
+		public async Task<ActionResult<PagedResult<BankTransactionInListDto>>> GetAllPaging(int pageIndex, int pageSize = 10, string? keySearch = "")
+		{
+			var result = await _unitOfWork.BankTransactions.GetAllBankTransactionPaging(Guid.Empty, pageIndex, pageSize, keySearch);
+			return Ok(result);
+		}
+		[HttpPost]
         [Route("updateprocess")]
-        public async Task<ActionResult<dynamic>> UpdateProcessStatus([FromBody] dynamic input)
+        public async Task<ActionResult<dynamic>> UpdateProcessStatus([FromBody] UpdateStatusRequest input)
         {
-            var userId = User.GetUserId();
-            int type = input.type;
-            Guid id = input.id;
-            if (type > 3 || type < 0)
-            {
-                return BadRequest("Có lỗi xảy ra");
-            }
-            await _unitOfWork.BankTransactions.UpdateStatusProcess(type, id);
+            //var userId = User.GetUserId();
+            //if (userId == Guid.Empty) return BadRequest("Có lỗi xảy ra");
+            int type = input.Type;
+            Guid id = input.Id;
+            if (type > 3 || type < 0) return BadRequest("Có lỗi xảy ra");
+            
+            
+			if (type == 3)
+			{
+                //get user ID
+                var user = await _userManager.FindByIdAsync(input.UserId.ToString());				
+				if (user == null) return BadRequest("Tài khoản không tồn tại");
+                if(input.Money < 50000) return BadRequest("Số tiền rút tối thiểu là 50.000 VNĐ");
+				if (input.Money > user.Balance) return BadRequest("Số dư không đủ");
+				await _unitOfWork.Users.UpdateBalanceCount(user.Id, -input.Money);
+				var transLogUser = new TransactionLog
+				{
+					Id = Guid.NewGuid(),
+					UserId = input.UserId,
+					UserName = user.UserName,
+					Amount = input.Money,
+					OldBalance = Int64.Parse(user.Balance.ToString()),
+					CreatedBy = "admin",
+					Description = "Rút tiền",
+					TranSactionType = TranSactionType.WithDraw,
+					DateCreated = DateTime.Now,
+					DateModified = DateTime.Now
+				};
+				_unitOfWork.TransactionLogs.Add(transLogUser);
+			}
+			await _unitOfWork.BankTransactions.UpdateStatusProcess(type, id);
+			await _unitOfWork.CompleteAsync();
             return Ok();
         }
 

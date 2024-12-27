@@ -11936,3 +11936,24 @@ section#contact form#contactForm :-ms-input-placeholder {
         font-size: 10px;
     }
 }
+.box-linkFB-wrap {
+    border: 2px solid #ffc800;
+    border-radius: 5px;
+    padding: 5px;
+    margin: 5px;
+    background-color: #ebeef0;
+}
+.box-btn-copy {
+    text-align: center;
+}
+.box-btn-copy button {
+    background-color: #ffc800;
+    border-radius: 5px;
+    border: 2px;
+    color: white;
+    padding: 5px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+}

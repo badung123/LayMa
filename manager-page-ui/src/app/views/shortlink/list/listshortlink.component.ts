@@ -2,8 +2,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { IconDirective } from '@coreui/icons-angular';
 import { ContainerComponent, RowComponent, ColComponent, TextColorDirective, CardComponent, CardBodyComponent, FormDirective, InputGroupComponent, InputGroupTextDirective, FormControlDirective, ButtonDirective, CardHeaderComponent, TableDirective } from '@coreui/angular';
 import { Subject, takeUntil } from 'rxjs';
-import { AlertService } from 'src/app/shared/services/alert.service';
-import { AdminApiShortLinkApiClient, ShortLinkInListDto, ShortLinkInListDtoPagedResult } from 'src/app/api/admin-api.service.generated';
+import { AlertService } from '../../../shared/services/alert.service';
+import { AdminApiShortLinkApiClient, ShortLinkInListDto, ShortLinkInListDtoPagedResult } from '../../../api/admin-api.service.generated';
 import { CommonModule, NgStyle } from '@angular/common';
 import { DialogService, DynamicDialogComponent } from 'primeng/dynamicdialog';
 import {
@@ -49,12 +49,12 @@ export class ListShortLinkComponent implements OnInit, OnDestroy{
       this.loadData();    
     }
     loadData() {
-      this.shortlinkApiClient.getPostsPaging2(this.pageIndex,this.pageSize,this.keyword)
+      this.shortlinkApiClient.getPostsPaging3(this.pageIndex,this.pageSize,this.keyword)
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe({
         next: (response: ShortLinkInListDtoPagedResult) => {
-          this.items = response.results;
-          this.totalCount = response.rowCount;
+          this.items = response.results!;
+          this.totalCount = response.rowCount!;
           console.log(this.items);
         },
         error: (error: any) => {
@@ -64,7 +64,6 @@ export class ListShortLinkComponent implements OnInit, OnDestroy{
       });
     }
     showModalUpdateNguon(shortlinkId: string,link: string ){
-      console.log(shortlinkId);
       const ref = this.dialogService.open(ShortlinkNoteComponent, {
         data: {
           id: shortlinkId,

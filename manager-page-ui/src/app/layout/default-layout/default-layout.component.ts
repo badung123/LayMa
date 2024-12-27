@@ -83,6 +83,5 @@ export class DefaultLayoutComponent implements OnInit{
       
     }
     this.navItems = navItems;
-    console.log(this.navItems);
   }
 }

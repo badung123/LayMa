@@ -10,8 +10,8 @@
 
   </c-card-body>
   <c-card-footer>
-    <c-row>
-      <c-col class="d-md-block" sm="7">
+    <c-row class="mb-4">
+      <c-col class="d-md-block">
         <form [formGroup]="trafficRadioGroup">
           
           <c-button-group class="float-end me-3" role="group">
@@ -67,10 +67,23 @@
               Chọn ngày
             </label>
           </c-button-group>
-        </form>
+        </form>        
+      </c-col>
+    </c-row>
+    <c-row class="mb-4" *ngIf="isDateRange">
+      <c-col class="d-md-block">
+        <p-calendar class="float-end me-4 pdaterange"
+      [(ngModel)]="rangeDates"
+      selectionMode="range" 
+      [showIcon]="true"
+      dateFormat="dd/mm/yy"
+      [readonlyInput]="true"
+      (ngModelChange)="changeDateRange($event)"
+      [showButtonBar]="true"/>
         
       </c-col>
     </c-row>
+    
     <c-row class="text-center mb-2" [xl]="3" [lg]="3" [sm]="2" [xs]="1" [gutter]="3">
       <c-col>
         <div class="text-body-secondary">Tổng lượt view</div>

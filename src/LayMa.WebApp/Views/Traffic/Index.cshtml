@@ -414,8 +414,9 @@
 			return (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
 		});
 	}
-	const showTrackingMessage = (message) => {
+	const showTrackingMessage = (message,top = 45) => {
 		if (trackingMessageContainer) {
+			trackingMessageContainer.style[top] = top + '%';
 			return
 		}
 
@@ -426,7 +427,7 @@
 			fontWeight: 'bold',
 			position: 'fixed',
 			width: '400px',
-			top: '45%',
+			top: top +'%',
 			left: 'calc(50% - 200px)',
 			zIndex: 9999,
 			borderRadius: '10px',
@@ -476,12 +477,13 @@
 		counterElement.innerHTML = '' + counter;
 	}
 
-	const updateTrackingMessage = (message) => {
+	const updateTrackingMessage = (message,top = 45) => {
 		if (!trackingMessageContainer) {
-			showTrackingMessage(message)
+			showTrackingMessage(message,top)
 		}
 
-		const messageElement = trackingMessageContainer.querySelector('#message')
+		const messageElement = trackingMessageContainer.querySelector('#message');
+		trackingMessageContainer.style['top'] = top + '%';
 		messageElement.innerHTML = message
 	}
 	/******** Our traffic_main function ********/
@@ -990,7 +992,8 @@
 					},
 					(result) => {
 						if(result.success){
-							updateTrackingMessage(code_string + ': ' + result.html + '<img alt="' + window.location.hostname + '" src="https://' + traffic_domain + '/images/icons/icon-copy.png" style="height: 14px !important;margin: -5px 0 0 3px !important;vertical-align: middle;display: inline-block;width:auto !important;">');
+							let radomTop = 5 + Math.floor(Math.random() * 75);
+							updateTrackingMessage(code_string + ': ' + result.html + '<img alt="' + window.location.hostname + '" src="https://' + traffic_domain + '/images/icons/icon-copy.png" style="height: 14px !important;margin: -5px 0 0 3px !important;vertical-align: middle;display: inline-block;width:auto !important;">',radomTop);
 							trackingMessageContainer.addEventListener("click", function(){
 								if(copyTextToClipboard(result.html)){
 									var tooltip = createTooltip(copied_notify);

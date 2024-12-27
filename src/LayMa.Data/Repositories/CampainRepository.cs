@@ -2,8 +2,10 @@
 using LayMa.Core.Domain.Bank;
 using LayMa.Core.Domain.Campain;
 using LayMa.Core.Interface;
+using LayMa.Core.Model;
 using LayMa.Core.Model.Campain;
 using LayMa.Core.Model.KeySearch;
+using LayMa.Core.Model.ShortLink;
 using LayMa.Core.Repositories;
 using LayMa.Data.SeedWorks;
 using Microsoft.EntityFrameworkCore;
@@ -53,6 +55,12 @@ namespace LayMa.Data.Repositories
 			if (campain == null) return null;
 			return campain;
 		}
+		public async Task<CampainInListDto> GetCampainByCampainID(Guid campainId)
+		{
+			var campain = await _context.Campains.Where(x => x.Id == campainId).FirstOrDefaultAsync();
+			var campainDto = _mapper.Map<Campain, CampainInListDto>(campain);
+			return campainDto;
+		}
 		public async Task<ThongKeView> GetThongKeView()
         {
             var thongkeview = new ThongKeView();
@@ -61,5 +69,27 @@ namespace LayMa.Data.Repositories
 			thongkeview.ViewedInDay = 0;
             return thongkeview;
         }
-    }
+		public async Task<PagedResult<CampainInListDto>> GetAllPaging(int pageIndex = 1, int pageSize = 10, string flatform = "google", string? keySearch = "")
+		{
+			var query = _context.Campains.AsQueryable();
+			query = query.Where(x => x.Flatform == flatform);
+			if (!String.IsNullOrEmpty(keySearch))
+			{
+				query = query.Where(x => x.Url.Contains(keySearch));
+			}
+			var totalRow = await query.CountAsync();
+
+			query = query.OrderByDescending(x => x.DateCreated)
+			   .Skip((pageIndex - 1) * pageSize)
+			   .Take(pageSize);
+
+			return new PagedResult<CampainInListDto>
+			{
+				Results = await _mapper.ProjectTo<CampainInListDto>(query).ToListAsync(),
+				CurrentPage = pageIndex,
+				RowCount = totalRow,
+				PageSize = pageSize
+			};
+		}
+	}
 }

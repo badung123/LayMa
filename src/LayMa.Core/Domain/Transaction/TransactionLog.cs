@@ -19,6 +19,10 @@ namespace LayMa.Core.Domain.Transaction
 		public long Amount { get; set; }
 		public string? Description { get; set; }
 		public string? CreatedBy { get; set; }
+		public string? DeviceScreen { get; set; }
+		public string? UserAgent { get; set; }
+		public string? IPAddress { get; set; }
+		public string? ShortLink { get; set; }
 		public TranSactionType TranSactionType { get; set; }
 		public DateTime DateCreated { get; set; }
 		public DateTime? DateModified { get; set; }

@@ -147,5 +147,22 @@ namespace LayMa.WebAPI.Controllers.AdminApi
             //count click thanh cong
             return Ok();
         }
-    }
+		[HttpGet]
+		[Route("gethoahongbydate")]
+		public async Task<ActionResult<int>> GetHoaHongByDate(DateTime from,DateTime to)
+		{
+			var userId = User.GetUserId();
+			if (userId == Guid.Empty) return BadRequest("User hết phiên làm việc");
+			var hoahong = await _unitOfWork.TransactionLogs.GetHoaHongByDate(userId,from,to);
+			return Ok(hoahong);
+		}
+		[HttpGet]
+		[Route("paging-log-shortlink")]
+		//[Authorize(ShortLinks.View)]
+		public async Task<ActionResult<PagedResult<LogShortLinkDto>>> GetLogShortLinkPaging(DateTime from, DateTime to, int pageIndex = 1, int pageSize = 10, string? userName = "", int type = -1)
+		{
+			var result = await _unitOfWork.ShortLinks.GetAllLogPaging(from,to,pageIndex, pageSize, userName,type);
+			return Ok(result);
+		}
+	}
 }

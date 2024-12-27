@@ -353,11 +353,17 @@ namespace LayMa.Data.Migrations
                     b.Property<string>("Device")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("DeviceScreen")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("IPAddress")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("ShortLinkId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UserAgent")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -422,11 +428,23 @@ namespace LayMa.Data.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("DeviceScreen")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IPAddress")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<long>("OldBalance")
                         .HasColumnType("bigint");
 
+                    b.Property<string>("ShortLink")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("TranSactionType")
                         .HasColumnType("int");
+
+                    b.Property<string>("UserAgent")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");

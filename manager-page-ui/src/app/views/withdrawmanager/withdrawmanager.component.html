@@ -1,1 +1,83 @@
-<h1>Đây là trang quản lý rút tiền</h1>
+<c-row>
+    <c-col xs="12">
+      <c-card class="mb-4">
+        <c-card-header>
+          <strong>LỊCH SỬ RÚT TIỀN</strong>
+        </c-card-header>
+        <c-card-body>       
+          <c-row>
+            <c-col xs>
+              <c-card class="mb-4">
+                <c-card-body>
+                  <table
+                    [hover]="true"
+                    [responsive]="true"
+                    [striped]="true"
+                    align="middle"
+                    cTable
+                    class="mb-0 border"
+                  >
+                    <thead class="text-nowrap text-truncate">
+                    <tr>
+                      <th class="bg-body-tertiary text-center ">
+                        <svg cIcon name="cilPeople"></svg>
+                      </th>
+                      <th class="bg-body-tertiary">Username</th>
+                      <th class="bg-body-tertiary">Tên TK</th>
+                      <th class="bg-body-tertiary text-center">Số TK</th>
+                      <th class="bg-body-tertiary">Ngân Hàng</th>
+                      <th class="bg-body-tertiary">Số Tiền</th>
+                      <th class="bg-body-tertiary text-center">Tạo Lúc</th>
+                      <th class="bg-body-tertiary">Trạng Thái</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                      @for (item of items; track item.bankAccountName; let i = $index) {
+                        <tr>
+                          <td class="text-center">
+                            <div>{{ i + 1 }}</div>
+                          </td>
+                          <td>
+                            <div>{{ item.userName }}</div>
+                          </td>
+                          <td>
+                            <div>{{ item.bankAccountName }}</div>
+                          </td>
+                          <td class="text-center">
+                            <div>{{ item.bankAccountNumber  }}</div>
+                          </td>
+                          <td>
+                            <div>{{ item.bankName }}</div>
+                          </td>
+                          <td>
+                            <div style="color: red;">{{ item.money }}</div>
+                          </td>
+                          <td class="text-center">
+                            {{ item.dateCreated | date: 'dd/MM/yyyy hh:mm:ss'}}
+                          </td>
+                          <td>
+                            <c-dropdown>
+                                <button *ngIf="item.statusProcess === processStatus._0" cDropdownToggle cButton color="secondary">Chờ xử lý</button>
+                                <button *ngIf="item.statusProcess === processStatus._1" cDropdownToggle cButton color="primary">Đang xử lý</button>
+                                <button *ngIf="item.statusProcess === processStatus._2" cButton color="danger">Từ chối</button>
+                                <button *ngIf="item.statusProcess === processStatus._3" cButton color="success">Thành công</button>
+                                <ul cDropdownMenu>
+                                  <li><a cDropdownItem (click)="changestatus(1,item.id,item.userId,item.money)">Đang xử lý</a></li>
+                                  <li><a cDropdownItem (click)="changestatus(2,item.id,item.userId,item.money)">Từ chối</a></li>
+                                  <li><a cDropdownItem (click)="changestatus(3,item.id,item.userId,item.money)">Đã xử lý</a></li>
+                                </ul>
+                              </c-dropdown>
+                            
+                          </td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                </c-card-body>
+              </c-card>
+            </c-col>
+          </c-row>               
+        </c-card-body>
+      </c-card>
+    </c-col> 
+  </c-row>
