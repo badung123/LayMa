@@ -7,14 +7,28 @@
         </c-card-header>
         <c-card-body>
           <form cForm [formGroup]="shortlinkNoteForm" (ngSubmit)="updateOrigin()">
-            <c-input-group class="flex-nowrap">
-              <input aria-describedby="addon-wrapping"
-                     aria-label="LinkNote"
-                     cFormControl
-                     formControlName="origin"
-                     placeholder="Nhập nguồn link rút gọn vào đây"
-              />
-            </c-input-group>
+            <div class="mb-3">
+              <c-input-group class="flex-nowrap">
+                <input aria-describedby="addon-wrapping"
+                       aria-label="LinkNote"
+                       cFormControl
+                       formControlName="origin"
+                       placeholder="Nhập nguồn link rút gọn vào đây"
+                />
+              </c-input-group>
+            </div>
+            <div class="mb-3">
+              <c-input-group class="flex-nowrap">
+                <input aria-describedby="addon-wrapping"
+                       aria-label="Linkduphong"
+                       cFormControl
+                       formControlName="duphong"
+                       placeholder="Nhập link dự phòng vào đây"
+                />
+              </c-input-group>
+            </div>
+            
+            
             <button cButton color="primary" type="submit" style="margin-top: 20px;">Cập nhật</button>
           </form>                   
         </c-card-body>

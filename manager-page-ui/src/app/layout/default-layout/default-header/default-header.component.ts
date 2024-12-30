@@ -1,5 +1,5 @@
-import { NgStyle, NgTemplateOutlet } from '@angular/common';
-import { Component, computed, inject, input, OnInit } from '@angular/core';
+import { CommonModule, NgStyle, NgTemplateOutlet } from '@angular/common';
+import { Component, computed, inject, input, NgModule, OnDestroy, OnInit } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 import {
@@ -30,14 +30,18 @@ import {
 import { IconDirective } from '@coreui/icons-angular';
 import { UrlConstants } from '../../../shared/constants/url.constants';
 import { TokenStorageService } from '../../../shared/services/token-storage.service';
+import { Message } from 'primeng/api';
+import { Messages, MessagesModule } from 'primeng/messages';
+import { AdminApiAuthApiClient, NotiSettings } from 'src/app/api/admin-api.service.generated';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-default-header',
   templateUrl: './default-header.component.html',
   standalone: true,
-  imports: [ContainerComponent, HeaderTogglerDirective, SidebarToggleDirective, IconDirective, HeaderNavComponent, NavItemComponent, NavLinkDirective, RouterLink, RouterLinkActive, NgTemplateOutlet, BreadcrumbRouterComponent, ThemeDirective, DropdownComponent, DropdownToggleDirective, TextColorDirective, AvatarComponent, DropdownMenuDirective, DropdownHeaderDirective, DropdownItemDirective, BadgeComponent, DropdownDividerDirective, ProgressBarDirective, ProgressComponent, NgStyle]
+  imports: [ContainerComponent,MessagesModule, HeaderTogglerDirective,CommonModule, SidebarToggleDirective, IconDirective, HeaderNavComponent, NavItemComponent, NavLinkDirective, RouterLink, RouterLinkActive, NgTemplateOutlet, BreadcrumbRouterComponent, ThemeDirective, DropdownComponent, DropdownToggleDirective, TextColorDirective, AvatarComponent, DropdownMenuDirective, DropdownHeaderDirective, DropdownItemDirective, BadgeComponent, DropdownDividerDirective, ProgressBarDirective, ProgressComponent, NgStyle]
 })
-export class DefaultHeaderComponent extends HeaderComponent implements OnInit{
+export class DefaultHeaderComponent extends HeaderComponent implements OnDestroy,OnInit{
 
   readonly #colorModeService = inject(ColorModeService);
   readonly colorMode = this.#colorModeService.colorMode;
@@ -47,25 +51,47 @@ export class DefaultHeaderComponent extends HeaderComponent implements OnInit{
     { name: 'dark', text: 'Dark', icon: 'cilMoon' },
     { name: 'auto', text: 'Auto', icon: 'cilContrast' }
   ];
-
+  public messages: Message[];
+  public isShowNoti: Boolean = false;
   readonly icons = computed(() => {
     const currentMode = this.colorMode();
     return this.colorModes.find(mode => mode.name === currentMode)?.icon ?? 'cilSun';
   });
   public userName: string = "";
   public email: string = "";
+  private ngUnsubscribe = new Subject<void>();
 
   constructor(private classToggler: ClassToggleService,
     private tokenService: TokenStorageService,
-    private router: Router) {
+    private router: Router,
+      private authApiClient: AdminApiAuthApiClient
+  ) {
     super(); 
   }
   ngOnInit() {
+    this.loadMessage();
     var loggedInUser = this.tokenService.getUser();
     if (loggedInUser) {
       this.userName = loggedInUser.userName;
       this.email = loggedInUser.email;
     } 
+
+  }
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
+  loadMessage(){
+    this.authApiClient.getNotiSetting()
+          .pipe(takeUntil(this.ngUnsubscribe))
+          .subscribe({
+            next: (res: NotiSettings[]) => {
+              this.messages = res;
+              if (this.messages[0].detail != '') this.isShowNoti = true;
+            },
+            error: (error: any) => {                        
+            },
+          });
   }
   
   logout() {

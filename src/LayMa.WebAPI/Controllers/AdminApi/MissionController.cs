@@ -34,6 +34,10 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 			//get flatform
 			var campain = await _unitOfWork.Campains.GetCampainByID(mission.CampainId);
 			if (campain == null) return BadRequest("Không có chiến dịch phù hợp");
+			var date = DateTime.Now;
+			var start = date.Date;
+			var end = date.Date.AddDays(1);
+			var countCampain = await _unitOfWork.ViewDetails.CountClickByDateRangeAndCampainId(start, end, campain.Id);
 			var missionDto = new MissionDto()
 			{
 				Id = mission.Id,
@@ -44,8 +48,11 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 				UrlFacebook = campain.Url,
 				UrlWeb = campain.Url,
 				CampainId = campain.Id,
+				IsHetMa = false,
+				LinkDuPhong = shortLink.Duphong
 			};
-			return Ok(missionDto);
+			if (countCampain > campain.ViewPerDay) missionDto.IsHetMa = true;
+            return Ok(missionDto);
 		}
 		[HttpPost]
 		[Route("changeMission")]

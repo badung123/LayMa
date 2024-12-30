@@ -16,19 +16,20 @@ import { Subject, takeUntil } from 'rxjs';
 import { AdminApiCampainApiClient, CampainInListDto, CampainInListDtoPagedResult } from '../../../api/admin-api.service.generated';
 import { CommonModule } from '@angular/common';
 import { CampainDetailComponent } from '../campainDetail.component';
+import { PaginatorModule } from 'primeng/paginator';
 
 @Component({
     selector: 'app-facebook',
     templateUrl: './facebook.component.html',
     styleUrls: ['./facebook.component.scss'],
     standalone: true,
-    imports: [ContainerComponent, RowComponent, ColComponent, TextColorDirective, CardComponent,CardHeaderComponent,TableDirective, CardBodyComponent, FormDirective, InputGroupComponent, InputGroupTextDirective, IconDirective, FormControlDirective, ButtonDirective,ReactiveFormsModule,CommonModule]
+    imports: [ContainerComponent, RowComponent,PaginatorModule, ColComponent, TextColorDirective, CardComponent,CardHeaderComponent,TableDirective, CardBodyComponent, FormDirective, InputGroupComponent, InputGroupTextDirective, IconDirective, FormControlDirective, ButtonDirective,ReactiveFormsModule,CommonModule]
 })
 export class FacebookComponent implements OnInit, OnDestroy{
   private ngUnsubscribe = new Subject<void>();
   //Paging variables
       public pageIndex: number = 1;
-      public pageSize: number = 5;
+      public pageSize: number = 10;
       public totalCount: number;
   
       //Business variables
@@ -77,6 +78,11 @@ export class FacebookComponent implements OnInit, OnDestroy{
                   this.alertService.showError('Có lỗi xảy ra');
                 },
               });
+    }
+    pageChanged(event: any): void {
+      this.pageIndex = event.page + 1;
+      this.pageSize = event.rows;
+      this.loadData();
     }
     showEditModal(id: string){
       const ref = this.dialogService.open(CampainComponent, {

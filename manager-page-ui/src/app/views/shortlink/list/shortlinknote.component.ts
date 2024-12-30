@@ -32,7 +32,7 @@ export class ShortlinkNoteComponent implements OnInit, OnDestroy{
       private router: Router) {
       this.shortlinkNoteForm = this.fb.group({
         origin: new FormControl('', Validators.required),
-        
+        duphong: new FormControl('')
       });
       
     }
@@ -48,11 +48,15 @@ export class ShortlinkNoteComponent implements OnInit, OnDestroy{
         this.link = this.config.data.link;   
       }
     updateOrigin() {
+      let origin = this.shortlinkNoteForm.controls['origin'].value;
+      if (origin == null || origin == '') this.alertService.showError('Link nguồn không được bỏ trống');
+      let duphong = this.shortlinkNoteForm.controls['duphong'].value;
 
-        var request: UpdateNguon = new UpdateNguon({
-            shortlinkId : this.config.data.id,
-            origin: this.shortlinkNoteForm.controls['origin'].value
-        });
+      var request: UpdateNguon = new UpdateNguon({
+          shortlinkId : this.config.data.id,
+          origin: this.shortlinkNoteForm.controls['origin'].value,
+          duphong: duphong          
+      });
       this.shortLinkApi.updateNguon(request).subscribe({
         next: () => {
           this.alertService.showSuccess('Đã thêm nguồn thành công');

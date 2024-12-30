@@ -62,7 +62,7 @@
                         
                         </td>
                         <td class="text-center">
-                            {{ item.dateCreated | date: 'dd/MM/yyyy hh:mm:ss'}}
+                            {{ item.dateCreated | date: 'dd/MM/yyyy HH:mm:ss'}}
                         </td>
                         <td>
                             <div>
@@ -76,6 +76,8 @@
                 </table>
                     </c-card-body>
                   </c-card>
+                  <p-paginator [rows]="pageSize" [totalRecords]="totalCount" (onPageChange)="pageChanged($event)"
+      [rowsPerPageOptions]="[10, 20, 50, 100]"></p-paginator>
                 </c-col>
               </c-row>    
         </c-card-body>

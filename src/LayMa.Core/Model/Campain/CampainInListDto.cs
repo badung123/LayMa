@@ -17,6 +17,7 @@ namespace LayMa.Core.Model.Campain
 		public string Decription { get; set; }
 		public string Url { get; set; }
 		public int ViewPerDay { get; set; }
+		public long ToTalView { get; set; }
 		public int PricePerView { get; set; }
 		public int TimeOnSitePerView { get; set; }
 		public bool Status { get; set; }

@@ -49,6 +49,13 @@ background-repeat: no-repeat !important;
   position: relative;
   z-index: 2000 !important;
 }
+.p-message .p-message-wrapper {
+  padding: 0.25rem 0.75rem;
+}
+.p-message {
+  margin: 0.3rem 0px;
+  border-radius: 6px;
+}
 @media (max-width: 600px){
   .remove_dot .input-group {
     max-width: 100%;

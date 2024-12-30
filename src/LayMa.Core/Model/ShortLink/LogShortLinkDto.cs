@@ -24,7 +24,8 @@ namespace LayMa.Core.Model.ShortLink
 		public TranSactionType TranSactionType { get; set; }
 		public DateTime DateCreated { get; set; }
 		public DateTime? DateModified { get; set; }
-		public class AutoMapperProfiles : Profile
+        public string? Flatform { get; set; }
+        public class AutoMapperProfiles : Profile
 		{
 			public AutoMapperProfiles()
 			{

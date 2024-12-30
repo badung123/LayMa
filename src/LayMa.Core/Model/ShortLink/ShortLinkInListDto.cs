@@ -13,8 +13,9 @@ namespace LayMa.Core.Model.ShortLink
         public Guid Id{ get; set; }
         public required string Link { get; set; }
 		public required string OriginLink { get; set; }
-        public string Origin { get; set; }
-        public int ViewCount { get; set; }
+        public string? Origin { get; set; }
+		public string? Duphong { get; set; }
+		public int ViewCount { get; set; }
 		public required string Token { get; set; }
 		public DateTime DateCreated { get; set; }
 		public DateTime? DateModified { get; set; }

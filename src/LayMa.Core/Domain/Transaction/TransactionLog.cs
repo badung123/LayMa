@@ -26,8 +26,9 @@ namespace LayMa.Core.Domain.Transaction
 		public TranSactionType TranSactionType { get; set; }
 		public DateTime DateCreated { get; set; }
 		public DateTime? DateModified { get; set; }
-		
-	}
+        public string? Flatform { get; set; }
+
+    }
 	public enum TranSactionType
 	{
 		Commission = 0,

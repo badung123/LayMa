@@ -241,6 +241,64 @@ export class AdminApiAuthApiClient {
         }
         return _observableOf(null as any);
     }
+
+    /**
+     * @return Success
+     */
+    getNotiSetting(): Observable<NotiSettings[]> {
+        let url_ = this.baseUrl + "/api/admin/auth/getNoti";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetNotiSetting(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetNotiSetting(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<NotiSettings[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<NotiSettings[]>;
+        }));
+    }
+
+    protected processGetNotiSetting(response: HttpResponseBase): Observable<NotiSettings[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(NotiSettings.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
 }
 
 @Injectable()
@@ -1717,9 +1775,14 @@ export class AdminApiShortLinkApiClient {
      * @param pageSize (optional) 
      * @param userName (optional) 
      * @param type (optional) 
+     * @param userAgent (optional) 
+     * @param shortLink (optional) 
+     * @param screen (optional) 
+     * @param ip (optional) 
+     * @param flatform (optional) 
      * @return Success
      */
-    getLogShortLinkPaging(from?: Date | undefined, to?: Date | undefined, pageIndex?: number | undefined, pageSize?: number | undefined, userName?: string | null | undefined, type?: number | undefined): Observable<LogShortLinkDtoPagedResult> {
+    getLogShortLinkPaging(from?: Date | undefined, to?: Date | undefined, pageIndex?: number | undefined, pageSize?: number | undefined, userName?: string | null | undefined, type?: number | undefined, userAgent?: string | null | undefined, shortLink?: string | null | undefined, screen?: string | null | undefined, ip?: string | null | undefined, flatform?: string | null | undefined): Observable<LogShortLinkDtoPagedResult> {
         let url_ = this.baseUrl + "/api/admin/shortlink/paging-log-shortlink?";
         if (from === null)
             throw new Error("The parameter 'from' cannot be null.");
@@ -1743,6 +1806,16 @@ export class AdminApiShortLinkApiClient {
             throw new Error("The parameter 'type' cannot be null.");
         else if (type !== undefined)
             url_ += "type=" + encodeURIComponent("" + type) + "&";
+        if (userAgent !== undefined && userAgent !== null)
+            url_ += "userAgent=" + encodeURIComponent("" + userAgent) + "&";
+        if (shortLink !== undefined && shortLink !== null)
+            url_ += "shortLink=" + encodeURIComponent("" + shortLink) + "&";
+        if (screen !== undefined && screen !== null)
+            url_ += "screen=" + encodeURIComponent("" + screen) + "&";
+        if (ip !== undefined && ip !== null)
+            url_ += "ip=" + encodeURIComponent("" + ip) + "&";
+        if (flatform !== undefined && flatform !== null)
+            url_ += "flatform=" + encodeURIComponent("" + flatform) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -2745,6 +2818,7 @@ export class CampainInListDto implements ICampainInListDto {
     decription?: string | undefined;
     url?: string | undefined;
     viewPerDay?: number;
+    toTalView?: number;
     pricePerView?: number;
     timeOnSitePerView?: number;
     status?: boolean;
@@ -2770,6 +2844,7 @@ export class CampainInListDto implements ICampainInListDto {
             this.decription = _data["decription"];
             this.url = _data["url"];
             this.viewPerDay = _data["viewPerDay"];
+            this.toTalView = _data["toTalView"];
             this.pricePerView = _data["pricePerView"];
             this.timeOnSitePerView = _data["timeOnSitePerView"];
             this.status = _data["status"];
@@ -2795,6 +2870,7 @@ export class CampainInListDto implements ICampainInListDto {
         data["decription"] = this.decription;
         data["url"] = this.url;
         data["viewPerDay"] = this.viewPerDay;
+        data["toTalView"] = this.toTalView;
         data["pricePerView"] = this.pricePerView;
         data["timeOnSitePerView"] = this.timeOnSitePerView;
         data["status"] = this.status;
@@ -2813,6 +2889,7 @@ export interface ICampainInListDto {
     decription?: string | undefined;
     url?: string | undefined;
     viewPerDay?: number;
+    toTalView?: number;
     pricePerView?: number;
     timeOnSitePerView?: number;
     status?: boolean;
@@ -3279,6 +3356,7 @@ export class LogShortLinkDto implements ILogShortLinkDto {
     tranSactionType?: TranSactionType;
     dateCreated?: Date;
     dateModified?: Date | undefined;
+    flatform?: string | undefined;
 
     constructor(data?: ILogShortLinkDto) {
         if (data) {
@@ -3305,6 +3383,7 @@ export class LogShortLinkDto implements ILogShortLinkDto {
             this.tranSactionType = _data["tranSactionType"];
             this.dateCreated = _data["dateCreated"] ? new Date(_data["dateCreated"].toString()) : <any>undefined;
             this.dateModified = _data["dateModified"] ? new Date(_data["dateModified"].toString()) : <any>undefined;
+            this.flatform = _data["flatform"];
         }
     }
 
@@ -3331,6 +3410,7 @@ export class LogShortLinkDto implements ILogShortLinkDto {
         data["tranSactionType"] = this.tranSactionType;
         data["dateCreated"] = this.dateCreated ? this.dateCreated.toISOString() : <any>undefined;
         data["dateModified"] = this.dateModified ? this.dateModified.toISOString() : <any>undefined;
+        data["flatform"] = this.flatform;
         return data;
     }
 }
@@ -3350,6 +3430,7 @@ export interface ILogShortLinkDto {
     tranSactionType?: TranSactionType;
     dateCreated?: Date;
     dateModified?: Date | undefined;
+    flatform?: string | undefined;
 }
 
 export class LogShortLinkDtoPagedResult implements ILogShortLinkDtoPagedResult {
@@ -3473,6 +3554,8 @@ export class MissionDto implements IMissionDto {
     flatfrom?: string | undefined;
     urlFacebook?: string | undefined;
     campainId?: string;
+    isHetMa?: boolean;
+    linkDuPhong?: string | undefined;
 
     constructor(data?: IMissionDto) {
         if (data) {
@@ -3493,6 +3576,8 @@ export class MissionDto implements IMissionDto {
             this.flatfrom = _data["flatfrom"];
             this.urlFacebook = _data["urlFacebook"];
             this.campainId = _data["campainId"];
+            this.isHetMa = _data["isHetMa"];
+            this.linkDuPhong = _data["linkDuPhong"];
         }
     }
 
@@ -3513,6 +3598,8 @@ export class MissionDto implements IMissionDto {
         data["flatfrom"] = this.flatfrom;
         data["urlFacebook"] = this.urlFacebook;
         data["campainId"] = this.campainId;
+        data["isHetMa"] = this.isHetMa;
+        data["linkDuPhong"] = this.linkDuPhong;
         return data;
     }
 }
@@ -3526,6 +3613,48 @@ export interface IMissionDto {
     flatfrom?: string | undefined;
     urlFacebook?: string | undefined;
     campainId?: string;
+    isHetMa?: boolean;
+    linkDuPhong?: string | undefined;
+}
+
+export class NotiSettings implements INotiSettings {
+    severity?: string | undefined;
+    detail?: string | undefined;
+
+    constructor(data?: INotiSettings) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.severity = _data["severity"];
+            this.detail = _data["detail"];
+        }
+    }
+
+    static fromJS(data: any): NotiSettings {
+        data = typeof data === 'object' ? data : {};
+        let result = new NotiSettings();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["severity"] = this.severity;
+        data["detail"] = this.detail;
+        return data;
+    }
+}
+
+export interface INotiSettings {
+    severity?: string | undefined;
+    detail?: string | undefined;
 }
 
 export enum ProcessStatus {
@@ -3684,6 +3813,7 @@ export class ShortLinkInListDto implements IShortLinkInListDto {
     link?: string | undefined;
     originLink?: string | undefined;
     origin?: string | undefined;
+    duphong?: string | undefined;
     viewCount?: number;
     token?: string | undefined;
     dateCreated?: Date;
@@ -3704,6 +3834,7 @@ export class ShortLinkInListDto implements IShortLinkInListDto {
             this.link = _data["link"];
             this.originLink = _data["originLink"];
             this.origin = _data["origin"];
+            this.duphong = _data["duphong"];
             this.viewCount = _data["viewCount"];
             this.token = _data["token"];
             this.dateCreated = _data["dateCreated"] ? new Date(_data["dateCreated"].toString()) : <any>undefined;
@@ -3724,6 +3855,7 @@ export class ShortLinkInListDto implements IShortLinkInListDto {
         data["link"] = this.link;
         data["originLink"] = this.originLink;
         data["origin"] = this.origin;
+        data["duphong"] = this.duphong;
         data["viewCount"] = this.viewCount;
         data["token"] = this.token;
         data["dateCreated"] = this.dateCreated ? this.dateCreated.toISOString() : <any>undefined;
@@ -3737,6 +3869,7 @@ export interface IShortLinkInListDto {
     link?: string | undefined;
     originLink?: string | undefined;
     origin?: string | undefined;
+    duphong?: string | undefined;
     viewCount?: number;
     token?: string | undefined;
     dateCreated?: Date;
@@ -3949,6 +4082,7 @@ export enum TranSactionType {
 export class UpdateNguon implements IUpdateNguon {
     shortlinkId?: string;
     origin?: string | undefined;
+    duphong?: string | undefined;
 
     constructor(data?: IUpdateNguon) {
         if (data) {
@@ -3963,6 +4097,7 @@ export class UpdateNguon implements IUpdateNguon {
         if (_data) {
             this.shortlinkId = _data["shortlinkId"];
             this.origin = _data["origin"];
+            this.duphong = _data["duphong"];
         }
     }
 
@@ -3977,6 +4112,7 @@ export class UpdateNguon implements IUpdateNguon {
         data = typeof data === 'object' ? data : {};
         data["shortlinkId"] = this.shortlinkId;
         data["origin"] = this.origin;
+        data["duphong"] = this.duphong;
         return data;
     }
 }
@@ -3984,6 +4120,7 @@ export class UpdateNguon implements IUpdateNguon {
 export interface IUpdateNguon {
     shortlinkId?: string;
     origin?: string | undefined;
+    duphong?: string | undefined;
 }
 
 export class UpdateStatusRequest implements IUpdateStatusRequest {

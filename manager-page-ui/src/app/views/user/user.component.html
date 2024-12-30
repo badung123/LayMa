@@ -43,7 +43,7 @@
                             <div>{{item.userName}}</div>
                             <div class="small text-body-secondary text-nowrap">
                             <span>
-                              Tạo lúc: {{ item.dateCreated | date: 'dd/MM/yyyy hh:mm:ss'}}
+                              Tạo lúc: {{ item.dateCreated | date: 'dd/MM/yyyy HH:mm:ss'}}
                             </span>
                             </div>
                         </td>
@@ -88,6 +88,8 @@
                 </c-col>
               </c-row>    
         </c-card-body>
+        <p-paginator [rows]="pageSize" [totalRecords]="totalCount" (onPageChange)="pageChanged($event)"
+      [rowsPerPageOptions]="[10, 20, 50, 100]"></p-paginator>
       </c-card>
     </c-col> 
   </c-row>

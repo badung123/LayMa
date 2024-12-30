@@ -4,6 +4,7 @@ using LayMa.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LayMa.Data.Migrations
 {
     [DbContext(typeof(LayMaContext))]
-    partial class LayMaContextModelSnapshot : ModelSnapshot
+    [Migration("20241227083632_AddSDuPhongFieldToTableShortLink")]
+    partial class AddSDuPhongFieldToTableShortLink
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -347,9 +350,6 @@ namespace LayMa.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CampainId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
 
@@ -435,9 +435,6 @@ namespace LayMa.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DeviceScreen")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Flatform")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("IPAddress")

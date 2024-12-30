@@ -42,6 +42,7 @@
                     <th class="bg-body-tertiary text-center">Số Click</th>
                     <th class="bg-body-tertiary">Link Gốc</th>
                     <th class="bg-body-tertiary text-center">Nguồn</th>
+                    <th class="bg-body-tertiary text-center">Dự Phòng</th>
                     <th class="bg-body-tertiary">Hoạt động</th>
                   </tr>
                   </thead>
@@ -57,7 +58,7 @@
                           <a href="{{item.link}}" target="_blank">{{ item.link }}</a>
                           <div class="small text-body-secondary text-nowrap">
                           <span>
-                            Tạo lúc: {{ item.dateCreated | date: 'dd/MM/yyyy hh:mm:ss'}}
+                            Tạo lúc: {{ item.dateCreated | date: 'dd/MM/yyyy HH:mm:ss'}}
                           </span>
                           </div>
                         </td>
@@ -70,6 +71,9 @@
                         <td class="text-center">
                           <a href="{{item.origin}}" target="_blank">{{ item.origin }}</a>
                         </td>
+                        <td class="text-center">
+                          <a href="{{item.origin}}" target="_blank">{{ item.duphong }}</a>
+                        </td>
                         <td>
                           <div class="small text-body-secondary">Số liệu thống kê</div>
                         </td>
@@ -79,6 +83,8 @@
                 </table>
               </c-card-body>
             </c-card>
+            <p-paginator [rows]="pageSize" [totalRecords]="totalCount" (onPageChange)="pageChanged($event)"
+      [rowsPerPageOptions]="[10, 20, 50, 100]"></p-paginator>
           </c-col>
         </c-row>
         

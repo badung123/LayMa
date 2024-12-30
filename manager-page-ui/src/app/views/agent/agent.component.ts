@@ -18,6 +18,7 @@ import { Router } from '@angular/router';
 import { UrlConstants } from '../../shared/constants/url.constants';
 import { TokenStorageService } from '../../shared/services/token-storage.service';
 import { Clipboard } from "@angular/cdk/clipboard";
+import { PaginatorModule } from 'primeng/paginator';
 //import { AdminApiShortLinkApiClient, AdminApiTestApiClient, CreateShortLinkDto } from 'src/app/api/admin-api.service.generatesrc';
 
 
@@ -26,7 +27,7 @@ import { Clipboard } from "@angular/cdk/clipboard";
     templateUrl: './agent.component.html',
     styleUrls: ['./agent.component.scss'],
     standalone: true,
-    imports: [ContainerComponent, RowComponent, ColComponent, TextColorDirective, CardComponent,CardHeaderComponent, CardBodyComponent, FormDirective, InputGroupComponent, InputGroupTextDirective, IconDirective, FormControlDirective, ButtonDirective,CommonModule,ReactiveFormsModule,FormsModule,TableDirective,FormFloatingDirective,FormControlDirective, FormLabelDirective,FormSelectDirective]
+    imports: [ContainerComponent,PaginatorModule, RowComponent, ColComponent, TextColorDirective, CardComponent,CardHeaderComponent, CardBodyComponent, FormDirective, InputGroupComponent, InputGroupTextDirective, IconDirective, FormControlDirective, ButtonDirective,CommonModule,ReactiveFormsModule,FormsModule,TableDirective,FormFloatingDirective,FormControlDirective, FormLabelDirective,FormSelectDirective]
 })
 export class AgentComponent implements OnInit, OnDestroy{
     //System variables
@@ -75,6 +76,11 @@ export class AgentComponent implements OnInit, OnDestroy{
                 this.alertService.showError('Có lỗi xảy ra');
               },
             });
+    }
+    pageChanged(event: any): void {
+      this.pageIndex = event.page + 1;
+      this.pageSize = event.rows;
+      this.loadData();
     }
     copyToClipboard() {
       this.clipboard.copy(this.linkRef);

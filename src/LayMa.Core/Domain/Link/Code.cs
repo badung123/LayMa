@@ -19,5 +19,6 @@ namespace LayMa.Core.Domain.Link
         public bool IsUsed { get; set; }
         public DateTime DateCreated { get; set; }
 		public DateTime? DateModified { get; set; }
-	}
+        public string? IPAddress { get; set; }
+    }
 }

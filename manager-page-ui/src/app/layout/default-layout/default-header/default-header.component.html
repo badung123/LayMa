@@ -32,9 +32,17 @@
     </c-header-nav>
 
   </c-container>
-  <c-container [fluid]="true" class="px-4">
+  <c-container [fluid]="true" class="border-bottom px-4">
     <c-breadcrumb-router />
   </c-container>
+  <div style="margin: auto;" *ngIf="isShowNoti">
+    <p-messages 
+    [(value)]="messages" 
+    [enableService]="false" 
+    [closable]="false" />
+  </div>
+  
+  
 </ng-container>
 <!--</c-header>-->
 

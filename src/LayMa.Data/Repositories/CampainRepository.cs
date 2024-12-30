@@ -91,5 +91,11 @@ namespace LayMa.Data.Repositories
 				PageSize = pageSize
 			};
 		}
+		public async Task UpdateViewPerDayCount(Guid id,long viewCount)
+		{
+			var campain = await _context.Campains.FirstOrDefaultAsync(x => x.Id == id);
+			campain.ToTalView = viewCount;
+			_context.Campains.Update(campain);
+		}
 	}
 }

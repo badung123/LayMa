@@ -29,19 +29,32 @@ namespace LayMa.Data.Repositories
 			var count = await _context.ViewDetails.Where(x => x.ShortLinkId == shortLinkId && x.DateCreated >= start && x.DateCreated <= end).CountAsync();
 			return count;
 		}
+		public async Task<int> CountClickByDateRangeAndCampainId(DateTime start, DateTime end, Guid campainId)
+		{
+			var count = await _context.ViewDetails.Where(x => x.CampainId == campainId && x.DateCreated >= start && x.DateCreated <= end).CountAsync();
+			return count;
+		}
+		
 		public async Task<int> CountClickByDateRange(DateTime start, DateTime end)
 		{
             var count = await _context.ViewDetails.Where(x =>x.DateCreated >= start && x.DateCreated <= end).CountAsync();
             return count;
         }
-		public async Task<bool> CheckIPUserAgent(string ip, string usergent, string screenDevice)
+		public async Task<bool> CheckIP(string ip, string screenDevice)
 		{
 			var date = DateTime.Now;
 			var start = date.Date;
 			var end = date.Date.AddDays(1);
-			var isValid = await _context.ViewDetails.Where(x=> start <=x.DateCreated && x.DateCreated < end).AnyAsync(x => x.IPAddress == ip || x.UserAgent == usergent);
+			var isValid = await _context.ViewDetails.Where(x=> start <=x.DateCreated && x.DateCreated < end).AnyAsync(x => x.IPAddress == ip);
 			return !isValid;
 		}
+        public async Task<bool> CheckUserAgent(string usergent, string screenDevice)
+        {
+            var date = DateTime.Now;
+            var start = date.AddHours(-1);
+            var isValid = await _context.ViewDetails.Where(x => start <= x.DateCreated && x.DateCreated < date).AnyAsync(x => x.UserAgent == usergent);
+            return !isValid;
+        }
 
-	}
+    }
 }

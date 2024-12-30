@@ -85,6 +85,8 @@ foreach (var service in services)
 builder.Services.Configure<JwtTokenSettings>(configuration.GetSection("JwtTokenSettings"));
 builder.Services.Configure<MediaSettings>(configuration.GetSection("MediaSettings"));
 builder.Services.Configure<MailSettings>(configuration.GetSection("MailSettings"));
+builder.Services.Configure<NotiSettings>(configuration.GetSection("NotiSettings"));
+builder.Services.Configure<WhiteListIPGetCode>(configuration.GetSection("WhiteListIPGetCode"));
 builder.Services.AddScoped<SignInManager<AppUser>, SignInManager<AppUser>>();
 builder.Services.AddScoped<UserManager<AppUser>, UserManager<AppUser>>();
 builder.Services.AddScoped<ITokenService, TokenService>();

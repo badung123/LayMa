@@ -35,6 +35,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
+import { PaginatorModule } from 'primeng/paginator';
 //import { AdminApiShortLinkApiClient, AdminApiTestApiClient, CreateShortLinkDto } from 'src/app/api/admin-api.service.generatesrc';
 
 @Component({
@@ -42,14 +43,14 @@ import { Router } from '@angular/router';
     templateUrl: './withdrawmanager.component.html',
     styleUrls: ['./withdrawmanager.component.scss'],
     standalone: true,
-    imports: [ContainerComponent,DropdownComponent,DropdownItemDirective,DropdownMenuDirective,DropdownToggleDirective, RowComponent, ColComponent, TextColorDirective, CardComponent,CardHeaderComponent, CardBodyComponent, FormDirective, InputGroupComponent, InputGroupTextDirective, IconDirective, FormControlDirective, ButtonDirective,CommonModule,ReactiveFormsModule,FormsModule,TableDirective,FormFloatingDirective,FormControlDirective, FormLabelDirective,FormSelectDirective]
+    imports: [ContainerComponent,PaginatorModule,DropdownComponent,DropdownItemDirective,DropdownMenuDirective,DropdownToggleDirective, RowComponent, ColComponent, TextColorDirective, CardComponent,CardHeaderComponent, CardBodyComponent, FormDirective, InputGroupComponent, InputGroupTextDirective, IconDirective, FormControlDirective, ButtonDirective,CommonModule,ReactiveFormsModule,FormsModule,TableDirective,FormFloatingDirective,FormControlDirective, FormLabelDirective,FormSelectDirective]
 })
 export class WithDrawManagerComponent implements OnInit, OnDestroy{
     //System variables
     private ngUnsubscribe = new Subject<void>();
     //Paging variables
     public pageIndex: number = 1;
-    public pageSize: number = 5;
+    public pageSize: number = 10;
     public totalCount: number;
 
     //Business variables
@@ -86,6 +87,11 @@ export class WithDrawManagerComponent implements OnInit, OnDestroy{
           this.alertService.showError('Có lỗi xảy ra');
         },
       });
+    }
+    pageChanged(event: any): void {
+      this.pageIndex = event.page + 1;
+      this.pageSize = event.rows;
+      this.loadData();
     }
     changestatus(status: number,id: string,userId:string,money: number){
        var request: UpdateStatusRequest = new UpdateStatusRequest({

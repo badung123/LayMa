@@ -96,7 +96,14 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 		public async Task<ActionResult<PagedResult<CampainInListDto>>> GetPostsPaging(int pageIndex, int pageSize = 10,string flatform = "google", string? keySearch = "")
 		{
 			//var userId = User.GetUserId();
+			var date = DateTime.Now;
+			var start = date.Date;
+			var end = date.Date.AddDays(1);
 			var result = await _unitOfWork.Campains.GetAllPaging(pageIndex, pageSize, flatform, keySearch);
+			foreach (var item in result.Results) {		
+				var viewCountInday = await _unitOfWork.ViewDetails.CountClickByDateRangeAndCampainId(start, end, item.Id);
+				item.ToTalView = viewCountInday;
+			}
 			return Ok(result);
 		}
 

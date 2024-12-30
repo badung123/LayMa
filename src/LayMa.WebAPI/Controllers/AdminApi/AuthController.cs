@@ -21,6 +21,8 @@ using LayMa.Core.Domain.Link;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Text;
 using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
+using LayMa.Core.ConfigOptions;
+using Microsoft.Extensions.Options;
 
 namespace LayMa.Api.Controllers.AdminApi
 {
@@ -33,13 +35,15 @@ namespace LayMa.Api.Controllers.AdminApi
         private readonly ITokenService _tokenService;
         private readonly RoleManager<IdentityRole<Guid>> _roleManager;
         private readonly IMapper _mapper;
+		private readonly NotiSettings _noti;
 		private IMailService _mailService = null;
 		public AuthController(UserManager<AppUser> userManager,
             SignInManager<AppUser> signInManager,
             ITokenService tokenService,
             RoleManager<IdentityRole<Guid>> roleManager,
             IMapper mapper,
-			IMailService mailService)
+			IMailService mailService,
+			IOptions<NotiSettings> noti)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -47,6 +51,7 @@ namespace LayMa.Api.Controllers.AdminApi
             _roleManager = roleManager;
             _mapper = mapper;
 			_mailService = mailService;
+            _noti = noti.Value;
 		}
 
         [HttpPost]
@@ -256,5 +261,13 @@ namespace LayMa.Api.Controllers.AdminApi
 
 			return Ok();
 		}
+        [HttpGet]
+		[Route("getNoti")]
+        public async Task<ActionResult<List<NotiSettings>>> GetNotiSetting()
+        {
+            var listNoti = new List<NotiSettings>();
+            listNoti.Add(_noti);
+            return listNoti;
+        }
 	}
 }

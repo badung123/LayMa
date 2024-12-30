@@ -59,7 +59,7 @@ namespace LayMa.Data.Repositories
 			link.ViewCount += 1;
 			_context.ShortLinks.Update(link);
 		}
-        public async Task<List<ShortLinkInListDto>> GetTopLink(Guid currentUserId, int top) {
+		public async Task<List<ShortLinkInListDto>> GetTopLink(Guid currentUserId, int top) {
             var query = _context.ShortLinks.AsQueryable();
             query = query.Where(x => x.UserId == currentUserId);
 			query = query.OrderByDescending(x => x.DateCreated).Take(top);
@@ -70,11 +70,12 @@ namespace LayMa.Data.Repositories
             var query = await _context.ShortLinks.Where(x => x.UserId == userId).Select(x=> x.Id).ToListAsync();
 			return query;
         }
-		public async Task UpdateOriginOfShortLink(string origin, Guid shortlinkId)
+		public async Task UpdateOriginOfShortLink(string origin, Guid shortlinkId, string duphong = "")
 		{
             var link = await _context.ShortLinks.FirstOrDefaultAsync(x => x.Id == shortlinkId);
             link.Origin = origin;
-            _context.ShortLinks.Update(link);
+			if (duphong != "") link.Duphong = duphong;
+			_context.ShortLinks.Update(link);
         }
         public async Task UpdateView(Guid id)
         {
@@ -82,18 +83,38 @@ namespace LayMa.Data.Repositories
             link.View += 1;
             _context.ShortLinks.Update(link);
         }
-		public async Task<PagedResult<LogShortLinkDto>> GetAllLogPaging(DateTime from, DateTime to, int pageIndex = 1, int pageSize = 10, string? userName = "", int type = -1)
+		public async Task<PagedResult<LogShortLinkDto>> GetAllLogPaging(DateTime from, DateTime to, int pageIndex = 1, int pageSize = 10, string? userName = "", int type = -1, string? userAgent = "", string? shortLink = "", string? screen = "", string? ip = "", string? flatform = "")
 		{
 			var query = _context.TransactionLogs.AsQueryable();
-			query = query.Where(x => x.DateCreated >= from && x.DateCreated <= to);
+			query = query.Where(x => x.DateCreated >= from && x.DateCreated < to);
 			if (!String.IsNullOrEmpty(userName))
 			{
 				query = query.Where(x => x.UserName.Contains(userName));
 			}
-            if (type != -1)
+			if (!String.IsNullOrEmpty(userAgent))
+			{
+				query = query.Where(x => x.UserAgent.Contains(userAgent));
+			}
+			if (!String.IsNullOrEmpty(screen))
+			{
+				query = query.Where(x => x.DeviceScreen.Contains(screen));
+			}
+			if (!String.IsNullOrEmpty(shortLink))
+			{
+				query = query.Where(x => x.ShortLink.Contains(shortLink));
+			}
+			if (!String.IsNullOrEmpty(ip))
+			{
+				query = query.Where(x => x.IPAddress.Contains(ip));
+			}
+			if (type != -1)
             {
 				query = query.Where(x => x.TranSactionType == (TranSactionType)type);
 			}
+            if (!String.IsNullOrEmpty(flatform))
+            {
+                query = query.Where(x => x.Flatform == flatform);
+            }
             var totalRow = await query.CountAsync();
 
 			query = query.OrderByDescending(x => x.DateCreated)

@@ -39,13 +39,13 @@ namespace LayMa.WebApp.Controllers
 					table = Newtonsoft.Json.JsonConvert.DeserializeObject<TemplateViewModel>(data);
 					if (!string.IsNullOrEmpty(table.UrlImage)) table.UrlImage = url + table.UrlImage;
 
-
 				}
-
-
 			}
 			//call api get model by token id
 			//var templateModel = new TemplateViewModel { Key = "fb88",UrlImage = "https://cdn.24h.com.vn/upload/4-2024/images/2024-10-17/8-740-1729174343-73-width740height416.jpg" };
+			//thống kê chuyển qua link dự phòng
+			if (table.IsHetMa && !string.IsNullOrEmpty(table.LinkDuPhong)) return Redirect(table.LinkDuPhong);
+
             return View(table);
         }
     }

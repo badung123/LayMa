@@ -37,6 +37,7 @@ import {
 import { Router } from '@angular/router';
 import { DialogService, DynamicDialogComponent } from 'primeng/dynamicdialog';
 import { XacMinhUserComponent } from './xacminhuser.component';
+import { PaginatorModule } from 'primeng/paginator';
 //import { AdminApiShortLinkApiClient, AdminApiTestApiClient, CreateShortLinkDto } from 'src/app/api/admin-api.service.generatesrc';
 
 
@@ -45,14 +46,14 @@ import { XacMinhUserComponent } from './xacminhuser.component';
     templateUrl: './user.component.html',
     styleUrls: ['./user.component.scss'],
     standalone: true,
-    imports: [ContainerComponent,DropdownItemDirective,DropdownMenuDirective,DropdownToggleDirective, RowComponent,DropdownComponent, ColComponent, TextColorDirective, CardComponent,CardHeaderComponent, CardBodyComponent, FormDirective, InputGroupComponent, InputGroupTextDirective, IconDirective, FormControlDirective, ButtonDirective,CommonModule,ReactiveFormsModule,FormsModule,TableDirective,FormFloatingDirective,FormControlDirective, FormLabelDirective,FormSelectDirective]
+    imports: [ContainerComponent,DropdownItemDirective,PaginatorModule,DropdownMenuDirective,DropdownToggleDirective, RowComponent,DropdownComponent, ColComponent, TextColorDirective, CardComponent,CardHeaderComponent, CardBodyComponent, FormDirective, InputGroupComponent, InputGroupTextDirective, IconDirective, FormControlDirective, ButtonDirective,CommonModule,ReactiveFormsModule,FormsModule,TableDirective,FormFloatingDirective,FormControlDirective, FormLabelDirective,FormSelectDirective]
 })
 export class UserComponent implements OnInit, OnDestroy{
     //System variables
     private ngUnsubscribe = new Subject<void>();
     //Paging variables
     public pageIndex: number = 1;
-    public pageSize: number = 100;
+    public pageSize: number = 10;
     public totalCount: number;
 
     //Business variables
@@ -88,6 +89,11 @@ export class UserComponent implements OnInit, OnDestroy{
           this.alertService.showError('Có lỗi xảy ra');
         },
       });
+    }
+    pageChanged(event: any): void {
+      this.pageIndex = event.page + 1;
+      this.pageSize = event.rows;
+      this.loadData();
     }
     xacminh(isVerify: Boolean,id: string,origin:string,originImage:string){
       if (isVerify) return;

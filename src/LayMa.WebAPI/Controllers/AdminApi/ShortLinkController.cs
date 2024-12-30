@@ -142,7 +142,7 @@ namespace LayMa.WebAPI.Controllers.AdminApi
         public async Task<ActionResult> UpdateNguon([FromBody] UpdateNguon request)
         {
             //get list token short link
-            await _unitOfWork.ShortLinks.UpdateOriginOfShortLink(request.Origin, request.ShortlinkId);
+            await _unitOfWork.ShortLinks.UpdateOriginOfShortLink(request.Origin, request.ShortlinkId,request.Duphong);
 			await _unitOfWork.CompleteAsync();
             //count click thanh cong
             return Ok();
@@ -159,9 +159,9 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 		[HttpGet]
 		[Route("paging-log-shortlink")]
 		//[Authorize(ShortLinks.View)]
-		public async Task<ActionResult<PagedResult<LogShortLinkDto>>> GetLogShortLinkPaging(DateTime from, DateTime to, int pageIndex = 1, int pageSize = 10, string? userName = "", int type = -1)
+		public async Task<ActionResult<PagedResult<LogShortLinkDto>>> GetLogShortLinkPaging(DateTime from, DateTime to, int pageIndex = 1, int pageSize = 10, string? userName = "", int type = -1, string? userAgent = "", string? shortLink = "", string? screen = "", string? ip = "", string? flatform = "")
 		{
-			var result = await _unitOfWork.ShortLinks.GetAllLogPaging(from,to,pageIndex, pageSize, userName,type);
+			var result = await _unitOfWork.ShortLinks.GetAllLogPaging(from,to,pageIndex, pageSize, userName,type,userAgent,shortLink,screen,ip,flatform);
 			return Ok(result);
 		}
 	}

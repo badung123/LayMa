@@ -16,6 +16,7 @@ import {
   Validators
 } from '@angular/forms';
 import { ShortlinkNoteComponent } from './shortlinknote.component';
+import { PaginatorModule } from 'primeng/paginator';
 //import { AdminApiShortLinkApiClient, AdminApiTestApiClient, CreateShortLinkDto } from 'src/app/api/admin-api.service.generatesrc';
 
 @Component({
@@ -23,14 +24,14 @@ import { ShortlinkNoteComponent } from './shortlinknote.component';
     templateUrl: './listshortlink.component.html',
     styleUrls: ['./listshortlink.component.scss'],
     standalone: true,
-    imports: [ContainerComponent, RowComponent, ColComponent, TextColorDirective, CardComponent,CardHeaderComponent, CardBodyComponent, FormDirective, InputGroupComponent, InputGroupTextDirective, IconDirective, FormControlDirective, ButtonDirective,CommonModule,ReactiveFormsModule,FormsModule,TableDirective,ShortlinkNoteComponent]
+    imports: [ContainerComponent,PaginatorModule, RowComponent, ColComponent, TextColorDirective, CardComponent,CardHeaderComponent, CardBodyComponent, FormDirective, InputGroupComponent, InputGroupTextDirective, IconDirective, FormControlDirective, ButtonDirective,CommonModule,ReactiveFormsModule,FormsModule,TableDirective,ShortlinkNoteComponent]
 })
 export class ListShortLinkComponent implements OnInit, OnDestroy{
     //System variables
     private ngUnsubscribe = new Subject<void>();
     //Paging variables
     public pageIndex: number = 1;
-    public pageSize: number = 5;
+    public pageSize: number = 10;
     public totalCount: number;
 
     //Business variables
@@ -62,6 +63,11 @@ export class ListShortLinkComponent implements OnInit, OnDestroy{
           this.alertService.showError('Có lỗi xảy ra');
         },
       });
+    }
+    pageChanged(event: any): void {
+      this.pageIndex = event.page + 1;
+      this.pageSize = event.rows;
+      this.loadData();
     }
     showModalUpdateNguon(shortlinkId: string,link: string ){
       const ref = this.dialogService.open(ShortlinkNoteComponent, {

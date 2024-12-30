@@ -27,6 +27,7 @@ import { DashboardChartsData, IChartProps } from './dashboard-charts-data';
 import { Subject, takeUntil } from 'rxjs';
 import { UtilityService } from '../../shared/services/utility.service';
 import { AlertService } from '../../shared/services/alert.service';
+
 import { AdminApiCampainApiClient, AdminApiKeySearchApiClient, AdminApiShortLinkApiClient, ShortLinkInListDto, ShortLinkInListDtoPagedResult, ThongKeView, ThongKeViewClick } from '../../api/admin-api.service.generated';
 
 @Component({
@@ -43,7 +44,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   readonly #chartsData: DashboardChartsData = inject(DashboardChartsData);
   //System variables
   private ngUnsubscribe = new Subject<void>();
-  public items: ShortLinkInListDto[];
+  //public items: ShortLinkInListDto[];
   public thongkeviewconlai: string = "";
   public balance: string = "";
   public hoahong: string = "";
@@ -76,9 +77,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     //this.initCharts();
     //this.updateChartOnColorModeChange();
+    
     this.loadBalance();
     this.loadhoahong();
-    this.loadTopLink();
+    //this.loadTopLink();
     this.loadTongViewByRangeDate('Day');
     this.loadThongkeView();
   }
@@ -90,19 +92,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
   initCharts(): void {
     this.mainChart = this.#chartsData.mainChart;
   }
-  loadTopLink(){
-    this.shortlinkApiClient.getTopLink()
-    .pipe(takeUntil(this.ngUnsubscribe))
-    .subscribe({
-      next: (response: ShortLinkInListDto[]) => {
-        this.items = response;
-      },
-      error: (error: any) => {
-        console.log(error);
-        this.alertService.showError('Có lỗi xảy ra');
-      },
-    });
-  }
+  // loadTopLink(){
+  //   this.shortlinkApiClient.getTopLink()
+  //   .pipe(takeUntil(this.ngUnsubscribe))
+  //   .subscribe({
+  //     next: (response: ShortLinkInListDto[]) => {
+  //       this.items = response;
+  //     },
+  //     error: (error: any) => {
+  //       console.log(error);
+  //       this.alertService.showError('Có lỗi xảy ra');
+  //     },
+  //   });
+  // }
   loadBalance(){
     this.shortlinkApiClient.getBalance()
     .pipe(takeUntil(this.ngUnsubscribe))

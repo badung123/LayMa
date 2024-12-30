@@ -49,7 +49,7 @@
                             {{item.pricePerView}}
                         </td>
                         <td class="text-center">
-                          {{item.viewPerDay}}
+                            {{item.toTalView}}/{{item.viewPerDay}}
                         </td>
                         <td class="text-center">
                             {{item.timeOnSitePerView}}
@@ -58,7 +58,7 @@
                         
                         </td>
                         <td class="text-center">
-                            {{ item.dateCreated | date: 'dd/MM/yyyy hh:mm:ss'}}
+                            {{ item.dateCreated | date: 'dd/MM/yyyy HH:mm:ss'}}
                         </td>
                         <td>
                             <div>
@@ -78,6 +78,8 @@
                 </c-col>
               </c-row>    
         </c-card-body>
+        <p-paginator [rows]="pageSize" [totalRecords]="totalCount" (onPageChange)="pageChanged($event)"
+      [rowsPerPageOptions]="[10, 20, 50, 100]"></p-paginator>
       </c-card>
     </c-col> 
   </c-row>

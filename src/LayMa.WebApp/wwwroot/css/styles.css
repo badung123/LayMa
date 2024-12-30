@@ -11957,3 +11957,11 @@ section#contact form#contactForm :-ms-input-placeholder {
     display: inline-block;
     font-size: 16px;
 }
+.footer-contact {
+    border-radius: 10px;
+    background: linear-gradient(113deg, #ffc800 24.15%, #997800 84.38%, #fff4cc 152.29%);
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 0;
+}

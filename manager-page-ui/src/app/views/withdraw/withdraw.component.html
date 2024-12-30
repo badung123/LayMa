@@ -126,7 +126,7 @@
                           <div style="color: red;">{{ item.money }}</div>
                         </td>
                         <td class="text-center">
-                          {{ item.dateCreated | date: 'dd/MM/yyyy hh:mm:ss'}}
+                          {{ item.dateCreated | date: 'dd/MM/yyyy HH:mm:ss'}}
                         </td>
                         <td>
                           <button *ngIf="item.statusProcess === processStatus._0" cButton color="secondary">Chờ xử lý</button>

@@ -18,8 +18,8 @@ namespace LayMa.Core.Repositories
 		Task<PagedResult<ShortLinkInListDto>> GetAllPaging(Guid currentUserId, int pageIndex = 1, int pageSize = 10, string? keySearch= "");
         Task<List<ShortLinkInListDto>> GetTopLink(Guid currentUserId,int top);
 		Task<List<Guid>> GetListShortLinkIDOfUser(Guid userId);
-        Task UpdateOriginOfShortLink(string origin, Guid shortlinkId);
+        Task UpdateOriginOfShortLink(string origin, Guid shortlinkId,string duphong = "");
         Task UpdateView(Guid id);
-		Task<PagedResult<LogShortLinkDto>> GetAllLogPaging(DateTime from, DateTime to,int pageIndex = 1, int pageSize = 10, string? userName = "",int type = -1);
+		Task<PagedResult<LogShortLinkDto>> GetAllLogPaging(DateTime from, DateTime to,int pageIndex = 1, int pageSize = 10, string? userName = "",int type = -1, string? userAgent = "", string? shortLink = "", string? screen = "", string? ip = "", string? flatform = "");
 	}
 }

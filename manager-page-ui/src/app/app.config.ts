@@ -28,6 +28,7 @@ import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
 import { CalendarModule } from 'primeng/calendar';
 import { ClipboardModule } from "@angular/cdk/clipboard";
 
+
 export const appConfig: ApplicationConfig = {
   providers: [
     { provide: ADMIN_API_BASE_URL, useValue: environment.API_URL },
