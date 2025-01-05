@@ -56,6 +56,16 @@ background-repeat: no-repeat !important;
   margin: 0.3rem 0px;
   border-radius: 6px;
 }
+.bg-ymn-3 {
+  background: var(--WHITE-5, #F4F4F4);
+}
+.keo-qua {
+  width: 100%;
+  overflow-x: auto;
+}
+.text-nowrap {
+  white-space: nowrap !important;
+}
 @media (max-width: 600px){
   .remove_dot .input-group {
     max-width: 100%;

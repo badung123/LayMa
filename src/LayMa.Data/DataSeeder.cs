@@ -1,6 +1,9 @@
 ﻿using LayMa.Core.Domain.Identity;
 using Microsoft.AspNetCore.Identity;
 using LayMa.Core.Domain.Identity;
+using Microsoft.EntityFrameworkCore;
+using Azure.Core;
+using LayMa.Core.Utilities;
 
 namespace LayMa.Data
 {
@@ -47,6 +50,16 @@ namespace LayMa.Data
                 });
                 await context.SaveChangesAsync();
             }
+            var listUserNotHaveApiUserToken = await context.Users.Where(x=>x.ApiUserToken == null || x.ApiUserToken == "").ToListAsync();
+            foreach (var item in listUserNotHaveApiUserToken)
+            {
+                var md5content = item.UserName + "_" + item.Email;
+                var apiUserToken = Helper.MD5(md5content);
+                item.ApiUserToken = apiUserToken;
+                context.Users.Update(item);
+            }
+            await context.SaveChangesAsync();
+
         }
     }
 }

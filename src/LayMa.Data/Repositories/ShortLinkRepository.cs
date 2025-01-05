@@ -83,6 +83,13 @@ namespace LayMa.Data.Repositories
             link.View += 1;
             _context.ShortLinks.Update(link);
         }
+		//public async Task UpdateLockShortLink(Guid id,bool isLock)
+		//{
+		//	var link = await _context.ShortLinks.FirstOrDefaultAsync(x => x.Id == id);
+		//	link.View += 1;
+		//	_context.ShortLinks.Update(link);
+		//}
+
 		public async Task<PagedResult<LogShortLinkDto>> GetAllLogPaging(DateTime from, DateTime to, int pageIndex = 1, int pageSize = 10, string? userName = "", int type = -1, string? userAgent = "", string? shortLink = "", string? screen = "", string? ip = "", string? flatform = "")
 		{
 			var query = _context.TransactionLogs.AsQueryable();

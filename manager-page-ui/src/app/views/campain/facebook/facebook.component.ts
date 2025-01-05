@@ -13,7 +13,7 @@ import { DialogService, DynamicDialogComponent } from 'primeng/dynamicdialog';
 import { AlertService } from '../../../shared/services/alert.service';
 import { CampainComponent } from '../campain.component';
 import { Subject, takeUntil } from 'rxjs';
-import { AdminApiCampainApiClient, CampainInListDto, CampainInListDtoPagedResult } from '../../../api/admin-api.service.generated';
+import { AdminApiCampainApiClient, CampainInListDto, CampainInListDtoPagedResult, ChangeMissionRequest, TurnOffOrOnCampainRequest } from '../../../api/admin-api.service.generated';
 import { CommonModule } from '@angular/common';
 import { CampainDetailComponent } from '../campainDetail.component';
 import { PaginatorModule } from 'primeng/paginator';
@@ -23,7 +23,7 @@ import { PaginatorModule } from 'primeng/paginator';
     templateUrl: './facebook.component.html',
     styleUrls: ['./facebook.component.scss'],
     standalone: true,
-    imports: [ContainerComponent, RowComponent,PaginatorModule, ColComponent, TextColorDirective, CardComponent,CardHeaderComponent,TableDirective, CardBodyComponent, FormDirective, InputGroupComponent, InputGroupTextDirective, IconDirective, FormControlDirective, ButtonDirective,ReactiveFormsModule,CommonModule]
+    imports: [ContainerComponent, RowComponent,CommonModule,PaginatorModule, ColComponent, TextColorDirective, CardComponent,CardHeaderComponent,TableDirective, CardBodyComponent, FormDirective, InputGroupComponent, InputGroupTextDirective, IconDirective, FormControlDirective, ButtonDirective,ReactiveFormsModule,CommonModule]
 })
 export class FacebookComponent implements OnInit, OnDestroy{
   private ngUnsubscribe = new Subject<void>();
@@ -117,6 +117,23 @@ export class FacebookComponent implements OnInit, OnDestroy{
       ref.onClose.subscribe((data: any) => {
         this.loadData();  
       });
+    }
+    turnOfforOnCampain(id: string,isActive: boolean){
+      var request: TurnOffOrOnCampainRequest = new TurnOffOrOnCampainRequest({
+        id:id,
+        isActive: isActive
+      });
+      this.campainApiClient
+        .turnOffOrOnCampain(request)
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe({
+          next: (response: any) => {
+            this.loadData();
+          },
+          error: () => {
+            this.alertService.showError('Có lỗi xảy ra');
+          },
+        });
     }
 
 }

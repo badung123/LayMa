@@ -1,0 +1,33 @@
+
+<c-row>
+  <c-col xs="12">
+    <c-card class="mb-4">
+      <c-card-header>
+        <strong>LIÊN KẾT NHANH</strong>
+      </c-card-header>
+      <c-card-body>   
+        <c-card class="mb-4">
+          <c-card-body>   
+                <div>
+                  <h5>API Token của bạn là</h5>
+                  <code>{{apiUserToken}}</code>
+                </div>
+          </c-card-body>
+        </c-card>
+        <c-card class="mb-4">
+          <c-card-body>   
+            <div>
+              <p>Đây là cách nhanh nhất để rút gọn liên kết với layma.net</p>
+  <p>Chỉ cần sao chép liên kết bên dưới rồi dán vào trình duyệt web của bạn, thay đổi phần <b class="text-warning">web-can-rut-gon.com</b> thành liên kết đích và nhấn ENTER. <strong>LAYMA.NET</strong> sẽ chuyển hướng bạn đến liên kết đã được rút gọn. </p>
+  <div class="card bg-ymn-3 shadow-none">
+      <div class="card-body text-sm">
+          {{url}}/api/admin/shortlink/quicklink?tokenUser=<b>{{apiUserToken}}</b>&amp;url=<b>web-can-rut-gon.com</b>
+      </div>
+  </div>
+</div>
+          </c-card-body>
+        </c-card>
+      </c-card-body>
+    </c-card>
+  </c-col> 
+</c-row>

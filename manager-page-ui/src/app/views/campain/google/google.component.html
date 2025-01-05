@@ -53,7 +53,7 @@
                             {{item.pricePerView}}
                         </td>
                         <td class="text-center">
-                          {{item.viewPerDay}}
+                          {{item.toTalView}}/{{item.viewPerDay}}
                         </td>
                         <td class="text-center">
                             {{item.timeOnSitePerView}}
@@ -66,6 +66,8 @@
                         </td>
                         <td>
                             <div>
+                              <button *ngIf="item.status" style="margin-right: 10px;" cButton color="danger" (click) ="turnOfforOnCampain(item.id,!item.status)">Tắt</button>
+                              <button *ngIf="!item.status" style="margin-right: 10px;" cButton color="success" (click) ="turnOfforOnCampain(item.id,!item.status)">Bật</button>
                                 <button style="margin-right: 10px;" cButton color="warning" (click) ="showEditModal(item.id)">Sửa</button>
                                 <button cButton color="primary" (click) ="showModalDetail(item.id,item.keyToken)">Quản lý</button>
                             </div>

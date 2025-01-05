@@ -1,17 +1,25 @@
-﻿@{
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+
+@{
     ViewData["Title"] = "Diều khoản sử dụng";
+    var hideView = Configuration.GetValue<bool>("HideView");
 }
-<section class=" page-section bg-light">
-    <div class="bg-img">
-        <div class="container">
-            <div class="heading -lv2 fadeInUp visible">
-                <h2>ĐIỀU KHOẢN SỬ DỤNG</h2>
-            </div>
-            <div class="box-color -icon fadeInUp visible">
-                <p class="fadeInUp visible"><strong>Bạn chỉ có thể sử dụng trang với mục đích hợp pháp. Bạn không thể sử dụng trang web của chúng tôi với các cách thức như sau:</strong><br>- Không rút gọn các liên kết chứa nội dung vi phạm pháp luật, chống phá Đảng, Nhà nước Việt Nam<br>- Không rút gọn các liên kết chứa nội dung gian lận, hoặc có mục đích/ảnh hướng đến việc vi phạm pháp luật hoặc gian lận<br>- Không rút gọn các liên kết chứa nội dung gây tổn hại hoặc cố gắng gây tổn hại cho trẻ vị thành niên dưới bất kỳ hình thức nào<br>- Không rút gọn các liên kết chứa nội dung sai sự thật, chia rẽ nội bộ đất nước gây hoang mang dư luận ảnh hưởng đến cộng đồng<br>- Không rút gọn các tài liệu tệp tin có chứa virus, Trojan, sâu, bom thời gian, trình ghi lại phím tắt, phần mềm gián điệp, phần mềm quảng cáo hoặc bất kỳ chương trình độc hại khác hoặc mã máy tính tương tự được thiết kế để gây ảnh hưởng xấu đến hoạt động của bất kỳ phần mềm phần cứng.</p>
-                <p class="fadeInUp visible"><strong>Bạn cũng đồng ý rằng:</strong><br>- Không sao chép, chia sẻ hoặc bán lại bất kỳ phần nào trang web của chúng tôi trái với các điều khoản sử dụng này.<br>- Không được truy cập nằm ngoài thẩm quyền, gây trở ngại, gây tổn hại hoặc gây rối đến bất kỳ phần nào của trang web, đến các thiết bị hoặc mạng mà trang web có chứa, đến các phần mềm được sử dụng trong việc cung cấp của trang web, đến bất kỳ thiết bị hoặc mạng lưới hoặc phần mềm được sở hữu hoặc sử dụng bởi bên thứ ba.</p>
+@if (!hideView)
+{
+    <section class=" page-section bg-light">
+        <div class="bg-img">
+            <div class="container">
+                <div class="heading -lv2 fadeInUp visible">
+                    <h2>ĐIỀU KHOẢN SỬ DỤNG</h2>
+                </div>
+                <div class="box-color -icon fadeInUp visible">
+                    <p class="fadeInUp visible"><strong>Bạn chỉ có thể sử dụng trang với mục đích hợp pháp. Bạn không thể sử dụng trang web của chúng tôi với các cách thức như sau:</strong><br>- Không rút gọn các liên kết chứa nội dung vi phạm pháp luật, chống phá Đảng, Nhà nước Việt Nam<br>- Không rút gọn các liên kết chứa nội dung gian lận, hoặc có mục đích/ảnh hướng đến việc vi phạm pháp luật hoặc gian lận<br>- Không rút gọn các liên kết chứa nội dung gây tổn hại hoặc cố gắng gây tổn hại cho trẻ vị thành niên dưới bất kỳ hình thức nào<br>- Không rút gọn các liên kết chứa nội dung sai sự thật, chia rẽ nội bộ đất nước gây hoang mang dư luận ảnh hưởng đến cộng đồng<br>- Không rút gọn các tài liệu tệp tin có chứa virus, Trojan, sâu, bom thời gian, trình ghi lại phím tắt, phần mềm gián điệp, phần mềm quảng cáo hoặc bất kỳ chương trình độc hại khác hoặc mã máy tính tương tự được thiết kế để gây ảnh hưởng xấu đến hoạt động của bất kỳ phần mềm phần cứng.</p>
+                    <p class="fadeInUp visible"><strong>Bạn cũng đồng ý rằng:</strong><br>- Không sao chép, chia sẻ hoặc bán lại bất kỳ phần nào trang web của chúng tôi trái với các điều khoản sử dụng này.<br>- Không được truy cập nằm ngoài thẩm quyền, gây trở ngại, gây tổn hại hoặc gây rối đến bất kỳ phần nào của trang web, đến các thiết bị hoặc mạng mà trang web có chứa, đến các phần mềm được sử dụng trong việc cung cấp của trang web, đến bất kỳ thiết bị hoặc mạng lưới hoặc phần mềm được sở hữu hoặc sử dụng bởi bên thứ ba.</p>
+                </div>
             </div>
         </div>
-    </div>
-    
-</section>
+
+    </section>
+}
+

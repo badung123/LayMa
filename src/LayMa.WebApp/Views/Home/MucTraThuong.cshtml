@@ -1,56 +1,64 @@
-﻿@{
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+
+@{
     ViewData["Title"] = "Mức trả thưởng";
+    var hideView = Configuration.GetValue<bool>("HideView");
 }
-<section class="page-section bg-light">
-    <div class="bg-img">
-        <div class="container">
-            <div class="heading -lv2 fadeInUp visible">
-                <h2>MỨC TRẢ THƯỞNG</h2>
-            </div>
-            <div class="box-color fadeInUp visible">
-                <div class="box-table fadeInUp visible">
-                    <p class="box-table-label"><span>BANNER</span></p>
-                    <div class="box-table-wrap">
-                        <table class="tbl-base">
-                            <colgroup>
-                                <col class="w26per">
-                                <col class="w37per">
-                                <col class="w37per">
-                            </colgroup>
-                            <thead>
-                                <tr>
-                                    <th rowspan="2">Mô tả gói / Quốc gia</th>
-                                    <th colspan="2">Thu nhập trên 1000 lượt xem</th>
-                                </tr>
-                                <tr>
-                                    <th>Máy tính để bàn</th>
-                                    <th>Điện thoại di động / Máy tính bảng</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Việt Nam</td>
-                                    <td>1.000.000 VNĐ</td>
-                                    <td>1.000.000 VNĐ</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+@if (!hideView)
+{
+    <section class="page-section bg-light">
+        <div class="bg-img">
+            <div class="container">
+                <div class="heading -lv2 fadeInUp visible">
+                    <h2>MỨC TRẢ THƯỞNG</h2>
                 </div>
-                <div class="box-note fadeInUp visible">
-                    <p class="box-note-title">Mức thưởng hiện tại:</p>
-                    <div class="box-note-text">
-                        <p><strong>+ 1.000.000 VNĐ/1000 view, 1IP/ngày.<br>+ Min rút tối thiểu 50.000 VNĐ về ví MoMo hoặc Ngân hàng.<br>+ Hoa hồng +100đ/view.</strong></p>
-                        <p>
-                            Hệ thống duyệt rút hằng ngày từ thứ 2 - thứ 6 . Lệnh của thứ 7, chủ nhật sẽ được chuyển sang thứ 2
-                            Khi hệ thống hết nhiệm vụ, sẽ không về link đích mà có thông báo ở link rút gọn rằng hệ thống đang bảo trì, vui lòng quay lại sau
-                            Hết 00h khi hệ thống có nhiệm vụ mới, sẽ tự động mở lại
-                            Để tránh mất tiền và số lượt view, các bạn nên sử dụng nhiều link dự phòng khác nhau
-                        </p>
+                <div class="box-color fadeInUp visible">
+                    <div class="box-table fadeInUp visible">
+                        <p class="box-table-label"><span>BANNER</span></p>
+                        <div class="box-table-wrap">
+                            <table class="tbl-base">
+                                <colgroup>
+                                    <col class="w26per">
+                                    <col class="w37per">
+                                    <col class="w37per">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th rowspan="2">Mô tả gói / Quốc gia</th>
+                                        <th colspan="2">Thu nhập trên 1000 lượt xem</th>
+                                    </tr>
+                                    <tr>
+                                        <th>Máy tính để bàn</th>
+                                        <th>Điện thoại di động / Máy tính bảng</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Việt Nam</td>
+                                        <td>1.000.000 VNĐ</td>
+                                        <td>1.000.000 VNĐ</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="box-note fadeInUp visible">
+                        <p class="box-note-title">Mức thưởng hiện tại:</p>
+                        <div class="box-note-text">
+                            <p><strong>+ 1.000.000 VNĐ/1000 view, 1IP/ngày.<br>+ Min rút tối thiểu 50.000 VNĐ về ví MoMo hoặc Ngân hàng.<br>+ Hoa hồng +100đ/view.</strong></p>
+                            <p>
+                                Hệ thống duyệt rút hằng ngày từ thứ 2 - thứ 6 . Lệnh của thứ 7, chủ nhật sẽ được chuyển sang thứ 2
+                                Khi hệ thống hết nhiệm vụ, sẽ không về link đích mà có thông báo ở link rút gọn rằng hệ thống đang bảo trì, vui lòng quay lại sau
+                                Hết 00h khi hệ thống có nhiệm vụ mới, sẽ tự động mở lại
+                                Để tránh mất tiền và số lượt view, các bạn nên sử dụng nhiều link dự phòng khác nhau
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-</section>
+    </section>
+
+}

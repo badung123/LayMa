@@ -30,13 +30,13 @@
 					<p>Vị trí của từ khóa là ở top <t id="top" class="text-danger fw-bold"></t> Google!</p>
 				</div>
 				<p class="box-step-link fadeInUp visible"><a href="#videohd">Xem video hướng dẫn cách lấy mã</a></p>
-				<p class="box-step-title fadeInUp visible">Bước 1: Mở tab mới, truy cập <a href="https://google.com" target="_blank">Google.com</a></p>
+				<p class="box-step-title fadeInUp visible">Bước 1: Mở tab mới, truy cập <a>Google.com</a></p>
 				<p class="fadeInUp visible">(Vui lòng tắt chế độ ẩn danh khi vượt mã)</p>
 				<p class="box-step-title fadeInUp visible">Bước 2: Hãy nhớ từ khóa trong ô dưới đây.</p>
 				<div class="box-copy fadeInUp mb-3 visible">
 					<div class="box-copy-content">
 						<p class="box-copy-code" id="TK1">@Model.Key</p>
-						<p class="box-copy-button d-none" id="copyCode"><img src="https://yeumoney.com/theme_v2/assets/img/icn-copy.svg" alt="" class="img-fluid"> Copy</p>
+						<p class="box-copy-button" id="copyCode" onclick="copyKeyGoogle()"><img src="https://yeumoney.com/theme_v2/assets/img/icn-copy.svg" alt="" class="img-fluid"> Copy</p>
 						<span id="TK2" data-clipboard-text="@Model.Key"></span>
 					</div>
 					<p class="message" id="copyMessage"></p>
@@ -100,29 +100,13 @@
 					<div class="box-form-wrap">
 						<input type="text" class="form-control" id="codeInput" name="code" required="required" placeholder="Nhập mã vào đây">
 					</div>
-
-					<!-- <p class="box-step-title fadeInUp mt-3">Bước 7: Nhấn nút xác nhận và xác thực captcha</p> -->
-					<!-- <p class="fadeInUp">(Kéo mũi tên sang phải để mảnh ghép về đúng vị trí )</p> -->
-
-					<div class="box-form-button mt-5">
+					<div class="mt-3">
+						<div class="g-recaptcha" data-sitekey="@ViewData["SiteKey"]"></div><br>
+					</div>
+					<div class="box-form-button mt-3">
 						<button type="submit" class="btn btn-primary" id="btn-xac-nhan" onclick="confirm();">Xác nhận</button>
 						<a id="btn-baoloi" class="btn btn-success" onclick="clickDoiNhiemVu();">Đổi nhiệm vụ</a>
-					</div>
-					@* <div>
-					<input type="text" name="keyword" class="form-control" style="display: none" id="keyword" value="">
-					<span id="dieuhanh"><input type="hidden" name="dieuhanh" value="Win32"></span>
-					<span id="pix"><input type="hidden" name="pix" value="1536x864"></span>
-					<span id="lv_p"><input type="hidden" name="lvp" value="100"></span>
-					<c id="d"></c>
-					<span id="xoa_lichsu_duphong"></span>
-					<span id="chuyen_dauvantay_duphong"></span>
-					<input type="hidden" name="ref" value="$ref">
-					<input id="trinhduyet" type="hidden" name="trinhduyet" value="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36 Edg/129.0.0.0|1536 x 864|Win32">
-					<input id="id_donhang" type="hidden" name="id_traffic" value="42">
-					<input id="check_index" type="hidden" name="check_index" value="">
-					<input id="check_gt" type="hidden" name="check_index" value="1">
-					</div> *@
-					
+					</div>	
 				</div>
 			</div>
 
@@ -130,7 +114,16 @@
 			<div class="box-video fadeInUp visible">
 				<p class="box-video-title fadeInUp visible">VIDEO HƯỚNG DẪN CÁCH LẤY MÃ</p>
 				<div class="box-video-youtube fadeInUp visible">
-					<iframe style="width:100%; aspect-ratio:0.452;" src="/uploads/video_fb_hd.mp4"></iframe>
+					@if (Model.Flatfrom == "google")
+					{
+						<iframe style="width:100%; aspect-ratio:0.452;" src="/uploads/google.mov"></iframe>
+					}
+					else
+					{
+						<iframe style="width:100%; aspect-ratio:0.452;" src="/uploads/video_fb_hd.mp4"></iframe>
+					}
+					
+					
 				</div>
 			</div>
 
@@ -284,6 +277,25 @@
 		</div>
 	</div>
 </div>
+@* @section Scripts {
+						@if (Model.Captcha.IsEnabled)
+						{
+							@if (Model.Captcha.IsVersion2())
+							{
+								<script src="https://www.google.com/recaptcha/api.js" defer></script>
+							}
+
+							@if (Model.Captcha.IsVersion3())
+							{
+								<script src="https://www.google.com/recaptcha/api.js?render=@Model.Captcha.SiteKey"></script>
+								<script>
+									function onSubmit(token) {
+										console.log(token)
+									}
+								</script>
+							}
+						}
+					} *@
 <script>
 	
 	const ajax = function(url, method = 'GET', data, onSuccess = null, onError = null, onDone = null) {
@@ -610,7 +622,22 @@
 		document.getElementById("modalFooter").style.backgroundColor = "#5cb85c";
 		document.getElementById("noidung").innerHTML = noidung;
 	}
-	function confirm() {
+	function confirm(){
+		let reCaptchaResponse = grecaptcha.getResponse();
+        if(reCaptchaResponse){
+            $.getJSON("/Template/Verify?token=" + reCaptchaResponse,
+                    function (data) {
+                        if (data) {
+                            confirm1();
+                        }
+                        else {
+                            displayError("Thao tác không thật");
+                        }
+                    });
+        }
+	}
+	function confirm1() {
+		 
 		var code = document.getElementById("codeInput").value;
 		if(code == null || code == ""){
 			displayError("Bạn chưa nhập mã code");
@@ -648,7 +675,7 @@
 					if(n== 0){
 						clearInterval(t)
 						modalThongbao.style.display = "none";
-						window.open(result);
+						window.open(result,"_self");
 					}
 				},1e3)
 							
@@ -699,6 +726,18 @@
 		// Copy the text inside the text field
 		navigator.clipboard.writeText(copyText.innerHTML);
 		document.getElementById("copyUrlFB").innerHTML = "Đã copy";
+	}
+	function copyKeyGoogle(){
+		// Get the text field
+		var copyText = document.getElementById("TK1");
+
+	@* // Select the text field
+			copyText.select();
+			copyText.setSelectionRange(0, 99999); // For mobile devices *@
+
+			// Copy the text inside the text field
+			navigator.clipboard.writeText(copyText.innerHTML);
+		document.getElementById("copyCode").innerHTML = "Đã Copy";
 	}
 	
 	ajaxPost(

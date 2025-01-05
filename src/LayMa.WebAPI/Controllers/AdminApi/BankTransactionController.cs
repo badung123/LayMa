@@ -39,12 +39,13 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 			//check thoi gian toi thieu tao lenh rut
 			if (request == null)
 			{
-				return BadRequest("Invalid request");
+				return BadRequest("Đầu vào không hợp lệ");
 			}
 
 			var userId = User.GetUserId();
             var user = await _userManager.FindByIdAsync(userId.ToString());
             if (user == null) return BadRequest("User không tồn tại");
+            //check lệnh rút trước cách bao lâu
             if (request.Money < 50000) return BadRequest("Rút tối thiểu 50.000 VNĐ");
 			if (user.Balance < request.Money) return BadRequest("Số dư không đủ");
 			var transaction = _mapper.Map<CreateBankTransactionDto, TransactionBank>(request);
@@ -56,8 +57,24 @@ namespace LayMa.WebAPI.Controllers.AdminApi
             var id = Guid.NewGuid();
             transaction.Id = id;
             _unitOfWork.BankTransactions.Add(transaction);
-            var result = await _unitOfWork.CompleteAsync();
-            return result > 0 ? Ok() : BadRequest();
+			//trừ tiền
+			await _unitOfWork.Users.UpdateBalanceCount(user.Id, -request.Money);
+			var transLogUser = new TransactionLog
+			{
+				Id = Guid.NewGuid(),
+				UserId = user.Id,
+				UserName = user.UserName,
+				Amount = -request.Money,
+				OldBalance = Int64.Parse(user.Balance.ToString()),
+				CreatedBy = "admin",
+				Description = "tạo lệnh rút tiền",
+				TranSactionType = TranSactionType.WithDraw,
+				DateCreated = DateTime.Now,
+				DateModified = DateTime.Now
+			};
+			_unitOfWork.TransactionLogs.Add(transLogUser);
+			var result = await _unitOfWork.CompleteAsync();
+            return result > 0 ? Ok() : BadRequest("Có lỗi xảy ra");
         }
         [HttpGet]
         [Route("paging")]
@@ -92,9 +109,7 @@ namespace LayMa.WebAPI.Controllers.AdminApi
                 //get user ID
                 var user = await _userManager.FindByIdAsync(input.UserId.ToString());				
 				if (user == null) return BadRequest("Tài khoản không tồn tại");
-                if(input.Money < 50000) return BadRequest("Số tiền rút tối thiểu là 50.000 VNĐ");
-				if (input.Money > user.Balance) return BadRequest("Số dư không đủ");
-				await _unitOfWork.Users.UpdateBalanceCount(user.Id, -input.Money);
+				//await _unitOfWork.Users.UpdateBalanceCount(user.Id, -input.Money);
 				var transLogUser = new TransactionLog
 				{
 					Id = Guid.NewGuid(),
@@ -103,14 +118,34 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 					Amount = input.Money,
 					OldBalance = Int64.Parse(user.Balance.ToString()),
 					CreatedBy = "admin",
-					Description = "Rút tiền",
+					Description = "Rút tiền thành công",
 					TranSactionType = TranSactionType.WithDraw,
 					DateCreated = DateTime.Now,
 					DateModified = DateTime.Now
 				};
 				_unitOfWork.TransactionLogs.Add(transLogUser);
 			}
-			await _unitOfWork.BankTransactions.UpdateStatusProcess(type, id);
+            if (type == 2)
+            {
+				var user = await _userManager.FindByIdAsync(input.UserId.ToString());
+				if (user == null) return BadRequest("Tài khoản không tồn tại");
+				await _unitOfWork.Users.UpdateBalanceCount(user.Id, input.Money);
+				var transLogUser = new TransactionLog
+				{
+					Id = Guid.NewGuid(),
+					UserId = input.UserId,
+					UserName = user.UserName,
+					Amount = input.Money,
+					OldBalance = Int64.Parse(user.Balance.ToString()),
+					CreatedBy = "admin",
+					Description = "Rút tiền bị từ chối",
+					TranSactionType = TranSactionType.WithDraw,
+					DateCreated = DateTime.Now,
+					DateModified = DateTime.Now
+				};
+				_unitOfWork.TransactionLogs.Add(transLogUser);
+			}
+            await _unitOfWork.BankTransactions.UpdateStatusProcess(type, id);
 			await _unitOfWork.CompleteAsync();
             return Ok();
         }

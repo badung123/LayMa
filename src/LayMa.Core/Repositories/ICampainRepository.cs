@@ -24,6 +24,7 @@ namespace LayMa.Core.Repositories
 
 		Task<ThongKeView> GetThongKeView();
 		Task UpdateViewPerDayCount(Guid id, long viewCount);
+        Task UpdateActive(Guid id, bool isActive);
 
-	}
+    }
 }

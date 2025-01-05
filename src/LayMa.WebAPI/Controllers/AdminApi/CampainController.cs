@@ -106,6 +106,17 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 			}
 			return Ok(result);
 		}
+        [HttpPost]
+        [Route("turnoffCampain")]
+        public async Task<ActionResult> TurnOffOrOnCampain(TurnOffOrOnCampainRequest request)
+        {
+            //var userId = User.GetUserId();
+            if (request == null) return BadRequest("Lỗi đầu vào");
+			await _unitOfWork.Campains.UpdateActive(request.Id, request.IsActive);
+			await _unitOfWork.CompleteAsync();
+			//change mission
+			return Ok();
+        }
 
-	}
+    }
 }

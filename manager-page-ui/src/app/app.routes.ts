@@ -26,6 +26,10 @@ export const routes: Routes = [
         loadChildren: () => import('./views/shortlink/routes').then((m) => m.routes)
       },
       {
+        path: 'tool',
+        loadChildren: () => import('./views/tool/routes').then((m) => m.routes)
+      },
+      {
         path: 'withdraw',
         loadChildren: () => import('./views/withdraw/routes').then((m) => m.routes)
       },
@@ -36,6 +40,10 @@ export const routes: Routes = [
       {
         path: 'user',
         loadChildren: () => import('./views/user/routes').then((m) => m.routes)
+      },
+      {
+        path: 'userThongke',
+        loadChildren: () => import('./views/userThongke/routes').then((m) => m.routes)
       },
       {
         path: 'withdrawmanager',

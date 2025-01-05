@@ -1,17 +1,26 @@
-﻿@{
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+
+@{
     ViewData["Title"] = "Chính sách bảo mật";
+    var hideView = Configuration.GetValue<bool>("HideView");
 }
-<section class="page-section bg-light">
-    <div class="bg-img">
-        <div class="container">
-            <div class="heading -lv2 fadeInUp visible">
-                <h2>CHÍNH SÁCH BẢO MẬT</h2>
-            </div>
-            <div class="box-color -icon fadeInUp visible">
-                <p class="fadeInUp visible">Chính sách bảo mật cho bạn biết chúng tôi sử dụng thông tin cá nhân của bạn thu thập được tại trang web này như thế nào. Xin vui lòng đọc chính sách bảo mật trước khi sử dụng trang web hoặc gửi bất kỳ thông tin cá nhân nào.</p>
-                <p class="fadeInUp visible">Khi sử dụng trang web, bạn đang chấp nhận những điều được mô tả trong chính sách bảo mật. Chính sách của chúng tôi là giữ kín thông tin cá nhân nhận được từ trang web hoàn toàn bí mật và chỉ dùng cho mục đích nội bộ. Chúng tôi sẽ không chia sẻ thông tin cá nhân của bạn với bất kỳ bên nào khác. Hãy yên tâm rằng chúng tôi tôn trọng sự riêng tư của bạn và xử lý dữ liệu cá nhân của bạn với sự cẩn trọng tối đa.</p>
+
+@if (!hideView)
+{
+    <section class="page-section bg-light">
+        <div class="bg-img">
+            <div class="container">
+                <div class="heading -lv2 fadeInUp visible">
+                    <h2>CHÍNH SÁCH BẢO MẬT</h2>
+                </div>
+                <div class="box-color -icon fadeInUp visible">
+                    <p class="fadeInUp visible">Chính sách bảo mật cho bạn biết chúng tôi sử dụng thông tin cá nhân của bạn thu thập được tại trang web này như thế nào. Xin vui lòng đọc chính sách bảo mật trước khi sử dụng trang web hoặc gửi bất kỳ thông tin cá nhân nào.</p>
+                    <p class="fadeInUp visible">Khi sử dụng trang web, bạn đang chấp nhận những điều được mô tả trong chính sách bảo mật. Chính sách của chúng tôi là giữ kín thông tin cá nhân nhận được từ trang web hoàn toàn bí mật và chỉ dùng cho mục đích nội bộ. Chúng tôi sẽ không chia sẻ thông tin cá nhân của bạn với bất kỳ bên nào khác. Hãy yên tâm rằng chúng tôi tôn trọng sự riêng tư của bạn và xử lý dữ liệu cá nhân của bạn với sự cẩn trọng tối đa.</p>
+                </div>
             </div>
         </div>
-    </div>
-    
-</section>
+
+    </section>
+}
+

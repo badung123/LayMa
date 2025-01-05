@@ -33,7 +33,7 @@
                     <input
                     cFormControl formControlName="accountNumber"
     id="floatingInputValue"
-    type="number"
+    type="text"
     value="123456789"
   />
   <label cLabel for="floatingInputValue">Số Tài Khoản</label>
@@ -48,7 +48,7 @@
   <label cLabel for="floatingInputValue">Số Tiền</label>
                   </div>                                                 
                   <div class="d-grid">
-                    <button cButton color="warning" type="submit">RÚT TIỀN</button>
+                    <button cButton [disabled]="invalid" color="warning" type="submit">RÚT TIỀN</button>
                   </div>
                 </form>
               </c-card-body>

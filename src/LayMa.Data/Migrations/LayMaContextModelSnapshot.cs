@@ -137,6 +137,9 @@ namespace LayMa.Data.Migrations
                     b.Property<string>("Agent")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("ApiUserToken")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<double>("Balance")
                         .HasColumnType("float");
 
@@ -160,6 +163,9 @@ namespace LayMa.Data.Migrations
 
                     b.Property<DateTime?>("LastLoginDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<bool>("LockShortLink")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -237,6 +243,9 @@ namespace LayMa.Data.Migrations
 
                     b.Property<DateTime?>("DateModified")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("IPAddress")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsUsed")
                         .HasColumnType("bit");

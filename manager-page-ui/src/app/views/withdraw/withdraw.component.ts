@@ -47,6 +47,7 @@ export class WithDrawComponent implements OnInit, OnDestroy{
     public pageIndex: number = 1;
     public pageSize: number = 5;
     public totalCount: number;
+    public invalid: Boolean = false;
 
     //Business variables
     public histories: BankTransactionInListDto[];
@@ -972,18 +973,21 @@ export class WithDrawComponent implements OnInit, OnDestroy{
       this.loadData();    
     }
     withdraw() {
+      this.invalid = true;
       if (this.selectedBank == null || this.selectedBank.shortName == null) {
         this.alertService.showError('Bạn cần chọn ngân hàng');
+        this.invalid = false;
         return;
       }
       if (this.accountName == null || this.accountName == '') {
         this.alertService.showError('Bạn cần nhập tên tài khoản');
+        this.invalid = false;
         return;
       }
       
       var request: CreateBankTransactionDto = new CreateBankTransactionDto({
         bankAccountName: this.accountName,
-        bankAccountNumber:this.withdrawForm.controls['accountNumber'].value.toString(),
+        bankAccountNumber:this.withdrawForm.controls['accountNumber'].value,
         money:this.withdrawForm.controls['amount'].value,
         bankName:this.selectedBank.shortName
       }); 
@@ -993,11 +997,12 @@ export class WithDrawComponent implements OnInit, OnDestroy{
         next: () => {
           //Redirect to dashboard
           this.loadData();
-  
+          this.invalid = false;
         },
         error: (error: any) => {
           console.log(error);
           this.alertService.showError('Có lỗi xảy ra');
+          this.invalid = false;
         },
       });
     }

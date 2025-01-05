@@ -37,5 +37,10 @@ namespace LayMa.Core.Constants
             [Description("Xác minh tài khoản")]
             public const string View = "Permissions.VerifyAccount.Create";
         }
+        public static class ToolAPI
+        {
+            [Description("Xác minh tài khoản")]
+            public const string View = "Permissions.ToolAPI.View";
+        }
     }
 }

@@ -18,17 +18,20 @@ import { Subject, takeUntil } from 'rxjs';
 import { IconDirective } from '@coreui/icons-angular';
 import { ContainerComponent, RowComponent, ColComponent, TextColorDirective, CardComponent, CardBodyComponent, FormDirective, InputGroupComponent, InputGroupTextDirective, FormControlDirective, ButtonDirective } from '@coreui/angular';
 import { UtilityService } from '../../../shared/services/utility.service';
+import { environment } from '../../../../environments/environment';
 import { forEach } from 'lodash-es';
+import { CommonModule } from '@angular/common';
 
 @Component({
     selector: 'app-register',
     templateUrl: './register.component.html',
     styleUrls: ['./register.component.scss'],
     standalone: true,
-    imports: [ContainerComponent, RowComponent, ColComponent, TextColorDirective, CardComponent, CardBodyComponent, FormDirective, InputGroupComponent, InputGroupTextDirective, IconDirective, FormControlDirective, ButtonDirective,ReactiveFormsModule]
+    imports: [ContainerComponent,CommonModule, RowComponent, ColComponent, TextColorDirective, CardComponent, CardBodyComponent, FormDirective, InputGroupComponent, InputGroupTextDirective, IconDirective, FormControlDirective, ButtonDirective,ReactiveFormsModule]
 })
 export class RegisterComponent implements OnDestroy,OnInit{
   registerForm: FormGroup;
+  offRegister = true;
   private ngUnsubscribe = new Subject<void>();
   constructor(private fb: FormBuilder,
     private utilService: UtilityService,
@@ -45,6 +48,7 @@ export class RegisterComponent implements OnDestroy,OnInit{
       });
     }
     ngOnInit(): void {
+      this.offRegister = environment.OFF_REGISTER;
     }
     
     ngOnDestroy(): void {

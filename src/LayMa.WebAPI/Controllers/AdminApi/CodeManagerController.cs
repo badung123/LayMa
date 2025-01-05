@@ -21,7 +21,7 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 	public class CodeManagerController : ControllerBase
 	{
 		private readonly IUnitOfWork _unitOfWork;
-		private readonly UserManager<AppUser> _userManager;
+        private readonly UserManager<AppUser> _userManager;
         private readonly WhiteListIPGetCode _whiteListIP;
         public CodeManagerController(IUnitOfWork unitOfWork, UserManager<AppUser> userManager, IOptions<WhiteListIPGetCode> whiteListIP)
 		{
@@ -114,36 +114,36 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 				await _unitOfWork.CompleteAsync();
 				return Ok(shortLink.OriginLink);
 			}
-            //var checkUserAgent = await _unitOfWork.ViewDetails.CheckUserAgent(request.UserAgent, request.DeviceScreen);
-            //if (!checkUserAgent)
-            //{
-            //    var transLog = new TransactionLog
-            //    {
-            //        Id = Guid.NewGuid(),
-            //        UserId = user.Id,
-            //        UserName = user.UserName,
-            //        Amount = 0,
-            //        OldBalance = Int64.Parse(user.Balance.ToString()),
-            //        CreatedBy = user.UserName,
-            //        Description = "trùng user agent - " + shortLink.Link,
-            //        TranSactionType = TranSactionType.ClickCode,
-            //        ShortLink = shortLink.Link,
-            //        DeviceScreen = request.DeviceScreen,
-            //        UserAgent = request.UserAgent,
-            //        IPAddress = ips,
-            //        DateCreated = DateTime.Now,
-            //        DateModified = DateTime.Now,
-            //        Flatform = campain.Flatform
-            //    };
-            //    _unitOfWork.TransactionLogs.Add(transLog);
-            //    await _unitOfWork.CompleteAsync();
-            //    return Ok(shortLink.OriginLink);
-            //}
+			//var checkUserAgent = await _unitOfWork.ViewDetails.CheckUserAgent(request.UserAgent, request.DeviceScreen);
+			//if (!checkUserAgent)
+			//{
+			//	var transLog = new TransactionLog
+			//	{
+			//		Id = Guid.NewGuid(),
+			//		UserId = user.Id,
+			//		UserName = user.UserName,
+			//		Amount = 0,
+			//		OldBalance = Int64.Parse(user.Balance.ToString()),
+			//		CreatedBy = user.UserName,
+			//		Description = "trùng user agent - " + shortLink.Link,
+			//		TranSactionType = TranSactionType.ClickCode,
+			//		ShortLink = shortLink.Link,
+			//		DeviceScreen = request.DeviceScreen,
+			//		UserAgent = request.UserAgent,
+			//		IPAddress = ips,
+			//		DateCreated = DateTime.Now,
+			//		DateModified = DateTime.Now,
+			//		Flatform = campain.Flatform
+			//	};
+			//	_unitOfWork.TransactionLogs.Add(transLog);
+			//	await _unitOfWork.CompleteAsync();
+			//	return Ok(shortLink.OriginLink);
+			//}
 
 
-            // phải nằm trong transaction
-            //update viewcount in shortlink
-            await _unitOfWork.ShortLinks.UpdateViewCount(shortLink.Id);
+			// phải nằm trong transaction
+			//update viewcount in shortlink
+			await _unitOfWork.ShortLinks.UpdateViewCount(shortLink.Id);
 			//update code đã dùng
 			await _unitOfWork.CodeManagers.UpdateIsUsed(request.Code, Guid.Parse(request.CampainId));
 
@@ -162,14 +162,19 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 			};
 			_unitOfWork.ViewDetails.Add(viewDetail);
 			//get User and update balane
-			await _unitOfWork.Users.UpdateBalanceCount(user.Id,1000);
-			//TODO: update vào bảng transation
-			var transLogUser = new TransactionLog
+			var amountRate = 1000;
+			if (user.UserName == "buianhhiep") amountRate = 300;
+			if (user.UserName == "trungdao2k4") amountRate = 0;
+			if (user.UserName == "thanhdatdz123j") amountRate = 0;
+			await _unitOfWork.Users.UpdateBalanceCount(user.Id, amountRate);
+
+            //TODO: update vào bảng transation
+            var transLogUser = new TransactionLog
 			{
 				Id = Guid.NewGuid(),
 				UserId = user.Id,
 				UserName = user.UserName,
-				Amount = 1000,
+				Amount = amountRate,
 				OldBalance = Int64.Parse(user.Balance.ToString()),
 				CreatedBy = user.UserName,
 				Description = "Nhận thưởng nhập code thành công link rút gọn : " + shortLink.Link,
@@ -196,7 +201,7 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 						UserId = agent.Id,
 						UserName = agent.UserName,
 						Amount = 100,
-						OldBalance = Int64.Parse(user.Balance.ToString()),
+						OldBalance = Int64.Parse(agent.Balance.ToString()),
 						CreatedBy = user.UserName,
 						ShortLink = shortLink.Link,
 						Description = "Nhận thưởng hoa hồng thành công link rút gọn : " + shortLink.Link + " của tài khoản " + user.UserName,
@@ -219,9 +224,9 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 		{
             // bo sung cac thong tin ip,browser,client ui sau
             //Dictionary<string, string> res = JsonConvert.DeserializeObject<Dictionary<string, string>>(request);
-            var ips = HttpContext.Request.GetIpAddress();
-            var listIP = _whiteListIP.WhiteList.Split(',').ToList();
-			if (!listIP.Contains(ips)) return BadRequest(new CodeResponse { Success = false });
+   //         var ips = HttpContext.Request.GetIpAddress();
+   //         var listIP = _whiteListIP.WhiteList.Split(',').ToList();
+			//if (!listIP.Contains(ips)) return BadRequest(new CodeResponse { Success = false,Html=ips });
             var token = "";
 			token = token.GenerateLinkToken(6);
 			var Id = Guid.NewGuid();
@@ -234,7 +239,7 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 				IsUsed = false,
 				KeySearchId = Guid.NewGuid(),
 				CampainId = Guid.Parse(request["trafficid"].ToString()),
-				IPAddress = ips
+				IPAddress = ""
 			};
 			_unitOfWork.CodeManagers.Add(code);
 			var result = await _unitOfWork.CompleteAsync();			

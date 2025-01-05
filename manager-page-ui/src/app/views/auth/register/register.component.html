@@ -4,7 +4,7 @@
       <c-col lg="7" md="9" xl="6">
         <c-card class="mx-4">
           <c-card-body class="p-4">
-            <form cForm [formGroup]="registerForm" (ngSubmit)="register()">
+            <form *ngIf="!offRegister" cForm [formGroup]="registerForm" (ngSubmit)="register()">
               <h1>ĐĂNG KÝ</h1>
               <p class="text-body-secondary">Đăng ký tài khoản</p>
               <c-input-group class="mb-3">
@@ -44,6 +44,13 @@
               </div>
               </div>
             </form>
+            <div *ngIf="offRegister">
+                
+              <p>
+                Tạm tắt tính năng đăng ký
+              </p>
+              
+            </div>
           </c-card-body>
         </c-card>
       </c-col>

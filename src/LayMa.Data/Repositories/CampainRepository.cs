@@ -51,7 +51,7 @@ namespace LayMa.Data.Repositories
 		}
 		public async Task<Campain> GetCampainByID(Guid campainId)
 		{
-			var campain = await _context.Campains.Where(x => x.Id == campainId).FirstOrDefaultAsync();
+			var campain = await _context.Campains.Where(x => x.Id == campainId && x.Status).FirstOrDefaultAsync();
 			if (campain == null) return null;
 			return campain;
 		}
@@ -97,5 +97,12 @@ namespace LayMa.Data.Repositories
 			campain.ToTalView = viewCount;
 			_context.Campains.Update(campain);
 		}
-	}
+		public async Task UpdateActive(Guid id, bool isActive)
+		{
+            var campain = await _context.Campains.FirstOrDefaultAsync(x => x.Id == id);
+			campain.Status = isActive;
+            _context.Campains.Update(campain);
+        }
+
+    }
 }

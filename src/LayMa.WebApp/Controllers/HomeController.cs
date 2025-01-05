@@ -1,3 +1,4 @@
+using LayMa.WebApp.Extensions;
 using LayMa.WebApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Configuration;
@@ -9,8 +10,9 @@ namespace LayMa.WebApp.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 		private IConfiguration _configuration;
+       
 
-		public HomeController(ILogger<HomeController> logger, IConfiguration configuration)
+        public HomeController(ILogger<HomeController> logger, IConfiguration configuration)
         {
             _logger = logger;
 			_configuration = configuration;
@@ -48,5 +50,7 @@ namespace LayMa.WebApp.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+        
+
     }
 }

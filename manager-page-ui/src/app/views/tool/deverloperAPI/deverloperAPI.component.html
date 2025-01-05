@@ -1,0 +1,125 @@
+
+<c-row>
+  <c-col xs="12">
+    <c-card class="mb-4">
+      <c-card-header>
+        <strong>DEVERLOPER API</strong>
+      </c-card-header>
+      <c-card-body>   
+        <c-card class="mb-4">
+          <c-card-body>   
+                <div>
+                  <h5>API Token của bạn là</h5>
+                  <code>{{apiUserToken}}</code>
+                </div>
+          </c-card-body>
+        </c-card>
+        <c-card class="mb-4">
+          <c-card-body>   
+            <div class="bg-ymn-2 p-3 rounded border">
+
+              <p>API của LAYMA.NET sẽ trả về phản hồi ở dạng <strong>JSON</strong> hoặc <strong>TEXT</strong>.</p>
+  
+              <p>Để sử dụng API, bạn hay gửi một <strong>GET</strong> request kèm theo API token của bạn và link muốn rút gọn tương tự như sau:</p>
+              <div class="card bg-ymn-3 shadow-none">
+                  <div class="card-body text-sm">
+                    {{url}}/api/admin/shortlink/quicklink?tokenUser=<b>{{apiUserToken}}</b>&amp;format=<b>json</b>&amp;url=<b>web-can-rut-gon.com</b>
+                  </div>
+              </div>
+  
+              <p>Bạn sẽ nhận về một JSON như sau</p>
+              <div class="card bg-ymn-3 shadow-none">
+                  <div class="card-body text-sm">
+                    &#123;"success":true,"html":"https://layma.net/xxxxx"&#125;
+                  </div>
+              </div>
+  
+              <p>Hoặc như sau nếu có lỗi xảy ra, với <strong>...</strong> là nội dung thông báo lỗi</p>
+              <div class="card bg-ymn-3 shadow-none">
+                  <div class="card-body text-sm">
+                    &#123;"success":false&#125;
+                  </div>
+              </div>
+  
+              <p>Nếu bạn muốn link rút gọn được trả về phản hồi dưới dạng TEXT, hãy thay <strong>format=json</strong> thành <strong>format=text</strong></p>
+              <div class="card bg-ymn-3 shadow-none">
+                  <div class="card-body text-sm">
+                    {{url}}/api/admin/shortlink/quicklink?tokenUser=<b>{{apiUserToken}}</b>&amp;format=<b>text</b>&amp;url=<b>web-can-rut-gon.com</b>
+                  </div>
+              </div>
+  
+              <p>Và bạn sẽ nhận về một phản hồi như sau</p>
+              <div class="card bg-ymn-3 shadow-none">
+                  <div class="card-body text-sm">
+                      https://layma.net/xxxxx
+                  </div>
+              </div>
+  
+              <p>Hoặc một phản hồi rỗng nếu lỗi xảy ra</p>
+  
+              <div class="alert alert-info">
+                  <h4><i class="fas fa-info-circle"></i> Lưu ý</h4>
+                  <ul class="pl-3">
+                      <li>Token và URL là 2 tham số bắt buộc.</li>
+                      <li>Khi format không phải là json / text thì API sẽ chuyển hướng tới link rút gọn tương tự như Liên kết nhanh</li>
+                  </ul>
+              </div>
+          </div>
+          </c-card-body>
+        </c-card>
+        <c-card class="mb-4">
+          <c-card-body>   
+            <div class="bg-ymn-2 p-3 rounded border mt-3">
+              <h4>Code C#</h4>
+  
+              <p>Dạng JSON</p>
+              <div class="card bg-ymn-3 shadow-none">
+                  <div class="card-body text-sm">
+                      <div class="keo-qua text-nowrap">
+                        var originUrl = "https://web-can-rut-gon.com";<br>
+                        var apiToken = "{{apiUserToken}}";<br>
+                        var apiUrl = String.Format("{{url}}/api/admin/shortlink/quicklink?tokenUser=&#123;0&#125;&format=json&url=&#123;1&#125;", apiToken, originUrl);<br>
+                        using (HttpClient client = new HttpClient())<br>
+                        &#123;<br>
+                            &emsp;client.BaseAddress = new Uri(apiUrl);<br>
+                            &emsp;client.DefaultRequestHeaders.Accept.Clear();<br>
+                            &emsp;client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));<br>
+                            &emsp;HttpResponseMessage response = await client.GetAsync(apiUrl);<br>
+                            &emsp;if (response.IsSuccessStatusCode)<br>
+                            &#123;<br>
+                            &emsp;&emsp;var result = await response.Content.ReadAsStringAsync();<br>
+                            &emsp;&emsp;dynamic json = JsonConvert.DeserializeObject(result);<br>
+                            &emsp;&#125;<br>
+                        &#125;<br>
+                      </div>
+                  </div>
+              </div>
+  
+              <p>Dạng TEXT</p>
+              <div class="card bg-ymn-3 shadow-none" >
+                  <div class="card-body text-sm">
+                      <div class="keo-qua text-nowrap">
+                        var originUrl = "https://web-can-rut-gon.com";<br>
+                        var apiToken = "{{apiUserToken}}";<br>
+                        var apiUrl = String.Format("{{url}}/api/admin/shortlink/quicklink?tokenUser=&#123;0&#125;&format=text&url=&#123;1&#125;", apiToken, originUrl);<br>
+                        using (HttpClient client = new HttpClient())<br>
+                        &#123;<br>
+                        &emsp; client.BaseAddress = new Uri(apiUrl);<br>
+                        &emsp;client.DefaultRequestHeaders.Accept.Clear();<br>
+                        &emsp;client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));<br>
+                        &emsp;HttpResponseMessage response = await client.GetAsync(apiUrl);<br>
+                        &emsp;if (response.IsSuccessStatusCode)<br>
+                        &emsp;&#123;<br>
+                            &emsp;&emsp;var result = await response.Content.ReadAsStringAsync();<br>
+                            &emsp;&#125;<br>
+                        &#125;<br>
+                      </div>
+                  </div>
+              </div> 
+            </div>
+          </c-card-body>
+        </c-card>
+      </c-card-body>
+    </c-card>
+  </c-col> 
+</c-row>

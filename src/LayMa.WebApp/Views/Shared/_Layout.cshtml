@@ -1,4 +1,11 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@{
+    var hideView = Configuration.GetValue<bool>("HideView");
+    var siteKey = Configuration.GetSection("GoogleRecaptcha").GetSection("Sitekey").Value ?? "";
+    // Do your things
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <title>@ViewData["Title"] - LayMa.WebApp</title>
@@ -16,6 +23,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <!-- Core theme CSS (includes Bootstrap)-->
     <link href="/css/styles.css" rel="stylesheet" />
+    <script src="https://www.google.com/recaptcha/api.js"></script>
     <!-- Start of LiveChat (www.livechat.com) code -->
    @*  <script>
         window.__lc = window.__lc || {};
@@ -37,11 +45,19 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
-                    <li class="nav-item"><a class="nav-link" href="/">TRANG CHỦ</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/Home/MucTraThuong">MỨC TRẢ THƯỞNG</a></li>
-                    <li class="nav-item"><a class="nav-link" href="https://t.me/+6FQHOlwNAyI3MzU1" target="_blank">LIÊN HỆ</a></li>
-                    <li class="nav-item"><a class="nav-link" href="https://quanly.layma.net/#/auth/login" target="_blank">QUẢN LÝ</a></li>
-                    <li class="nav-item"><a class="nav-link" href="">RÚT TIỀN</a></li>
+                    @if (hideView)
+                    {
+                        <li class="nav-item"><a class="nav-link" href="https://quanly.layma.net/#/auth/login" target="_blank">QUẢN LÝ</a></li>
+                    }
+                    else
+                    {
+                        <li class="nav-item"><a class="nav-link" href="/">TRANG CHỦ</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/Home/MucTraThuong">MỨC TRẢ THƯỞNG</a></li>
+                        <li class="nav-item"><a class="nav-link" href="https://t.me/+6FQHOlwNAyI3MzU1" target="_blank">LIÊN HỆ</a></li>
+                        <li class="nav-item"><a class="nav-link" href="https://quanly.layma.net/#/auth/login" target="_blank">QUẢN LÝ</a></li>
+                        <li class="nav-item"><a class="nav-link" href="">RÚT TIỀN</a></li>
+                    }
+                    
                 </ul>
             </div>
         </div>
@@ -57,14 +73,17 @@
                     <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
                     
                 </div>
-                <div class="col-lg-4 text-lg-end">
-                    <a class="link-dark text-decoration-none me-3" href="/Home/DieuKhoan">ĐIỀU KHOẢN</a>
-                    <a class="link-dark text-decoration-none me-3" href="/Home/Privacy">BẢO MẬT</a>
-                    <a class="link-dark text-decoration-none" href="#!">LIÊN HỆ</a>
-                </div>
+                @if (!hideView)
+                {
+                    <div class="col-lg-4 text-lg-end">
+                        <a class="link-dark text-decoration-none me-3" href="/Home/DieuKhoan">ĐIỀU KHOẢN</a>
+                        <a class="link-dark text-decoration-none me-3" href="/Home/Privacy">BẢO MẬT</a>
+                        <a class="link-dark text-decoration-none" href="#!">LIÊN HỆ</a>
+                    </div>
+                }
+                
             </div>
         </div>
-        <div id="Cfi0emlfE" style="text-align:center"></div>
     </footer>
     <!-- Portfolio Modals-->
     <!-- Portfolio item 1 modal popup-->
@@ -286,5 +305,8 @@
     <!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->
     <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
     <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+    @RenderSection("Scripts", required: false);
+    
+
 </body>
 </html>

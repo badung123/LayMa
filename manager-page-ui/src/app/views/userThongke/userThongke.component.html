@@ -1,0 +1,85 @@
+
+<c-row>
+    <c-col xs="12">
+      <c-card class="mb-4">
+        <c-card-header>
+          <h2><strong>Thống kê Người dùng</strong></h2>
+        </c-card-header>
+        <c-card-body class="p-4">
+          <c-row [xl]="2" [lg]="2" [sm]="2" [xs]="1">
+            <c-col>
+              <c-input-group class="mb-3">
+                <input aria-describedby="button-addon2"
+                       aria-label="userName"
+                       cFormControl
+                       id="txtKeyword" pInputText (keyup.enter)="loadData()" [(ngModel)]="userNameSearch"
+                       placeholder="userName"
+                />
+              </c-input-group>
+            </c-col>
+            <c-col>
+              <p-calendar class="float-start me-4 pdaterange"
+                [(ngModel)]="rangeDates"
+                selectionMode="range" 
+                [showIcon]="true"
+                dateFormat="dd/mm/yy"
+                [readonlyInput]="true"
+                (ngModelChange)="changeDateRange($event)"
+                [showButtonBar]="true"/>
+            </c-col>
+          </c-row>
+            <c-row>
+                <c-col xs>
+                  <c-card class="mb-4">
+                    <!-- <c-card-header>
+                        Danh sách người dùng
+                    </c-card-header> -->
+                    <c-card-body>
+                        <table
+                          [hover]="true"
+                          [responsive]="true"
+                          [striped]="true"
+                          align="middle"
+                          cTable
+                          class="mb-0 border"
+                        >
+                          <thead class="text-nowrap text-truncate">
+                          <tr>
+                            <th class="bg-body-tertiary">STT</th>
+                            <th class="bg-body-tertiary text-center">Username</th>
+                            <th class="bg-body-tertiary text-center">Số Click</th>
+                            <th class="bg-body-tertiary text-center">Số View</th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                            @for (item of items; track item.id; let i = $index) {
+                              <tr>
+                                <td  class="text-center">
+                                    {{i + 1}}
+                                </td>
+                                <td class="text-center">
+                                    <div>{{item.userName}}</div>
+                                    
+                                </td>
+                                <td class="text-center">
+                                  {{item.click}}
+                                </td>
+                                <td class="text-center">
+                                    {{item.view}}
+                                  </td>
+                                
+                              </tr>
+                            }
+                          </tbody>
+                        </table>
+                    </c-card-body>
+                  </c-card>
+                </c-col>
+              </c-row>    
+        </c-card-body>
+        <p-paginator [rows]="pageSize" [totalRecords]="totalCount" (onPageChange)="pageChanged($event)"
+      [rowsPerPageOptions]="[10, 20, 50, 100]"></p-paginator>
+      </c-card>
+    </c-col> 
+  </c-row>
+  

@@ -1,12 +1,20 @@
-﻿@{
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+
+@{
     ViewData["Title"] = "Trang chủ";
+    var hideView = Configuration.GetValue<bool>("HideView");
 }
 
 <!-- Masthead-->
 <header class="masthead">
     <div class="container">
-        <div class="masthead-heading text-uppercase">KIẾM TIỀN ONLINE</div>
-        <div class="masthead-subheading">LAYMA.NET LÀ MỘT HỆ THỐNG KIẾM TIỀN ONLINE HOÀN TOÀN MIỄN PHÍ, NƠI BẠN CÓ THỂ TẠO CÁC LIÊN KẾT VÀ NOTES VÀ KIẾM TIỀN TỪ ĐÓ</div>
+        @if (!hideView)
+        {
+            <div class="masthead-heading text-uppercase">KIẾM TIỀN ONLINE</div>
+            <div class="masthead-subheading">LAYMA.NET LÀ MỘT HỆ THỐNG KIẾM TIỀN ONLINE HOÀN TOÀN MIỄN PHÍ, NƠI BẠN CÓ THỂ TẠO CÁC LIÊN KẾT VÀ NOTES VÀ KIẾM TIỀN TỪ ĐÓ</div>
+        }
+       
         <a class="btn btn-primary btn-xl text-uppercase" href="https://quanly.layma.net/#/auth/login" target="_blank">THAM GIA NGAY</a>
     </div>
 </header>
@@ -46,189 +54,205 @@
     </div>
 </section> *@
 <!-- Team-->
-<section class="page-section bg-light" id="team">
-    <div class="container">
-        <div class="text-center">
-            <h2 class="section-heading text-uppercase">HƯỚNG DẪN</h2>
-            <h3 class="section-subheading text-muted">3 BƯỚC ĐỂ THAM GIA</h3>
-        </div>
-        <div class="row">
-            <div class="col-lg-4">
-                <div class="team-member">
-                    <img class="mx-auto rounded-circle" src="/assets/img/layma/createAccount.jpg" alt="..." />
-                    <h4>TẠO TÀI KHOẢN</h4>
-                    @* <p class="text-muted">Lead Designer</p>
+@if(!hideView){
+    <section class="page-section bg-light" id="team">
+        <div class="container">
+            <div class="text-center">
+                <h2 class="section-heading text-uppercase">HƯỚNG DẪN</h2>
+                <h3 class="section-subheading text-muted">3 BƯỚC ĐỂ THAM GIA</h3>
+            </div>
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="team-member">
+                        <img class="mx-auto rounded-circle" src="/assets/img/layma/createAccount.jpg" alt="..." />
+                        <h4>TẠO TÀI KHOẢN</h4>
+                        @* <p class="text-muted">Lead Designer</p>
                     <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Parveen Anand Twitter Profile"><i class="fab fa-twitter"></i></a>
                     <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Parveen Anand Facebook Profile"><i class="fab fa-facebook-f"></i></a>
                     <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Parveen Anand LinkedIn Profile"><i class="fab fa-linkedin-in"></i></a> *@
+                    </div>
                 </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="team-member">
-                    <img class="mx-auto rounded-circle" src="/assets/img/layma/notelink.png" alt="..." />
-                    <h4>TẠO NOTE & LINK</h4>
-                    @* <p class="text-muted">Lead Marketer</p>
+                <div class="col-lg-4">
+                    <div class="team-member">
+                        <img class="mx-auto rounded-circle" src="/assets/img/layma/notelink.png" alt="..." />
+                        <h4>TẠO NOTE & LINK</h4>
+                        @* <p class="text-muted">Lead Marketer</p>
                     <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Diana Petersen Twitter Profile"><i class="fab fa-twitter"></i></a>
                     <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Diana Petersen Facebook Profile"><i class="fab fa-facebook-f"></i></a>
                     <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Diana Petersen LinkedIn Profile"><i class="fab fa-linkedin-in"></i></a> *@
+                    </div>
                 </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="team-member">
-                    <img class="mx-auto rounded-circle" src="/assets/img/layma/makemoney.png" alt="..." />
-                    <h4>KIẾM TIỀN THÔI</h4>
-                    @* <p class="text-muted">Lead Developer</p>
+                <div class="col-lg-4">
+                    <div class="team-member">
+                        <img class="mx-auto rounded-circle" src="/assets/img/layma/makemoney.png" alt="..." />
+                        <h4>KIẾM TIỀN THÔI</h4>
+                        @* <p class="text-muted">Lead Developer</p>
                     <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Larry Parker Twitter Profile"><i class="fab fa-twitter"></i></a>
                     <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Larry Parker Facebook Profile"><i class="fab fa-facebook-f"></i></a>
                     <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Larry Parker LinkedIn Profile"><i class="fab fa-linkedin-in"></i></a> *@
+                    </div>
                 </div>
             </div>
-        </div>
-        @* <div class="row">
-            <div class="col-lg-8 mx-auto text-center"><p class="large text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut eaque, laboriosam veritatis, quos non quis ad perspiciatis, totam corporis ea, alias ut unde.</p></div>
+            @* <div class="row">
+        <div class="col-lg-8 mx-auto text-center"><p class="large text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut eaque, laboriosam veritatis, quos non quis ad perspiciatis, totam corporis ea, alias ut unde.</p></div>
         </div> *@
-    </div>
-</section>
-<!-- Portfolio Grid-->
-<section class="page-section bg-light" id="portfolio">
-    <div class="container">
-        <div class="text-center">
-            <h2 class="section-heading text-uppercase">VÌ SAO BẠN CHỌN CHÚNG TÔI</h2>
-            <h3 class="section-subheading text-muted">KIẾM TIỀN MIỄN PHÍ</h3>
         </div>
-        <div class="row">
-            <div class="col-lg-4 col-sm-6 mb-4">
-                <!-- Portfolio item 1-->
-                <div class="portfolio-item">
-                    <div class="portfolio-image">
-                        <img class="img-fluid" src="/assets/img/layma/money-internet.webp" alt="..." />
-                    </div>
-                    <div class="portfolio-caption">
-                        <div class="portfolio-caption-heading">LAYMA.NET LÀ GÌ?</div>
-                        <div class="portfolio-caption-subheading text-muted">LAYMA.NET là một hệ thống kiếm tiền online hoàn toàn miễn phí, nơi bạn có thể tạo các liên kết và notes và kiếm tiền từ nó.</div>
+    </section>
+    <!-- Portfolio Grid-->
+    <section class="page-section bg-light" id="portfolio">
+        <div class="container">
+            <div class="text-center">
+                <h2 class="section-heading text-uppercase">VÌ SAO BẠN CHỌN CHÚNG TÔI</h2>
+                <h3 class="section-subheading text-muted">KIẾM TIỀN MIỄN PHÍ</h3>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-sm-6 mb-4">
+                    <!-- Portfolio item 1-->
+                    <div class="portfolio-item">
+                        <div class="portfolio-image">
+                            <img class="img-fluid" src="/assets/img/layma/money-internet.webp" alt="..." />
+                        </div>
+                        <div class="portfolio-caption">
+                            <div class="portfolio-caption-heading">LAYMA.NET LÀ GÌ?</div>
+                            <div class="portfolio-caption-subheading text-muted">LAYMA.NET là một hệ thống kiếm tiền online hoàn toàn miễn phí, nơi bạn có thể tạo các liên kết và notes và kiếm tiền từ nó.</div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-4 col-sm-6 mb-4">
-                <!-- Portfolio item 2-->
-                <div class="portfolio-item">
-                    
-                    <div class="portfolio-image">
-                        <img class="img-fluid" src="/assets/img/layma/groupuser.png" alt="..." />
-                    </div>
-                    <div class="portfolio-caption">
-                        <div class="portfolio-caption-heading">NHIỀU NGƯỜI THAM GIA</div>
-                        <div class="portfolio-caption-subheading text-muted">Nền tảng kiếm tiền online uy tín, ưu việt và tốt nhất hiện nay, hệ thống đang tạo ra thu nhập cho hàng nghìn người mỗi ngày.</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-sm-6 mb-4">
-                <!-- Portfolio item 3-->
-                <div class="portfolio-item">
-                    
-                    <div class="portfolio-image">
-                        <img class="img-fluid" src="/assets/img/layma/growfinance.png" alt="..." />
-                    </div>
-                    <div class="portfolio-caption">
-                        <div class="portfolio-caption-heading">TIỀN THƯỞNG CAO NHẤT</div>
-                        <div class="portfolio-caption-subheading text-muted">Bạn sẽ nhận được 600.000đ/1000 lượt click và hoa hồng giới thiệu bạn bè tham gia mỗi view +100đ và hưởng đến suốt đời.</div>
+                <div class="col-lg-4 col-sm-6 mb-4">
+                    <!-- Portfolio item 2-->
+                    <div class="portfolio-item">
+
+                        <div class="portfolio-image">
+                            <img class="img-fluid" src="/assets/img/layma/groupuser.png" alt="..." />
+                        </div>
+                        <div class="portfolio-caption">
+                            <div class="portfolio-caption-heading">NHIỀU NGƯỜI THAM GIA</div>
+                            <div class="portfolio-caption-subheading text-muted">Nền tảng kiếm tiền online uy tín, ưu việt và tốt nhất hiện nay, hệ thống đang tạo ra thu nhập cho hàng nghìn người mỗi ngày.</div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-4 col-sm-6 mb-4 mb-lg-0">
-                <!-- Portfolio item 4-->
-                <div class="portfolio-item">
-                    
-                    <div class="portfolio-image">
-                        <img class="img-fluid" src="/assets/img/layma/withdraw.png" alt="..." />
-                    </div>
-                    <div class="portfolio-caption">
-                        <div class="portfolio-caption-heading">NGƯỠNG RÚT TIỀN THẤP</div>
-                        <div class="portfolio-caption-subheading text-muted">Bạn có thể rút tiền về khi số dư đạt tối thiểu 30.000đ. Chúng tôi sẽ duyệt và thanh toán cho bạn trong vòng 24h làm việc.</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-sm-6 mb-4 mb-sm-0">
-                <!-- Portfolio item 5-->
-                <div class="portfolio-item">
-                    
-                    <div class="portfolio-image">
-                        <img class="img-fluid" src="/assets/img/layma/analysis.png" alt="..." />
-                    </div>
-                    <div class="portfolio-caption">
-                        <div class="portfolio-caption-heading">THỐNG KÊ CHI TIẾT</div>
-                        <div class="portfolio-caption-subheading text-muted">Tất cả số liệu về thu nhập của bạn đều được thống kê tự động dựa trên thuật toán một cách chi tiết và chính xác nhất.</div>
+                <div class="col-lg-4 col-sm-6 mb-4">
+                    <!-- Portfolio item 3-->
+                    <div class="portfolio-item">
+
+                        <div class="portfolio-image">
+                            <img class="img-fluid" src="/assets/img/layma/growfinance.png" alt="..." />
+                        </div>
+                        <div class="portfolio-caption">
+                            <div class="portfolio-caption-heading">TIỀN THƯỞNG CAO NHẤT</div>
+                            <div class="portfolio-caption-subheading text-muted">Bạn sẽ nhận được 600.000đ/1000 lượt click và hoa hồng giới thiệu bạn bè tham gia mỗi view +100đ và hưởng đến suốt đời.</div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-4 col-sm-6">
-                <!-- Portfolio item 6-->
-                <div class="portfolio-item">
-                    
-                    <div class="portfolio-image">
-                        <img class="img-fluid" src="/assets/img/layma/support.jpg" alt="..." />
+                <div class="col-lg-4 col-sm-6 mb-4 mb-lg-0">
+                    <!-- Portfolio item 4-->
+                    <div class="portfolio-item">
+
+                        <div class="portfolio-image">
+                            <img class="img-fluid" src="/assets/img/layma/withdraw.png" alt="..." />
+                        </div>
+                        <div class="portfolio-caption">
+                            <div class="portfolio-caption-heading">NGƯỠNG RÚT TIỀN THẤP</div>
+                            <div class="portfolio-caption-subheading text-muted">Bạn có thể rút tiền về khi số dư đạt tối thiểu 30.000đ. Chúng tôi sẽ duyệt và thanh toán cho bạn trong vòng 24h làm việc.</div>
+                        </div>
                     </div>
-                    <div class="portfolio-caption">
-                        <div class="portfolio-caption-heading">HỖ TRỢ NHANH</div>
-                        <div class="portfolio-caption-subheading text-muted">Đội ngũ hỗ trợ của chúng tôi luôn túc trực 24/7 để sẵn sàng trả lời bạn với bất kỳ câu hỏi nào trong thời gian nhanh nhất.</div>
+                </div>
+                <div class="col-lg-4 col-sm-6 mb-4 mb-sm-0">
+                    <!-- Portfolio item 5-->
+                    <div class="portfolio-item">
+
+                        <div class="portfolio-image">
+                            <img class="img-fluid" src="/assets/img/layma/analysis.png" alt="..." />
+                        </div>
+                        <div class="portfolio-caption">
+                            <div class="portfolio-caption-heading">THỐNG KÊ CHI TIẾT</div>
+                            <div class="portfolio-caption-subheading text-muted">Tất cả số liệu về thu nhập của bạn đều được thống kê tự động dựa trên thuật toán một cách chi tiết và chính xác nhất.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-sm-6">
+                    <!-- Portfolio item 6-->
+                    <div class="portfolio-item">
+
+                        <div class="portfolio-image">
+                            <img class="img-fluid" src="/assets/img/layma/support.jpg" alt="..." />
+                        </div>
+                        <div class="portfolio-caption">
+                            <div class="portfolio-caption-heading">HỖ TRỢ NHANH</div>
+                            <div class="portfolio-caption-subheading text-muted">Đội ngũ hỗ trợ của chúng tôi luôn túc trực 24/7 để sẵn sàng trả lời bạn với bất kỳ câu hỏi nào trong thời gian nhanh nhất.</div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
-<!-- About-->
-<section class="page-section" id="about">
-    <div class="container">
-        <div class="text-center">
-            <h2 class="section-heading text-uppercase">TỐC ĐỘ PHÁT TRIỂN</h2>
-            <h3 class="section-subheading text-muted">NHỮNG CON SỐ BIẾT NÓI</h3>
+    </section>
+    <!-- About-->
+    <section class="page-section" id="about">
+        <div class="container">
+            <div class="text-center">
+                <h2 class="section-heading text-uppercase">TỐC ĐỘ PHÁT TRIỂN</h2>
+                <h3 class="section-subheading text-muted">NHỮNG CON SỐ BIẾT NÓI</h3>
+            </div>
+            <ul class="timeline">
+                <li>
+                    <div class="timeline-image"><img class="rounded-circle img-fluid" src="/assets/img/layma/click.jpg" alt="..." /></div>
+                    <div class="timeline-panel">
+                        <div class="timeline-heading">
+                            <h4>17,789,000+</h4>
+                            <h4 class="subheading">TỔNG SỐ LƯỢT NHẤP CHUỘT</h4>
+                        </div>
+                        @* <div class="timeline-body"><p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sunt ut voluptatum eius sapiente, totam reiciendis temporibus qui quibusdam, recusandae sit vero unde, sed, incidunt et ea quo dolore laudantium consectetur!</p></div> *@
+                    </div>
+                </li>
+                <li class="timeline-inverted">
+                    <div class="timeline-image"><img class="rounded-circle img-fluid" src="/assets/img/layma/logo_links.jpg" alt="..." /></div>
+                    <div class="timeline-panel">
+                        <div class="timeline-heading">
+                            <h4>8,478,000+</h4>
+                            <h4 class="subheading">TỔNG LIÊN KẾT ĐƯỢC TẠO</h4>
+                        </div>
+                        @* <div class="timeline-body"><p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sunt ut voluptatum eius sapiente, totam reiciendis temporibus qui quibusdam, recusandae sit vero unde, sed, incidunt et ea quo dolore laudantium consectetur!</p></div> *@
+                    </div>
+                </li>
+                <li>
+                    <div class="timeline-image"><img class="rounded-circle img-fluid" src="/assets/img/layma/userall.jpg" alt="..." /></div>
+                    <div class="timeline-panel">
+                        <div class="timeline-heading">
+                            <h4>43,618</h4>
+                            <h4 class="subheading">NGƯỜI ĐÃ THAM GIA</h4>
+                        </div>
+                        @* <div class="timeline-body"><p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sunt ut voluptatum eius sapiente, totam reiciendis temporibus qui quibusdam, recusandae sit vero unde, sed, incidunt et ea quo dolore laudantium consectetur!</p></div> *@
+                    </div>
+                </li>
+                <li class="timeline-inverted">
+                    <div class="timeline-image">
+                        <h4>
+                            THAM
+                            <br />
+                            GIA
+                            <br />
+                            NGAY
+                        </h4>
+                    </div>
+                </li>
+            </ul>
         </div>
-        <ul class="timeline">
-            <li>
-                <div class="timeline-image"><img class="rounded-circle img-fluid" src="/assets/img/layma/click.jpg" alt="..." /></div>
-                <div class="timeline-panel">
-                    <div class="timeline-heading">
-                        <h4>17,789,000+</h4>
-                        <h4 class="subheading">TỔNG SỐ LƯỢT NHẤP CHUỘT</h4>
+    </section>
+    <section class="page-section" id="contact">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-12">
+                    <div class="footer-contact text-center">
+                        <span>Nếu bạn có thắc mắc</span>
+                        <p>LIÊN HỆ CHÚNG TÔI NGAY</p>
+                        <p>SUPPORT 24/7 <a href="https://t.me/+6FQHOlwNAyI3MzU1" target="_blank"><img src="/assets/img/telegram-icon.webp" alt=""> Link Nhóm Hỗ Trợ</a></p>
                     </div>
-                    @* <div class="timeline-body"><p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sunt ut voluptatum eius sapiente, totam reiciendis temporibus qui quibusdam, recusandae sit vero unde, sed, incidunt et ea quo dolore laudantium consectetur!</p></div> *@
                 </div>
-            </li>
-            <li class="timeline-inverted">
-                <div class="timeline-image"><img class="rounded-circle img-fluid" src="/assets/img/layma/logo_links.jpg" alt="..." /></div>
-                <div class="timeline-panel">
-                    <div class="timeline-heading">
-                        <h4>8,478,000+</h4>
-                        <h4 class="subheading">TỔNG LIÊN KẾT ĐƯỢC TẠO</h4>
-                    </div>
-                    @* <div class="timeline-body"><p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sunt ut voluptatum eius sapiente, totam reiciendis temporibus qui quibusdam, recusandae sit vero unde, sed, incidunt et ea quo dolore laudantium consectetur!</p></div> *@
-                </div>
-            </li>
-            <li>
-                <div class="timeline-image"><img class="rounded-circle img-fluid" src="/assets/img/layma/userall.jpg" alt="..." /></div>
-                <div class="timeline-panel">
-                    <div class="timeline-heading">
-                        <h4>43,618</h4>
-                        <h4 class="subheading">NGƯỜI ĐÃ THAM GIA</h4>
-                    </div>
-                    @* <div class="timeline-body"><p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sunt ut voluptatum eius sapiente, totam reiciendis temporibus qui quibusdam, recusandae sit vero unde, sed, incidunt et ea quo dolore laudantium consectetur!</p></div> *@
-                </div>
-            </li>
-            <li class="timeline-inverted">
-                <div class="timeline-image">
-                    <h4>
-                        THAM
-                        <br />
-                        GIA
-                        <br />
-                        NGAY
-                    </h4>
-                </div>
-            </li>
-        </ul>
-    </div>
-</section>
+            </div>
+        </div>
+    </section>
+
+}
 
 <!-- Clients-->
 @* <div class="py-5">
@@ -250,16 +274,4 @@
     </div>
 </div> *@
 <!-- Contact-->
-<section class="page-section" id="contact">
-    <div class="container">
-        <div class="row text-center">
-            <div class="col-12">
-                <div class="footer-contact text-center">
-                    <span>Nếu bạn có thắc mắc</span>
-                    <p>LIÊN HỆ CHÚNG TÔI NGAY</p>
-                    <p>SUPPORT 24/7 <a href="https://t.me/+6FQHOlwNAyI3MzU1" target="_blank"><img src="/assets/img/telegram-icon.webp" alt=""> Link Nhóm Hỗ Trợ</a></p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+

@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LayMa.Core.Domain.Visitor;
 
 namespace LayMa.Data.Repositories
 {
@@ -82,11 +83,58 @@ namespace LayMa.Data.Repositories
 		{
 			return await _context.Users.Where(x => x.RefCode == refcode && x.IsActive).FirstOrDefaultAsync();
 		}
-		public async Task UpdateBalanceCount(Guid userid, double amount)
+        public async Task<AppUser?> GetUserByUserToken(string token)
+        {
+            return await _context.Users.Where(x => x.ApiUserToken == token && x.IsActive).FirstOrDefaultAsync();
+        }
+        
+        public async Task UpdateBalanceCount(Guid userid, double amount)
 		{
 			var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userid);
 			user.Balance += amount;
 			_context.Users.Update(user);
 		}
-	}
+		public async Task<List<ThongKeViewClickByUser>> GetAllUser(string? userName = "")
+		{
+			var query = _context.Users.AsQueryable();
+			if (!String.IsNullOrEmpty(userName))
+			{
+				query = query.Where(x => x.UserName.Contains(userName));
+			}
+			//query = query.Join(x=> )
+			return await _mapper.ProjectTo<ThongKeViewClickByUser>(query).ToListAsync();
+		}
+        public async Task<PagedResult<ThongKeViewClickByUser>> GetAllUserTHongKe(DateTime from, DateTime to, int pageIndex = 1, int pageSize = 10,string? userName = "")
+        {
+            var query = _context.Users.AsQueryable();
+            if (!String.IsNullOrEmpty(userName))
+            {
+                query = query.Where(x => x.UserName.Contains(userName));
+            }
+			
+			var a = query.GroupJoin(_context.Visitors, u => u.Id, v => v.UserId, (u, v) => new ObjectThongKeJoin { u = u, v = v.Where(x=> x.DateCreated >= from && x.DateCreated < to).ToList() }).Select(x=> new ThongKeViewClickByUser
+			{
+				Id = x.u.Id,
+				UserName = x.u.UserName,
+				Click = 0,
+				View = x.v.Count()
+			}).Where(x=>x.View > 0);
+            var totalRow = a.Count();
+            a = a.Skip((pageIndex - 1) * pageSize)
+               .Take(pageSize);
+
+            return new PagedResult<ThongKeViewClickByUser>
+            {
+                Results = await a.ToListAsync(),
+                CurrentPage = pageIndex,
+                RowCount = totalRow,
+                PageSize = pageSize
+            };
+        }
+		public class ObjectThongKeJoin()
+		{
+            public AppUser u { get; set; }
+            public List<Visitor> v { get; set; }
+        }
+    }
 }

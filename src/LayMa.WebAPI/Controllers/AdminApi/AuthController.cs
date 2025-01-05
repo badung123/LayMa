@@ -173,6 +173,8 @@ namespace LayMa.Api.Controllers.AdminApi
             var userId = Guid.NewGuid();
             string code = "";
             code = code.GenerateLinkToken(8);
+            var md5content = request.UserName + "_" + request.Email;
+            var apiUserToken = Helper.MD5(md5content);
 
 			var user = new AppUser()
             {
@@ -183,6 +185,7 @@ namespace LayMa.Api.Controllers.AdminApi
                 Agent = request.Refcode != "" ? request.Refcode : string.Empty,
                 RefCode = frefix + code,
 				NormalizedUserName = request.UserName.ToUpper(),
+                ApiUserToken = apiUserToken,
                 IsActive = true,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 LockoutEnabled = false,

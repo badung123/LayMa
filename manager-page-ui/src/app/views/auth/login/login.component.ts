@@ -20,6 +20,7 @@ import { NgStyle,CommonModule } from '@angular/common';
 import { IconDirective } from '@coreui/icons-angular';
 import { ContainerComponent, RowComponent, ColComponent, CardGroupComponent, TextColorDirective, CardComponent, CardBodyComponent, FormDirective, InputGroupComponent, InputGroupTextDirective, FormControlDirective, ButtonDirective } from '@coreui/angular';
 import { BroadcastService } from 'src/app/shared/services/boardcast.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
     selector: 'app-login',
@@ -32,6 +33,7 @@ export class LoginComponent implements OnDestroy,OnInit{
   loginForm: FormGroup;
   private ngUnsubscribe = new Subject<void>();
   loading = false;
+  offRegister = true;
   constructor(
     private fb: FormBuilder,
     private authApiClient: AdminApiAuthApiClient,
@@ -46,6 +48,7 @@ export class LoginComponent implements OnDestroy,OnInit{
     });
   }
   ngOnInit(): void {
+    this.offRegister = environment.OFF_REGISTER;
     this.broadCastService.httpError.asObservable().subscribe(values => {
       this.loading = false;
   });

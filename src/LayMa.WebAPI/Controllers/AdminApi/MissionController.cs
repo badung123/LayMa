@@ -4,6 +4,7 @@ using LayMa.Core.Domain.Mission;
 using LayMa.Core.Interface;
 using LayMa.Core.Model.Mission;
 using Microsoft.AspNetCore.Mvc;
+using Org.BouncyCastle.Asn1.Ocsp;
 
 namespace LayMa.WebAPI.Controllers.AdminApi
 {
@@ -33,7 +34,38 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 			if (mission == null) return BadRequest("Không tìm thấy nhiệm vụ nào cho bạn");
 			//get flatform
 			var campain = await _unitOfWork.Campains.GetCampainByID(mission.CampainId);
-			if (campain == null) return BadRequest("Không có chiến dịch phù hợp");
+			if (campain == null)
+			{
+                await _unitOfWork.Missions.UpdateIsChange(mission.Id);
+                var campainId = await _unitOfWork.Campains.GetCampainIdRandomByOldID(mission.CampainId);
+                if (campainId == Guid.Empty) return BadRequest("Hiện tại không có chiến dịch nào phù hợp");
+                campain = await _unitOfWork.Campains.GetCampainByID(campainId);
+                var newMissionId = Guid.NewGuid();
+                var newMission = new Mission()
+                {
+                    Id = newMissionId,
+                    CampainId = campainId,
+                    ShortLinkId = shortLink.Id,
+                    TokenUrl = shortLink.Token,
+                    ShortLink = shortLink.OriginLink,
+                    UserId = userId,
+                    DateCreated = DateTime.Now,
+                    DateModified = DateTime.Now,
+                    IsActive = true
+                };
+                _unitOfWork.Missions.Add(newMission);
+                var result = await _unitOfWork.CompleteAsync();
+				if (result > 0)
+				{
+					mission = newMission;
+
+                }
+				else
+				{
+                    return BadRequest("Bạn không còn nhiệm vụ nào");
+                }
+            }
+
 			var date = DateTime.Now;
 			var start = date.Date;
 			var end = date.Date.AddDays(1);

@@ -21,5 +21,23 @@ export const routes: Routes = [
         },
         canActivate: [AuthGuard]
     },
+    {
+        path: 'youtube',
+        loadComponent: () => import('./youtube/youtube.component').then(m => m.YoutubeComponent),
+        data: {
+            title: 'Chiến dịch youtube',
+            requiredPolicy:'Permissions.Campain.View'
+        },
+        canActivate: [AuthGuard]
+    },
+    {
+        path: 'instagram',
+        loadComponent: () => import('./instagram/instagram.component').then(m => m.InstagramComponent),
+        data: {
+            title: 'Chiến dịch instagram',
+            requiredPolicy:'Permissions.Campain.View'
+        },
+        canActivate: [AuthGuard]
+    },
 ];
 

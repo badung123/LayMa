@@ -25,7 +25,9 @@ namespace LayMa.Core.Domain.Identity
 		public string? Agent { get; set; }
         public string? Origin { get; set; }
         public string? OriginImage { get; set; }
+        public string? ApiUserToken { get; set; }
         public bool IsVerify { get; set; }
         public DateTime? VerifyDateTime { get; set; }
-    }
+		public bool LockShortLink { get; set; }
+	}
 }

@@ -4,15 +4,19 @@ using LayMa.Core.Domain.Link;
 using LayMa.Core.Domain.Mission;
 using LayMa.Core.Interface;
 using LayMa.Core.Model;
+using LayMa.Core.Model.Campain;
+using LayMa.Core.Model.CodeManager;
 using LayMa.Core.Model.ShortLink;
 using LayMa.WebAPI.Extensions;
 using LayMa.WebAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using System.Reflection.Metadata.Ecma335;
 using static LayMa.Core.Constants.Permissions;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace LayMa.WebAPI.Controllers.AdminApi
@@ -25,20 +29,21 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 		private readonly UserManager<AppUser> _userManager;
 		private readonly IMapper _mapper;
 		private readonly IShortLinkService _shortLinkService;
-		public ShortLinkController(IUnitOfWork unitOfWork, UserManager<AppUser> userManager ,IMapper mapper, IShortLinkService shortLinkService)
-        {
-            _mapper = mapper;
+		public ShortLinkController(IUnitOfWork unitOfWork, UserManager<AppUser> userManager, IMapper mapper, IShortLinkService shortLinkService)
+		{
+			_mapper = mapper;
 			_unitOfWork = unitOfWork;
 			_userManager = userManager;
 			_shortLinkService = shortLinkService;
-        }		
+		}
 		[HttpPost]
 		[Route("create")]
 		//[Authorize(ShortLinks.Create)]
-		public async Task<IActionResult> CreateShortLink([FromBody] CreateShortLinkDto request) {
+		public async Task<IActionResult> CreateShortLink([FromBody] CreateShortLinkDto request)
+		{
 			var userId = User.GetUserId();
 			var user = await _userManager.FindByIdAsync(userId.ToString());
-			var link = _mapper.Map<CreateShortLinkDto,ShortLink>(request);
+			var link = _mapper.Map<CreateShortLinkDto, ShortLink>(request);
 			link.DateCreated = DateTime.Now;
 			link.DateModified = DateTime.Now;
 			link.UserId = userId;
@@ -55,7 +60,8 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 			var campainId = await _unitOfWork.Campains.GetCampainIdRandom();
 			if (campainId == Guid.Empty) return BadRequest();
 			var missionId = Guid.NewGuid();
-			var mission = new Mission() { 
+			var mission = new Mission()
+			{
 				Id = missionId,
 				CampainId = campainId,
 				ShortLinkId = id,
@@ -74,10 +80,10 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 		[HttpGet]
 		[Route("paging")]
 		//[Authorize(ShortLinks.View)]
-		public async Task<ActionResult<PagedResult<ShortLinkInListDto>>> GetPostsPaging(int pageIndex, int pageSize = 10, string? keySearch="")
+		public async Task<ActionResult<PagedResult<ShortLinkInListDto>>> GetPostsPaging(int pageIndex, int pageSize = 10, string? keySearch = "")
 		{
 			var userId = User.GetUserId();
-            var result = await _unitOfWork.ShortLinks.GetAllPaging(userId, pageIndex, pageSize,keySearch);
+			var result = await _unitOfWork.ShortLinks.GetAllPaging(userId, pageIndex, pageSize, keySearch);
 			return Ok(result);
 		}
 		[HttpGet]
@@ -98,62 +104,66 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 			return Ok(user.Balance);
 		}
 
-        [HttpGet]
-        [Route("thongkeClickByDate")]
-        public async Task<ActionResult<ThongKeViewClick>> GetThongKeClickByDate(DateTime from,DateTime to)
-        {
+		[HttpGet]
+		[Route("thongkeClickByDate")]
+		public async Task<ActionResult<ThongKeViewClick>> GetThongKeClickByDate(DateTime from, DateTime to)
+		{
+			from = from.Date;
+			to = to.Date;
 			var countClick = 0;
 			var countView = 0;
 			var userId = User.GetUserId();
 			//get list token short link
 			var listTokenShortLinkOfUser = await _unitOfWork.ShortLinks.GetListShortLinkIDOfUser(userId);
-            if (listTokenShortLinkOfUser.Count > 0)
-            {
-                foreach (var item in listTokenShortLinkOfUser)
-                {
+			if (listTokenShortLinkOfUser.Count > 0)
+			{
+				foreach (var item in listTokenShortLinkOfUser)
+				{
 					var countC = await _unitOfWork.ViewDetails.CountClickByDateRangeAndShortLink(from, to, item);
 					countClick += countC;
 					var countV = await _unitOfWork.Visitors.CountViewByDateRangeAndShortLink(from, to, item);
 					countView += countV;
 
 				}
-            }
-            //count click thanh cong
-            return Ok(new ThongKeViewClick
+			}
+			//count click thanh cong
+			return Ok(new ThongKeViewClick
 			{
 				Click = countClick,
 				View = countView
 			});
-        }
-        [HttpGet]
-        [Route("thongkeAllClickInDay")]
-        public async Task<ActionResult<int>> thongkeAllClickInDay()
-        {
-            var date = DateTime.Now;
-            var start = date.Date;
-            var end = date.Date.AddDays(1);
-            //get list token short link
-            var count = await _unitOfWork.ViewDetails.CountClickByDateRange(start, end);
-            //count click thanh cong
-            return Ok(count);
-        }
-        [HttpPost]
-        [Route("updateNguon")]
-        public async Task<ActionResult> UpdateNguon([FromBody] UpdateNguon request)
-        {
-            //get list token short link
-            await _unitOfWork.ShortLinks.UpdateOriginOfShortLink(request.Origin, request.ShortlinkId,request.Duphong);
+		}
+		[HttpGet]
+		[Route("thongkeAllClickInDay")]
+		public async Task<ActionResult<int>> thongkeAllClickInDay()
+		{
+			var date = DateTime.Now;
+			var start = date.Date;
+			var end = date.Date.AddDays(1);
+			//get list token short link
+			var count = await _unitOfWork.ViewDetails.CountClickByDateRange(start, end);
+			//count click thanh cong
+			return Ok(count);
+		}
+		[HttpPost]
+		[Route("updateNguon")]
+		public async Task<ActionResult> UpdateNguon([FromBody] UpdateNguon request)
+		{
+			//get list token short link
+			await _unitOfWork.ShortLinks.UpdateOriginOfShortLink(request.Origin, request.ShortlinkId, request.Duphong);
 			await _unitOfWork.CompleteAsync();
-            //count click thanh cong
-            return Ok();
-        }
+			//count click thanh cong
+			return Ok();
+		}
 		[HttpGet]
 		[Route("gethoahongbydate")]
-		public async Task<ActionResult<int>> GetHoaHongByDate(DateTime from,DateTime to)
+		public async Task<ActionResult<int>> GetHoaHongByDate(DateTime from, DateTime to)
 		{
+			from = from.Date;
+			to = to.Date;
 			var userId = User.GetUserId();
 			if (userId == Guid.Empty) return BadRequest("User hết phiên làm việc");
-			var hoahong = await _unitOfWork.TransactionLogs.GetHoaHongByDate(userId,from,to);
+			var hoahong = await _unitOfWork.TransactionLogs.GetHoaHongByDate(userId, from, to);
 			return Ok(hoahong);
 		}
 		[HttpGet]
@@ -161,8 +171,135 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 		//[Authorize(ShortLinks.View)]
 		public async Task<ActionResult<PagedResult<LogShortLinkDto>>> GetLogShortLinkPaging(DateTime from, DateTime to, int pageIndex = 1, int pageSize = 10, string? userName = "", int type = -1, string? userAgent = "", string? shortLink = "", string? screen = "", string? ip = "", string? flatform = "")
 		{
-			var result = await _unitOfWork.ShortLinks.GetAllLogPaging(from,to,pageIndex, pageSize, userName,type,userAgent,shortLink,screen,ip,flatform);
+			from = from.Date;
+			to = to.Date;
+			var result = await _unitOfWork.ShortLinks.GetAllLogPaging(from, to, pageIndex, pageSize, userName, type, userAgent, shortLink, screen, ip, flatform);
 			return Ok(result);
+		}
+		[HttpGet]
+		[Route("quicklink")]
+		//[Authorize(ShortLinks.Create)]
+		public async Task<ActionResult<dynamic>> CreateShortLinkByQickLink(string tokenUser, string? format, string url)
+		{
+			var user = await _unitOfWork.Users.GetUserByUserToken(tokenUser);
+			var token = "";
+			token = token.GenerateLinkToken(9);
+			var link = new ShortLink
+			{
+				Id = Guid.NewGuid(),
+				OriginLink = url,
+				Link = "https://layma.net/" + token,
+				Token = token,
+				DateCreated = DateTime.Now,
+				DateModified = DateTime.Now,
+				Duphong = "",
+				Origin = "",
+				UserId = user.Id,
+				View = 0,
+				ViewCount = 0
+			};
+			_unitOfWork.ShortLinks.Add(link);
+			//add nhiem vu
+			//get campainid random
+			var campainId = await _unitOfWork.Campains.GetCampainIdRandom();
+			if (campainId == Guid.Empty) return BadRequest();
+			var missionId = Guid.NewGuid();
+			var mission = new Mission()
+			{
+				Id = missionId,
+				CampainId = campainId,
+				ShortLinkId = link.Id,
+				TokenUrl = token,
+				ShortLink = url,
+				UserId = user.Id,
+				DateCreated = DateTime.Now,
+				DateModified = DateTime.Now,
+				IsActive = true
+			};
+			_unitOfWork.Missions.Add(mission);
+			var result = await _unitOfWork.CompleteAsync();
+			if (format != null && format != "")
+			{
+				if (format.ToLower() == "text")
+				{
+					return result > 0 ? Ok(link.Link) : BadRequest(new CodeResponse { Success = false, Html = "" });
+				}
+				if (format.ToLower() == "json")
+				{
+					return result > 0 ? Ok(new CodeResponse { Success = true, Html = link.Link }) : BadRequest(new CodeResponse { Success = false, Html = "" });
+				}
+			}
+			return result > 0 ? Redirect(link.Link) : BadRequest(new CodeResponse { Success = false, Html = "" });
+		}
+		[HttpGet]
+		[Route("getApiUserToken")]
+		//[Authorize(ShortLinks.Create)]
+		public async Task<ActionResult<string>> GetApiUserToken()
+		{
+			var userId = User.GetUserId();
+			var user = await _userManager.FindByIdAsync(userId.ToString());
+			if (user == null) return BadRequest("User đã hết phiên đăng nhập");
+			return Ok(new CodeResponse { Success = true, Html = user.ApiUserToken });
+		}
+		//[HttpPost]
+		//[Route("lockShortLink")]
+		//public async Task<ActionResult> LockShortLink(LockShortLinkRequest request)
+		//{
+		//	//var userId = User.GetUserId();
+		//	if (request == null) return BadRequest("Lỗi đầu vào");
+		//	await _unitOfWork.Campains.UpdateActive(request.Id, request.IsActive);
+		//	await _unitOfWork.CompleteAsync();
+		//	//change mission
+		//	return Ok();
+		//}
+		[HttpGet]
+		[Route("thongkeClickUserByDate")]
+		public async Task<ActionResult<PagedResult<ThongKeViewClickByUser>>> GetThongKeClickUserByDate(DateTime from, DateTime to, int pageIndex = 1, int pageSize = 10, string? userName = "")
+		{
+			from = from.Date;
+			to = to.Date;
+			//get list User
+			var listUserThongKe = await _unitOfWork.Users.GetAllUser(userName);
+			//var newList = new List<ThongKeViewClickByUser>();
+			 
+
+			foreach (var user in listUserThongKe)
+			{
+				var countClick = 0;
+				var countView = 0;
+				var listTokenShortLinkOfUser = await _unitOfWork.ShortLinks.GetListShortLinkIDOfUser(user.Id);
+				if (listTokenShortLinkOfUser.Count > 0)
+				{
+					foreach (var item in listTokenShortLinkOfUser)
+					{
+						var countC = await _unitOfWork.ViewDetails.CountClickByDateRangeAndShortLink(from, to, item);
+						countClick += countC;						
+
+					}
+				}
+                countView = await _unitOfWork.Visitors.CountViewByDateRangeAndUserId(from, to, user.Id);
+                if (countClick > 0 || countView > 0)
+				{
+					user.Click = countClick;
+					user.View = countView;
+					//newList.Add(user);
+				}
+
+			}
+			var query = listUserThongKe.AsQueryable().Where(x=> x.Click > 0 || x.View > 0);
+			var totalRow = query.Count();
+			var listPaging = query
+			   .Skip((pageIndex - 1) * pageSize)
+			   .Take(pageSize);
+			//count click thanh cong
+			var rs = new PagedResult<ThongKeViewClickByUser>
+			{
+				Results = listPaging.ToList(),
+				CurrentPage = pageIndex,
+				RowCount = totalRow,
+				PageSize = pageSize
+			};
+			return rs;
 		}
 	}
 }

@@ -12,5 +12,6 @@ namespace LayMa.Core.Repositories
 	public  interface IVisitorRepository : IRepository<Visitor, Guid>
 	{
 		Task<int> CountViewByDateRangeAndShortLink(DateTime from, DateTime to, Guid shortLinkId);
+		Task<int> CountViewByDateRangeAndUserId(DateTime from, DateTime to, Guid userId);
 	}
 }

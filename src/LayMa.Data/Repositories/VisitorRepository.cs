@@ -24,6 +24,11 @@ namespace LayMa.Data.Repositories
 		{
 			var count = await _context.Visitors.Where(x => x.ShortLinkId == shortLinkId && x.DateCreated >= from && x.DateCreated <= to).CountAsync();
 			return count;
+		}		
+		public async Task<int> CountViewByDateRangeAndUserId(DateTime from, DateTime to, Guid userId)
+		{
+			var count = await _context.Visitors.Where(x => x.UserId == userId && x.DateCreated >= from && x.DateCreated <= to).CountAsync();
+			return count;
 		}
 	}
 }
