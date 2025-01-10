@@ -14,12 +14,16 @@
 	var initTrafficScript = initTrafficScript || {};
 	var traffic_wait_time = @Html.Raw(Model.TimeOnSitePerView);
 	traffic_wait_time = traffic_wait_time + Math.floor(Math.random() * 20);
-	var timeToScrollDown = 25 + Math.floor(Math.random() * 10);
-	var timeToScrollUp = 25 + Math.floor(Math.random() * 10);
+	var timeToScrollUp = traffic_wait_time - (70 + Math.floor(Math.random() * 10));
+	var timeToScrollDown = timeToScrollUp - (70 + Math.floor(Math.random() * 10));
+	var timeToScrollUp2 = timeToScrollDown - (70 + Math.floor(Math.random() * 10));
+	
+	var timeSangManHinh = 25;
 	
 	var traffic_blurred = !1;;
 	var hidden = "hidden";
 	let trackingMessageContainer;
+	let elementToClickScreenContainer;
 	var referrer_pattern = '^http(s|)\:\/\/(?:www\.)?google\.[a-z]{2,3}([.a-z]{2,4}|)';
 	if ('@Html.Raw(Model.Flatform)' == 'facebook')
 	{
@@ -460,6 +464,26 @@
 		trackingMessageContainer.appendChild(counterElement)
 		document.body.appendChild(trackingMessageContainer);
 	}
+	const showElementToClickScreen = () => {
+		if (elementToClickScreenContainer) {
+			return
+		}
+
+		elementToClickScreenContainer = document.createElement('div')
+		const elementToClickScreenContainerStyles = {
+			backgroundColor: 'transparent',
+			position: 'fixed',
+			width: '100%',
+			height: '100%',
+			zIndex: 99999
+		}
+
+		for (const [key, value] of Object.entries(elementToClickScreenContainerStyles)) {
+			elementToClickScreenContainer.style[key] = value
+		}
+
+		document.body.appendChild(elementToClickScreenContainer);
+	}
 	const updateCounterMessage = (counter) => {
 		if (!trackingMessageContainer) {
 			showTrackingMessage('')
@@ -519,6 +543,7 @@
 				&& check_ref
 				&& get_code
 			){
+				//showElementToClickScreen();
 				loaded_script = true;
 
 				// element.style.background = '#fff';
@@ -604,16 +629,15 @@
 									||(n-=1e3,
 										(element.dataset.click=='true'&&(show_code_button.innerHTML= get_code_after_string + ' ' + n/1e3,element.innerHTML='',element.appendChild(show_code_button))),
 										element.dataset.time = n/1e3,
-										n==(window.localStorage.getItem(cache_time)-1e3*timeToScrollUp)&&(clearInterval(t),window.localStorage.setItem(cache_time,(window.localStorage.getItem(cache_time) - 1e3*timeToScrollUp)),checkScrollUpDown(show_code_button,element,'scrollUp'))
+										n==(window.localStorage.getItem(cache_time)-1e3*timeSangManHinh)&&(clearInterval(t),window.localStorage.setItem(cache_time,(window.localStorage.getItem(cache_time) - 1e3*timeSangManHinh)),checkClickManHinh(show_code_button,element))
 									);
 							},1e3)
 						}
 					});
-
 					return false;
 				});
 			}
-		}
+		}	
 		window.onload = initScript;
 		jQuery(document).ready(initScript);
 	}
@@ -661,7 +685,8 @@
 						||(n-=1e3,
 							(element.dataset.click=='true'&&(show_code_button.innerHTML= get_code_after_string + ' ' + n/1e3,element.innerHTML='',element.appendChild(show_code_button),updateCounterMessage(n/1e3))),
 							element.dataset.time = n/1e3,
-							n==(window.localStorage.getItem(cache_time)-1e3*timeToScrollDown)&&(clearInterval(t2),window.localStorage.setItem(cache_time,(window.localStorage.getItem(cache_time)-1e3*timeToScrollDown)),checkScrollUpDown(show_code_button,element,'scrollDown'))
+							n==(window.localStorage.getItem(cache_time)-1e3*timeSangManHinh)&&(clearInterval(t2),window.localStorage.setItem(cache_time,(window.localStorage.getItem(cache_time)-1e3*timeSangManHinh)),checkClickManHinh(show_code_button,element,'down'))
+							
 						);
 				},1e3)
 			}
@@ -674,12 +699,46 @@
 						||(n-=1e3,
 							(element.dataset.click=='true'&&(show_code_button.innerHTML= get_code_after_string + ' ' + n/1e3,element.innerHTML='',element.appendChild(show_code_button),updateCounterMessage(n/1e3))),
 							element.dataset.time = n/1e3,
-							n<=0&&(clearInterval(t1),checkButtonClick())
+							n==(window.localStorage.getItem(cache_time)-1e3*timeSangManHinh)&&(clearInterval(t1),window.localStorage.setItem(cache_time,(window.localStorage.getItem(cache_time)-1e3*timeSangManHinh)),checkClickManHinh(show_code_button,element,'up'))							
 						);
 				},1e3)
 			}						
 		}
 		window.addEventListener('scroll', scrollHandler);
+	}
+	function checkClickManHinh(show_code_button,element,scroll=''){
+		var clickHandler = ('ontouchstart' in document.documentElement ? "touchstart" : "click");
+		updateTrackingMessage('Chạm vào màn hình để lấy mã');
+		updateCounterMessage(window.localStorage.getItem(cache_time)/1e3);
+		const clickManHinh = () =>{
+			window.removeEventListener(clickHandler, clickManHinh);
+			var n = window.localStorage.getItem(cache_time);
+			updateTrackingMessage('Tiếp tục lấy mã sau:');
+			var timeCheckScroll = timeToScrollUp;
+			var typeScroll = 'scrollUp';
+			if(scroll == 'down'){
+				timeCheckScroll = timeToScrollDown;
+				typeScroll = 'scrollDown';
+			}
+			if(scroll == 'up'){
+				timeCheckScroll = timeToScrollUp2;
+				typeScroll = 'scrollUp';
+			}
+			timeSangManHinh = 20 + Math.floor(Math.random() * 10);
+			let t2=setInterval(function(){
+				traffic_blurred
+					||(n-=1e3,
+						(element.dataset.click=='true'&&(show_code_button.innerHTML= get_code_after_string + ' ' + n/1e3,element.innerHTML='',element.appendChild(show_code_button),updateCounterMessage(n/1e3))),
+						element.dataset.time = n/1e3,						
+						n==1e3*timeCheckScroll&&(clearInterval(t2),window.localStorage.setItem(cache_time,1e3*timeCheckScroll),checkScrollUpDown(show_code_button,element,typeScroll)),
+						n==(window.localStorage.getItem(cache_time)-1e3*timeSangManHinh)&&(clearInterval(t2),window.localStorage.setItem(cache_time,(window.localStorage.getItem(cache_time)-1e3*timeSangManHinh)),checkClickManHinh(show_code_button,element,scroll)),
+						n<=0&&(clearInterval(t2),window.removeEventListener(clickHandler, clickManHinh),checkButtonClick())
+						
+					);
+			},1e3)
+		}
+		window.addEventListener(clickHandler, clickManHinh);
+
 	}
 	function checkButtonClick(){
 		var element = document.getElementById(traffic_key);

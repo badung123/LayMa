@@ -15,6 +15,7 @@ namespace LayMa.Core.Domain.Link
 		public Guid Id { get; set; }
 		public Guid ShortLinkId { get; set; }
 		public Guid CampainId { get; set; }
+		public Guid UserId { get; set; }
 		public string? IPAddress { get; set; }
         public string? Device { get; set; }
 		public string? DeviceScreen { get; set; }

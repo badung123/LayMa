@@ -50,15 +50,20 @@ namespace LayMa.Data
                 });
                 await context.SaveChangesAsync();
             }
-            var listUserNotHaveApiUserToken = await context.Users.Where(x=>x.ApiUserToken == null || x.ApiUserToken == "").ToListAsync();
-            foreach (var item in listUserNotHaveApiUserToken)
-            {
-                var md5content = item.UserName + "_" + item.Email;
-                var apiUserToken = Helper.MD5(md5content);
-                item.ApiUserToken = apiUserToken;
-                context.Users.Update(item);
-            }
-            await context.SaveChangesAsync();
+            //while (context.ViewDetails.Any(x => x.UserId == Guid.Empty))
+            //{
+            //    var viewDetail = await context.ViewDetails.Where(x => x.UserId == Guid.Empty).Take(100).ToListAsync();
+            //    foreach (var view in viewDetail)
+            //    {
+            //        var shortLink = await context.ShortLinks.FirstOrDefaultAsync(x => x.Id == view.ShortLinkId);
+            //        if (shortLink != null)
+            //        {
+            //            view.UserId = shortLink.UserId;
+            //        }
+            //    }
+            //    await context.SaveChangesAsync();
+
+            //}
 
         }
     }

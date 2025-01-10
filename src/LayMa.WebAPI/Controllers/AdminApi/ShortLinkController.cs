@@ -53,6 +53,7 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 			var token = "";
 			token = token.GenerateLinkToken(9);
 			link.Token = token;
+			link.From = "Web";
 			link.Link = "https://layma.net/" + token; //https://localhost:7181/,https://layma.net/
 			_unitOfWork.ShortLinks.Add(link);
 			//add nhiem vu
@@ -196,7 +197,8 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 				Origin = "",
 				UserId = user.Id,
 				View = 0,
-				ViewCount = 0
+				ViewCount = 0,
+				From = "API"
 			};
 			_unitOfWork.ShortLinks.Add(link);
 			//add nhiem vu
@@ -265,30 +267,18 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 
 			foreach (var user in listUserThongKe)
 			{
-				var countClick = 0;
-				var countView = 0;
-				var listTokenShortLinkOfUser = await _unitOfWork.ShortLinks.GetListShortLinkIDOfUser(user.Id);
-				if (listTokenShortLinkOfUser.Count > 0)
+				
+				var countView = await _unitOfWork.Visitors.CountViewByDateRangeAndUserId(from, to, user.Id);
+                if (countView > 0)
 				{
-					foreach (var item in listTokenShortLinkOfUser)
-					{
-						var countC = await _unitOfWork.ViewDetails.CountClickByDateRangeAndShortLink(from, to, item);
-						countClick += countC;						
-
-					}
-				}
-                countView = await _unitOfWork.Visitors.CountViewByDateRangeAndUserId(from, to, user.Id);
-                if (countClick > 0 || countView > 0)
-				{
-					user.Click = countClick;
+					user.Click = await _unitOfWork.ViewDetails.CountClickByDateRangeAndUserId(from, to, user.Id);
 					user.View = countView;
-					//newList.Add(user);
 				}
 
 			}
-			var query = listUserThongKe.AsQueryable().Where(x=> x.Click > 0 || x.View > 0);
+			var query = listUserThongKe.AsQueryable().Where(x=> x.View > 0);
 			var totalRow = query.Count();
-			var listPaging = query
+			var listPaging = query.OrderByDescending(x => x.Click)
 			   .Skip((pageIndex - 1) * pageSize)
 			   .Take(pageSize);
 			//count click thanh cong

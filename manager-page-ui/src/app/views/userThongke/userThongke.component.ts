@@ -51,7 +51,7 @@ export class UserThongkeComponent implements OnInit, OnDestroy{
     private ngUnsubscribe = new Subject<void>();
     //Paging variables
     public pageIndex: number = 1;
-    public pageSize: number = 10;
+    public pageSize: number = 100;
     public totalCount: number;
 
     //Business variables
@@ -76,14 +76,16 @@ export class UserThongkeComponent implements OnInit, OnDestroy{
     }
   
     ngOnInit() { 
-      this.rangeDates[0].setUTCHours(0,0,0,0);
+      this.rangeDates[0].setHours(0,0,0,0);
       this.from = this.rangeDates[0];
-      this.rangeDates[1].setUTCHours(0,0,0,0);
+      this.rangeDates[1].setHours(0,0,0,0);
       this.rangeDates[1].setDate(this.rangeDates[1].getDate() + 1)
       this.to = this.rangeDates[1]; 
       this.loadData();  
     }
     loadData(){
+      console.log(this.from);
+      console.log(this.to);
       this.shortLinkApiClient.getThongKeClickUserByDate(this.from,this.to,this.pageIndex,this.pageSize,this.userNameSearch)
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe({

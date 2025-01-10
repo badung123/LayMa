@@ -29,6 +29,12 @@ namespace LayMa.Data.Repositories
 			var count = await _context.ViewDetails.Where(x => x.ShortLinkId == shortLinkId && x.DateCreated >= start && x.DateCreated <= end).CountAsync();
 			return count;
 		}
+		public async Task<int> CountClickByDateRangeAndUserId(DateTime start, DateTime end, Guid userId)
+		{
+			var count = await _context.ViewDetails.Where(x => x.UserId == userId && x.DateCreated >= start && x.DateCreated <= end).CountAsync();
+			return count;
+		}
+		
 		public async Task<int> CountClickByDateRangeAndCampainId(DateTime start, DateTime end, Guid campainId)
 		{
 			var count = await _context.ViewDetails.Where(x => x.CampainId == campainId && x.DateCreated >= start && x.DateCreated <= end).CountAsync();

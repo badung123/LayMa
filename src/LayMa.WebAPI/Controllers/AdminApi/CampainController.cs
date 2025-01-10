@@ -51,7 +51,7 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 			}
 			else
 			{
-				var campainUpdate = await _unitOfWork.Campains.GetCampainByID(request.CampainId);
+				var campainUpdate = await _unitOfWork.Campains.GetCampainByIDNotCheckStatus(request.CampainId);
 				campainUpdate.PricePerView = request.Price;
 				campainUpdate.KeySearch = request.Key;
 				campainUpdate.ViewPerDay = request.View;

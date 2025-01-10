@@ -15,7 +15,8 @@ namespace LayMa.Core.Domain.Bank
         public Guid Id { get; set; }
         public Guid UserId { get; set; }
         public string? UserName { get; set; }
-        [Required]
+		public string? ModifiedBy { get; set; }
+		[Required]
         [Column(TypeName = "varchar(250)")]
         public required string BankAccountName { get; set; }
         [Required]

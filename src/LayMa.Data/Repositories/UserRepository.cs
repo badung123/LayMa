@@ -109,7 +109,7 @@ namespace LayMa.Data.Repositories
             var query = _context.Users.AsQueryable();
             if (!String.IsNullOrEmpty(userName))
             {
-                query = query.Where(x => x.UserName.Contains(userName));
+                query = query.Where(x => x.UserName==userName);
             }
 			
 			var a = query.GroupJoin(_context.Visitors, u => u.Id, v => v.UserId, (u, v) => new ObjectThongKeJoin { u = u, v = v.Where(x=> x.DateCreated >= from && x.DateCreated < to).ToList() }).Select(x=> new ThongKeViewClickByUser

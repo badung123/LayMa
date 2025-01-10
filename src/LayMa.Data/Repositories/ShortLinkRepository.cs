@@ -96,7 +96,7 @@ namespace LayMa.Data.Repositories
 			query = query.Where(x => x.DateCreated >= from && x.DateCreated < to);
 			if (!String.IsNullOrEmpty(userName))
 			{
-				query = query.Where(x => x.UserName.Contains(userName));
+				query = query.Where(x => x.UserName == userName);
 			}
 			if (!String.IsNullOrEmpty(userAgent))
 			{
@@ -123,7 +123,6 @@ namespace LayMa.Data.Repositories
                 query = query.Where(x => x.Flatform == flatform);
             }
             var totalRow = await query.CountAsync();
-
 			query = query.OrderByDescending(x => x.DateCreated)
 			   .Skip((pageIndex - 1) * pageSize)
 			   .Take(pageSize);

@@ -26,7 +26,7 @@ namespace LayMa.Data.Repositories
 		}
 		public async Task<CampainDto> GetCampainByKeyToken(string key)
 		{
-			var campain = await _context.Campains.Where(x => x.KeyToken == key).FirstOrDefaultAsync();
+			var campain = await _context.Campains.Where(x => x.KeyToken == key && x.Status).FirstOrDefaultAsync();
 			var campainDto = _mapper.Map<Campain,CampainDto>(campain);
 
 			return campainDto;
@@ -55,6 +55,13 @@ namespace LayMa.Data.Repositories
 			if (campain == null) return null;
 			return campain;
 		}
+		public async Task<Campain> GetCampainByIDNotCheckStatus(Guid campainId)
+		{
+			var campain = await _context.Campains.Where(x => x.Id == campainId).FirstOrDefaultAsync();
+			if (campain == null) return null;
+			return campain;
+		}
+		
 		public async Task<CampainInListDto> GetCampainByCampainID(Guid campainId)
 		{
 			var campain = await _context.Campains.Where(x => x.Id == campainId).FirstOrDefaultAsync();

@@ -88,7 +88,13 @@ namespace LayMa.WebAPI.Controllers.AdminApi
             var countCampain = await _unitOfWork.ViewDetails.CountClickByDateRangeAndCampainId(start, end, Guid.Parse(request.CampainId));
             var campain = await _unitOfWork.Campains.GetCampainByID(Guid.Parse(request.CampainId));
             if (campain == null) return BadRequest("Chiến dịch không hợp lệ");
+
             if (campain.ViewPerDay < countCampain) return Ok(shortLink.Duphong);
+			if (countCampain == (campain.ViewPerDay - 1))
+			{
+				//tat chien dich
+				await _unitOfWork.Campains.UpdateActive(campain.Id, false);
+			}
             //check 1 ngày 1 user chỉ đc dùng 1 IP,user agent
             var checkIp = await _unitOfWork.ViewDetails.CheckIP(ips, request.DeviceScreen);
 			if (!checkIp) {
@@ -143,7 +149,7 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 
 			// phải nằm trong transaction
 			//update viewcount in shortlink
-			await _unitOfWork.ShortLinks.UpdateViewCount(shortLink.Id);
+			//await _unitOfWork.ShortLinks.UpdateViewCount(shortLink.Id);
 			//update code đã dùng
 			await _unitOfWork.CodeManagers.UpdateIsUsed(request.Code, Guid.Parse(request.CampainId));
 
@@ -153,6 +159,7 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 				Id = Guid.NewGuid(),
 				Device = "",
 				ShortLinkId = shortLink.Id,
+				UserId = shortLink.UserId,
 				DateCreated = DateTime.Now,
 				DateModified = DateTime.Now,
 				DeviceScreen = request.DeviceScreen,
@@ -165,7 +172,6 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 			var amountRate = 1000;
 			if (user.UserName == "buianhhiep") amountRate = 300;
 			if (user.UserName == "trungdao2k4") amountRate = 0;
-			if (user.UserName == "thanhdatdz123j") amountRate = 0;
 			await _unitOfWork.Users.UpdateBalanceCount(user.Id, amountRate);
 
             //TODO: update vào bảng transation

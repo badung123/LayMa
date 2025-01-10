@@ -429,13 +429,25 @@ export class AdminApiBankTransactionApiClient {
     }
 
     /**
+     * @param from (optional) 
+     * @param to (optional) 
      * @param pageIndex (optional) 
      * @param pageSize (optional) 
-     * @param keySearch (optional) 
+     * @param userName (optional) 
+     * @param modifyBy (optional) 
+     * @param type (optional) 
      * @return Success
      */
-    getAllPaging(pageIndex?: number | undefined, pageSize?: number | undefined, keySearch?: string | null | undefined): Observable<BankTransactionInListDtoPagedResult> {
+    getAllPaging(from?: Date | undefined, to?: Date | undefined, pageIndex?: number | undefined, pageSize?: number | undefined, userName?: string | null | undefined, modifyBy?: string | null | undefined, type?: number | undefined): Observable<BankTransactionInListDtoPagedResult> {
         let url_ = this.baseUrl + "/api/admin/banktransaction/allpaging?";
+        if (from === null)
+            throw new Error("The parameter 'from' cannot be null.");
+        else if (from !== undefined)
+            url_ += "from=" + encodeURIComponent(from ? "" + from.toISOString() : "") + "&";
+        if (to === null)
+            throw new Error("The parameter 'to' cannot be null.");
+        else if (to !== undefined)
+            url_ += "to=" + encodeURIComponent(to ? "" + to.toISOString() : "") + "&";
         if (pageIndex === null)
             throw new Error("The parameter 'pageIndex' cannot be null.");
         else if (pageIndex !== undefined)
@@ -444,8 +456,14 @@ export class AdminApiBankTransactionApiClient {
             throw new Error("The parameter 'pageSize' cannot be null.");
         else if (pageSize !== undefined)
             url_ += "pageSize=" + encodeURIComponent("" + pageSize) + "&";
-        if (keySearch !== undefined && keySearch !== null)
-            url_ += "keySearch=" + encodeURIComponent("" + keySearch) + "&";
+        if (userName !== undefined && userName !== null)
+            url_ += "userName=" + encodeURIComponent("" + userName) + "&";
+        if (modifyBy !== undefined && modifyBy !== null)
+            url_ += "modifyBy=" + encodeURIComponent("" + modifyBy) + "&";
+        if (type === null)
+            throw new Error("The parameter 'type' cannot be null.");
+        else if (type !== undefined)
+            url_ += "type=" + encodeURIComponent("" + type) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -2855,6 +2873,7 @@ export class BankTransactionInListDto implements IBankTransactionInListDto {
     id?: string;
     userId?: string;
     userName?: string | undefined;
+    modifiedBy?: string | undefined;
     money?: number;
     statusProcess?: ProcessStatus;
     bankAccountName?: string | undefined;
@@ -2877,6 +2896,7 @@ export class BankTransactionInListDto implements IBankTransactionInListDto {
             this.id = _data["id"];
             this.userId = _data["userId"];
             this.userName = _data["userName"];
+            this.modifiedBy = _data["modifiedBy"];
             this.money = _data["money"];
             this.statusProcess = _data["statusProcess"];
             this.bankAccountName = _data["bankAccountName"];
@@ -2899,6 +2919,7 @@ export class BankTransactionInListDto implements IBankTransactionInListDto {
         data["id"] = this.id;
         data["userId"] = this.userId;
         data["userName"] = this.userName;
+        data["modifiedBy"] = this.modifiedBy;
         data["money"] = this.money;
         data["statusProcess"] = this.statusProcess;
         data["bankAccountName"] = this.bankAccountName;
@@ -2914,6 +2935,7 @@ export interface IBankTransactionInListDto {
     id?: string;
     userId?: string;
     userName?: string | undefined;
+    modifiedBy?: string | undefined;
     money?: number;
     statusProcess?: ProcessStatus;
     bankAccountName?: string | undefined;
@@ -4522,6 +4544,7 @@ export class UpdateStatusRequest implements IUpdateStatusRequest {
     id?: string;
     userId?: string;
     money?: number;
+    modifiedBy?: string | undefined;
 
     constructor(data?: IUpdateStatusRequest) {
         if (data) {
@@ -4538,6 +4561,7 @@ export class UpdateStatusRequest implements IUpdateStatusRequest {
             this.id = _data["id"];
             this.userId = _data["userId"];
             this.money = _data["money"];
+            this.modifiedBy = _data["modifiedBy"];
         }
     }
 
@@ -4554,6 +4578,7 @@ export class UpdateStatusRequest implements IUpdateStatusRequest {
         data["id"] = this.id;
         data["userId"] = this.userId;
         data["money"] = this.money;
+        data["modifiedBy"] = this.modifiedBy;
         return data;
     }
 }
@@ -4563,6 +4588,7 @@ export interface IUpdateStatusRequest {
     id?: string;
     userId?: string;
     money?: number;
+    modifiedBy?: string | undefined;
 }
 
 export class UserDtoInList implements IUserDtoInList {

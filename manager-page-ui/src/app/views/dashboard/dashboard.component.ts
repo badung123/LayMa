@@ -161,15 +161,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
     var currentDateFrom = new Date();
     var currentDateTo = new Date();
     if (value == 'Day') {
-      currentDateFrom.setUTCHours(0,0,0,0);
+      currentDateFrom.setHours(0,0,0,0);
       this.from = currentDateFrom;
-      currentDateTo.setUTCHours(0,0,0,0);
+      currentDateTo.setHours(0,0,0,0);
       currentDateTo.setDate(currentDateTo.getDate() + 1)
       this.to = currentDateTo;
     } else if(value == 'Yesterday') {
-      currentDateFrom.setUTCHours(0,0,0,0);
+      currentDateFrom.setHours(0,0,0,0);
       this.to = currentDateFrom;
-      currentDateTo.setUTCHours(0,0,0,0);
+      currentDateTo.setHours(0,0,0,0);
       currentDateTo.setDate(currentDateTo.getDate() - 1)
       this.from = currentDateTo;
     }

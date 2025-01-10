@@ -88,18 +88,25 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 		[HttpGet]
 		[Route("allpaging")]
 		//[Authorize(ShortLinks.View)]
-		public async Task<ActionResult<PagedResult<BankTransactionInListDto>>> GetAllPaging(int pageIndex, int pageSize = 10, string? keySearch = "")
+		public async Task<ActionResult<PagedResult<BankTransactionInListDto>>> GetAllPaging(DateTime from, DateTime to,int pageIndex, int pageSize = 10, string? userName = "", string modifyBy = "All", int type = -1)
 		{
-			var result = await _unitOfWork.BankTransactions.GetAllBankTransactionPaging(Guid.Empty, pageIndex, pageSize, keySearch);
+			var result = await _unitOfWork.BankTransactions.GetAllBankTransactionPagingAdmin(from, to, pageIndex, pageSize, userName, modifyBy,type);
 			return Ok(result);
 		}
 		[HttpPost]
         [Route("updateprocess")]
         public async Task<ActionResult<dynamic>> UpdateProcessStatus([FromBody] UpdateStatusRequest input)
         {
-            //var userId = User.GetUserId();
-            //if (userId == Guid.Empty) return BadRequest("Có lỗi xảy ra");
-            int type = input.Type;
+			var userAdminName = input.ModifiedBy;
+            if (string.IsNullOrEmpty(input.ModifiedBy))
+            {
+				var userId = User.GetUserId();
+				if (userId == Guid.Empty) return BadRequest("Có lỗi xảy ra");
+				var userAdmin = await _userManager.FindByIdAsync(userId.ToString());
+				userAdminName = userAdmin.UserName;
+			}
+            
+			int type = input.Type;
             Guid id = input.Id;
             if (type > 3 || type < 0) return BadRequest("Có lỗi xảy ra");
             
@@ -117,13 +124,14 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 					UserName = user.UserName,
 					Amount = input.Money,
 					OldBalance = Int64.Parse(user.Balance.ToString()),
-					CreatedBy = "admin",
+					CreatedBy = userAdminName,
 					Description = "Rút tiền thành công",
 					TranSactionType = TranSactionType.WithDraw,
 					DateCreated = DateTime.Now,
 					DateModified = DateTime.Now
 				};
 				_unitOfWork.TransactionLogs.Add(transLogUser);
+				//update modify users
 			}
             if (type == 2)
             {
@@ -145,7 +153,7 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 				};
 				_unitOfWork.TransactionLogs.Add(transLogUser);
 			}
-            await _unitOfWork.BankTransactions.UpdateStatusProcess(type, id);
+            await _unitOfWork.BankTransactions.UpdateStatusProcess(type, id,userAdminName);
 			await _unitOfWork.CompleteAsync();
             return Ok();
         }

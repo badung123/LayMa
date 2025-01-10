@@ -14,6 +14,7 @@ namespace LayMa.Core.Model.Bank
 		public Guid Id { get; set; }
 		public Guid UserId { get; set; }
 		public string? UserName { get; set; }
+		public string? ModifiedBy { get; set; }
 		public long Money { get; set; }
         public ProcessStatus StatusProcess { get; set; }
         public required string BankAccountName { get; set; }

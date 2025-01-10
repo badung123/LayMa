@@ -19,6 +19,7 @@ namespace LayMa.Core.Repositories
 		Task<Guid> GetCampainIdRandomByOldID(Guid oldId);
 		Task<string> GetFlatformByCampainId(Guid campainId);
 		Task<Campain> GetCampainByID(Guid campainId);
+		Task<Campain> GetCampainByIDNotCheckStatus(Guid campainId);
 		Task<CampainInListDto> GetCampainByCampainID(Guid campainId);
 		Task<PagedResult<CampainInListDto>> GetAllPaging(int pageIndex = 1, int pageSize = 10,string flatform = "google", string? keySearch = "");
 

@@ -4,7 +4,39 @@
         <c-card-header>
           <strong>LỊCH SỬ RÚT TIỀN</strong>
         </c-card-header>
-        <c-card-body>       
+        <c-card-body>
+          <c-row [xl]="4" [lg]="4" [sm]="2" [xs]="1">
+            <c-col>
+              <c-input-group class="mb-3">
+                <input aria-describedby="button-addon2"
+                       aria-label="userName"
+                       cFormControl
+                       id="txtKeyword" pInputText (keyup.enter)="loadData()" [(ngModel)]="userNameSearch"
+                       placeholder="userName"
+                />
+              </c-input-group>
+            </c-col>
+            <c-col>
+              <select cSelect id="floatingSelectGrid" [(ngModel)]="adminSearch" (change)="loadData()">
+                <option *ngFor="let a of listAdmin" [ngValue]="a">{{a}}</option>
+              </select>
+            </c-col>
+            <c-col>
+              <select cSelect id="floatingSelectGrid" [(ngModel)]="statusSearch" (change)="loadData()">
+                <option *ngFor="let a of listStatus" [ngValue]="a.id">{{a.name}}</option>
+              </select>
+            </c-col>
+            <c-col>
+              <p-calendar class="float-start me-4 pdaterange"
+                [(ngModel)]="rangeDates"
+                selectionMode="range" 
+                [showIcon]="true"
+                dateFormat="dd/mm/yy"
+                [readonlyInput]="true"
+                (ngModelChange)="changeDateRange($event)"
+                [showButtonBar]="true"/>
+            </c-col>
+          </c-row>       
           <c-row>
             <c-col xs>
               <c-card class="mb-4">
@@ -28,6 +60,7 @@
                       <th class="bg-body-tertiary">Ngân Hàng</th>
                       <th class="bg-body-tertiary">Số Tiền</th>
                       <th class="bg-body-tertiary text-center">Tạo Lúc</th>
+                      <th class="bg-body-tertiary text-center">Duyệt bởi</th>
                       <th class="bg-body-tertiary">Trạng Thái</th>
                     </tr>
                     </thead>
@@ -54,6 +87,9 @@
                           </td>
                           <td class="text-center">
                             {{ item.dateCreated | date: 'dd/MM/yyyy HH:mm:ss'}}
+                          </td>
+                          <td class="text-center">
+                            {{ item.modifiedBy}}
                           </td>
                           <td>
                             <c-dropdown>

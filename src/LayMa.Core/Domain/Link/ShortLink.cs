@@ -27,7 +27,8 @@ namespace LayMa.Core.Domain.Link
 		public string? Duphong { get; set; }
 		public int ViewCount { get; set; }
         public int View { get; set; }
-        public required string Token { get; set; }
+		public string? From { get; set; }
+		public required string Token { get; set; }
 		public DateTime DateCreated { get; set; }
 		public DateTime? DateModified { get; set; }
 	}

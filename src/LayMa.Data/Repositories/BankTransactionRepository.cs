@@ -46,13 +46,46 @@ namespace LayMa.Data.Repositories
                 PageSize = pageSize
             };
         }
-        public async Task UpdateStatusProcess(int type, Guid bankTransactionId)
+		public async Task<PagedResult<BankTransactionInListDto>> GetAllBankTransactionPagingAdmin(DateTime from, DateTime to, int pageIndex = 1, int pageSize = 10, string? userName = "", string modifyBy = "All", int type = -1)
+		{
+			var query = _context.TransactionBanks.AsQueryable();
+			query = query.Where(x => x.DateCreated >= from && x.DateCreated < to);
+
+			if (!String.IsNullOrEmpty(userName))
+			{
+				query = query.Where(x => x.UserName.Contains(userName));
+			}
+			if (modifyBy != "All")
+			{
+				query = query.Where(x => x.ModifiedBy.Contains(modifyBy));
+			}
+			if (type != -1)
+			{
+				query = query.Where(x => x.StatusProcess == (ProcessStatus)type);
+			}
+			var totalRow = await query.CountAsync();
+
+			query = query.OrderByDescending(x => x.DateCreated)
+			   .Skip((pageIndex - 1) * pageSize)
+			   .Take(pageSize);
+
+			return new PagedResult<BankTransactionInListDto>
+			{
+				Results = await _mapper.ProjectTo<BankTransactionInListDto>(query).ToListAsync(),
+				CurrentPage = pageIndex,
+				RowCount = totalRow,
+				PageSize = pageSize
+			};
+		}
+		public async Task UpdateStatusProcess(int type, Guid bankTransactionId,string userName)
         {
             var transaction = await _context.TransactionBanks.FirstOrDefaultAsync(x => x.Id == bankTransactionId);
             if (transaction == null) return;
             transaction.StatusProcess = (ProcessStatus)type;
-            transaction.DateModified = DateTime.UtcNow;
+			transaction.ModifiedBy = userName;
+			transaction.DateModified = DateTime.UtcNow;
             _context.TransactionBanks.Update(transaction);
         }
-    }
+
+	}
 }

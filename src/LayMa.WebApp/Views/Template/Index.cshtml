@@ -23,6 +23,10 @@
 			<div class="heading -lv2 fadeInUp visible">
 				<h2>LÀM THEO CÁC BƯỚC <br class="is-visibleSp"> ĐỂ LẤY LINK TRUY CẬP</h2>
 			</div>
+			<div class="mt-2">
+				<span class="text-danger">Lưu ý : Khi hệ thống đếm giây không được chuyển tab, nếu không sẽ lỗi. Có lỗi sảy ra làm lại từng bước làm OK</span>
+			</div>
+			
 			@if (Model.Flatfrom == "google")
 			{
 				<div class="box-step-note fadeInUp d-none visible">
@@ -102,9 +106,10 @@
 					</div>
 					<div class="mt-3">
 						<div class="g-recaptcha" data-sitekey="@ViewData["SiteKey"]"></div><br>
+						<span class="text-danger">Lưu ý : Khi hệ thống đếm giây không được chuyển tab, nếu không sẽ lỗi. Có lỗi sảy ra làm lại từng bước làm OK</span>
 					</div>
 					<div class="box-form-button mt-3">
-						<button type="submit" class="btn btn-primary" id="btn-xac-nhan" onclick="confirm();">Xác nhận</button>
+						<button type="submit" class="btn btn-primary" id="btn-xac-nhan" onclick="confirm1();">Xác nhận</button>
 						<a id="btn-baoloi" class="btn btn-success" onclick="clickDoiNhiemVu();">Đổi nhiệm vụ</a>
 					</div>	
 				</div>
@@ -116,7 +121,7 @@
 				<div class="box-video-youtube fadeInUp visible">
 					@if (Model.Flatfrom == "google")
 					{
-						<iframe style="width:100%; aspect-ratio:0.452;" src="/uploads/google.mov"></iframe>
+						<iframe style="width:100%; aspect-ratio:0.452;" src="/uploads/google.mp4"></iframe>
 					}
 					else
 					{

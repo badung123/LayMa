@@ -12,5 +12,6 @@ namespace LayMa.Core.Model.Bank
 		public Guid Id { get; set; }
 		public Guid UserId { get; set; }
 		public long Money { get; set; }
+		public string? ModifiedBy { get; set; }
 	}
 }

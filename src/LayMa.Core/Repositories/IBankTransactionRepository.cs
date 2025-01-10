@@ -15,6 +15,7 @@ namespace LayMa.Core.Repositories
     public interface IBankTransactionRepository : IRepository<TransactionBank, Guid>
     {
         Task<PagedResult<BankTransactionInListDto>> GetAllBankTransactionPaging(Guid currentUserId, int pageIndex = 1, int pageSize = 10, string? keySearch = "");
-        Task UpdateStatusProcess(int type, Guid bankTransactionId);
-    }
+		Task<PagedResult<BankTransactionInListDto>> GetAllBankTransactionPagingAdmin(DateTime from, DateTime to,int pageIndex = 1, int pageSize = 10, string? userName = "",string modifyBy = "All",int type = -1);
+		Task UpdateStatusProcess(int type, Guid bankTransactionId, string userName);
+	}
 }
