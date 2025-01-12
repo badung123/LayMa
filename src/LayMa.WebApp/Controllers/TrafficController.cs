@@ -17,26 +17,26 @@ namespace LayMa.WebApp.Controllers
 			ViewBag.Id = id;
 			var url = _configuration.GetValue<string>("API_URL");
 			ViewBag.ApiUrl = url;
-			var apiUrl = url + "/api/admin/campain?keytoken=" + id;
-			//get campain or keysearch by token id
-			//string apiUrl = "https://api.layma.net/api/admin/campain?keytoken=" + id; //https://api.layma.net,https://localhost:7020
-			var table = new CampainViewModel();
-			using (HttpClient client = new HttpClient())
-			{
-				client.BaseAddress = new Uri(apiUrl);
-				client.DefaultRequestHeaders.Accept.Clear();
-				client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+			//var apiUrl = url + "/api/admin/campain?keytoken=" + id;
+			////get campain or keysearch by token id
+			////string apiUrl = "https://api.layma.net/api/admin/campain?keytoken=" + id; //https://api.layma.net,https://localhost:7020
+			//var table = new CampainViewModel();
+			//using (HttpClient client = new HttpClient())
+			//{
+			//	client.BaseAddress = new Uri(apiUrl);
+			//	client.DefaultRequestHeaders.Accept.Clear();
+			//	client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
 
-				HttpResponseMessage response = await client.GetAsync(apiUrl);
+			//	HttpResponseMessage response = await client.GetAsync(apiUrl);
 
-				if (response.IsSuccessStatusCode)
-				{
-					var data = await response.Content.ReadAsStringAsync();
-					Console.WriteLine(data);
-					table = Newtonsoft.Json.JsonConvert.DeserializeObject<CampainViewModel>(data);
-				}
-			}
-			return View(table);
+			//	if (response.IsSuccessStatusCode)
+			//	{
+			//		var data = await response.Content.ReadAsStringAsync();
+			//		Console.WriteLine(data);
+			//		table = Newtonsoft.Json.JsonConvert.DeserializeObject<CampainViewModel>(data);
+			//	}
+			//}
+			return View();
 		}
 	}
 }

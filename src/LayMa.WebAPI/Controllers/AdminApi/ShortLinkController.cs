@@ -109,8 +109,8 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 		[Route("thongkeClickByDate")]
 		public async Task<ActionResult<ThongKeViewClick>> GetThongKeClickByDate(DateTime from, DateTime to)
 		{
-			from = from.Date;
-			to = to.Date;
+			from = from.ToLocalTime().Date;
+			to = to.ToLocalTime().Date;
 			var countClick = 0;
 			var countView = 0;
 			var userId = User.GetUserId();
@@ -160,8 +160,8 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 		[Route("gethoahongbydate")]
 		public async Task<ActionResult<int>> GetHoaHongByDate(DateTime from, DateTime to)
 		{
-			from = from.Date;
-			to = to.Date;
+			from = from.ToLocalTime().Date;
+			to = to.ToLocalTime().Date;
 			var userId = User.GetUserId();
 			if (userId == Guid.Empty) return BadRequest("User hết phiên làm việc");
 			var hoahong = await _unitOfWork.TransactionLogs.GetHoaHongByDate(userId, from, to);
@@ -172,8 +172,8 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 		//[Authorize(ShortLinks.View)]
 		public async Task<ActionResult<PagedResult<LogShortLinkDto>>> GetLogShortLinkPaging(DateTime from, DateTime to, int pageIndex = 1, int pageSize = 10, string? userName = "", int type = -1, string? userAgent = "", string? shortLink = "", string? screen = "", string? ip = "", string? flatform = "")
 		{
-			from = from.Date;
-			to = to.Date;
+			from = from.ToLocalTime().Date;
+			to = to.ToLocalTime().Date;
 			var result = await _unitOfWork.ShortLinks.GetAllLogPaging(from, to, pageIndex, pageSize, userName, type, userAgent, shortLink, screen, ip, flatform);
 			return Ok(result);
 		}
@@ -258,8 +258,8 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 		[Route("thongkeClickUserByDate")]
 		public async Task<ActionResult<PagedResult<ThongKeViewClickByUser>>> GetThongKeClickUserByDate(DateTime from, DateTime to, int pageIndex = 1, int pageSize = 10, string? userName = "")
 		{
-			from = from.Date;
-			to = to.Date;
+			from = from.ToLocalTime().Date;
+			to = to.ToLocalTime().Date;
 			//get list User
 			var listUserThongKe = await _unitOfWork.Users.GetAllUser(userName);
 			//var newList = new List<ThongKeViewClickByUser>();
@@ -268,15 +268,15 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 			foreach (var user in listUserThongKe)
 			{
 				
-				var countView = await _unitOfWork.Visitors.CountViewByDateRangeAndUserId(from, to, user.Id);
-                if (countView > 0)
+				var countCLick = await _unitOfWork.ViewDetails.CountClickByDateRangeAndUserId(from, to, user.Id);
+                if (countCLick > 0)
 				{
-					user.Click = await _unitOfWork.ViewDetails.CountClickByDateRangeAndUserId(from, to, user.Id);
-					user.View = countView;
+					user.Click = countCLick;
+					user.View = await _unitOfWork.Visitors.CountViewByDateRangeAndUserId(from, to, user.Id);
 				}
 
 			}
-			var query = listUserThongKe.AsQueryable().Where(x=> x.View > 0);
+			var query = listUserThongKe.AsQueryable().Where(x=> x.View > 0 && x.Click > 0);
 			var totalRow = query.Count();
 			var listPaging = query.OrderByDescending(x => x.Click)
 			   .Skip((pageIndex - 1) * pageSize)

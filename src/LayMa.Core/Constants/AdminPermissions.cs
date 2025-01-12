@@ -26,7 +26,7 @@ namespace LayMa.Core.Constants
 			[Description("Xóa người dùng")]
 			public const string Delete = "Permissions.Users.Delete";
 		}
-		public static class Campain
+		public static class Campains
 		{
 			[Description("Xem chiến dịch")]
 			public const string View = "Permissions.Campain.View";

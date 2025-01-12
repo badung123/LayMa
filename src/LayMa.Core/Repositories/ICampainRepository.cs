@@ -14,10 +14,11 @@ namespace LayMa.Core.Repositories
 {
 	public interface ICampainRepository : IRepository<Campain, Guid>
 	{
-		Task<CampainDto> GetCampainByKeyToken(string key);
+		Task<CampainDto> GetCampainByKeyToken(string key,string flatform);
 		Task<Guid> GetCampainIdRandom();
 		Task<Guid> GetCampainIdRandomByOldID(Guid oldId);
 		Task<string> GetFlatformByCampainId(Guid campainId);
+		Task<string> GetTokenByDomain(string domain);
 		Task<Campain> GetCampainByID(Guid campainId);
 		Task<Campain> GetCampainByIDNotCheckStatus(Guid campainId);
 		Task<CampainInListDto> GetCampainByCampainID(Guid campainId);

@@ -10,7 +10,8 @@ namespace LayMa.Core.Model.Campain
     {
 		public Guid CampainId { get; set; }
 		public string Key { get; set; }
-		public required string UrlWeb { get; set; }
+		public string? Domain { get; set; }
+		public string? UrlWeb { get; set; }
 		public required string Thumbnail { get; set; }
 		public int Price { get; set; }
 		public int Time { get; set; }

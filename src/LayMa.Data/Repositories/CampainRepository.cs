@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static LayMa.Core.Constants.AdminPermissions;
 
 namespace LayMa.Data.Repositories
 {
@@ -24,9 +25,9 @@ namespace LayMa.Data.Repositories
 		{
 			_mapper = mapper;
 		}
-		public async Task<CampainDto> GetCampainByKeyToken(string key)
+		public async Task<CampainDto> GetCampainByKeyToken(string key, string flatform)
 		{
-			var campain = await _context.Campains.Where(x => x.KeyToken == key && x.Status).FirstOrDefaultAsync();
+			var campain = await _context.Campains.Where(x => x.KeyToken == key && x.Flatform == flatform && x.Status).FirstOrDefaultAsync();
 			var campainDto = _mapper.Map<Campain,CampainDto>(campain);
 
 			return campainDto;
@@ -48,6 +49,12 @@ namespace LayMa.Data.Repositories
 			var campain = await _context.Campains.Where(x => x.Id == campainId).FirstOrDefaultAsync();
 			if (campain == null) return string.Empty;
 			return campain.Flatform;
+		}
+		public async Task<string> GetTokenByDomain(string domain)
+		{
+			var campain = await _context.Campains.Where(x => x.Domain == domain).FirstOrDefaultAsync();
+			if (campain == null) return string.Empty;
+			return campain.Domain;
 		}
 		public async Task<Campain> GetCampainByID(Guid campainId)
 		{

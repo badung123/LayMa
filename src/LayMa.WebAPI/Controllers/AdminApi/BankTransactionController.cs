@@ -90,6 +90,8 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 		//[Authorize(ShortLinks.View)]
 		public async Task<ActionResult<PagedResult<BankTransactionInListDto>>> GetAllPaging(DateTime from, DateTime to,int pageIndex, int pageSize = 10, string? userName = "", string modifyBy = "All", int type = -1)
 		{
+			from = from.ToLocalTime().Date;
+			to = to.ToLocalTime().Date;
 			var result = await _unitOfWork.BankTransactions.GetAllBankTransactionPagingAdmin(from, to, pageIndex, pageSize, userName, modifyBy,type);
 			return Ok(result);
 		}

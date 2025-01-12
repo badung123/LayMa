@@ -628,12 +628,15 @@ export class AdminApiCampainApiClient {
 
     /**
      * @param keytoken (optional) 
+     * @param flatform (optional) 
      * @return Success
      */
-    getCampainByKeyToken(keytoken?: string | null | undefined): Observable<CampainDto> {
+    getCampainByKeyTokenAndFlatform(keytoken?: string | null | undefined, flatform?: string | null | undefined): Observable<CampainDto> {
         let url_ = this.baseUrl + "/api/admin/campain?";
         if (keytoken !== undefined && keytoken !== null)
             url_ += "keytoken=" + encodeURIComponent("" + keytoken) + "&";
+        if (flatform !== undefined && flatform !== null)
+            url_ += "flatform=" + encodeURIComponent("" + flatform) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -645,11 +648,11 @@ export class AdminApiCampainApiClient {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetCampainByKeyToken(response_);
+            return this.processGetCampainByKeyTokenAndFlatform(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetCampainByKeyToken(response_ as any);
+                    return this.processGetCampainByKeyTokenAndFlatform(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<CampainDto>;
                 }
@@ -658,7 +661,7 @@ export class AdminApiCampainApiClient {
         }));
     }
 
-    protected processGetCampainByKeyToken(response: HttpResponseBase): Observable<CampainDto> {
+    protected processGetCampainByKeyTokenAndFlatform(response: HttpResponseBase): Observable<CampainDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -3073,6 +3076,7 @@ export class CampainInListDto implements ICampainInListDto {
     imageUrl?: string | undefined;
     decription?: string | undefined;
     url?: string | undefined;
+    domain?: string | undefined;
     viewPerDay?: number;
     toTalView?: number;
     pricePerView?: number;
@@ -3099,6 +3103,7 @@ export class CampainInListDto implements ICampainInListDto {
             this.imageUrl = _data["imageUrl"];
             this.decription = _data["decription"];
             this.url = _data["url"];
+            this.domain = _data["domain"];
             this.viewPerDay = _data["viewPerDay"];
             this.toTalView = _data["toTalView"];
             this.pricePerView = _data["pricePerView"];
@@ -3125,6 +3130,7 @@ export class CampainInListDto implements ICampainInListDto {
         data["imageUrl"] = this.imageUrl;
         data["decription"] = this.decription;
         data["url"] = this.url;
+        data["domain"] = this.domain;
         data["viewPerDay"] = this.viewPerDay;
         data["toTalView"] = this.toTalView;
         data["pricePerView"] = this.pricePerView;
@@ -3144,6 +3150,7 @@ export interface ICampainInListDto {
     imageUrl?: string | undefined;
     decription?: string | undefined;
     url?: string | undefined;
+    domain?: string | undefined;
     viewPerDay?: number;
     toTalView?: number;
     pricePerView?: number;
@@ -3364,6 +3371,7 @@ export interface ICreateBankTransactionDto {
 export class CreateOrUpdateCampainRequest implements ICreateOrUpdateCampainRequest {
     campainId?: string;
     key?: string | undefined;
+    domain?: string | undefined;
     urlWeb?: string | undefined;
     thumbnail?: string | undefined;
     price?: number;
@@ -3384,6 +3392,7 @@ export class CreateOrUpdateCampainRequest implements ICreateOrUpdateCampainReque
         if (_data) {
             this.campainId = _data["campainId"];
             this.key = _data["key"];
+            this.domain = _data["domain"];
             this.urlWeb = _data["urlWeb"];
             this.thumbnail = _data["thumbnail"];
             this.price = _data["price"];
@@ -3404,6 +3413,7 @@ export class CreateOrUpdateCampainRequest implements ICreateOrUpdateCampainReque
         data = typeof data === 'object' ? data : {};
         data["campainId"] = this.campainId;
         data["key"] = this.key;
+        data["domain"] = this.domain;
         data["urlWeb"] = this.urlWeb;
         data["thumbnail"] = this.thumbnail;
         data["price"] = this.price;
@@ -3417,6 +3427,7 @@ export class CreateOrUpdateCampainRequest implements ICreateOrUpdateCampainReque
 export interface ICreateOrUpdateCampainRequest {
     campainId?: string;
     key?: string | undefined;
+    domain?: string | undefined;
     urlWeb?: string | undefined;
     thumbnail?: string | undefined;
     price?: number;

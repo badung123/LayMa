@@ -19,6 +19,7 @@ namespace LayMa.Core.Domain.Campain
 		public required string KeyToken { get; set; }
         public string? ImageUrl { get; set; }
 		public string? VideoUrl { get; set; }
+		public string? Domain { get; set; }
 		public required string Url { get; set; }
         public int ViewPerDay { get; set; }
 		public int PricePerView { get; set; }

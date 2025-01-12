@@ -30,6 +30,7 @@
                 >
                   <thead class="text-nowrap text-truncate">
                   <tr>
+                    <th class="bg-body-tertiary text-center">Link</th>
                     <th class="bg-body-tertiary text-center">Domain</th>
                     <th class="bg-body-tertiary text-center">Giá/View</th>
                     <th class="bg-body-tertiary text-center">View trong ngày</th>
@@ -44,6 +45,9 @@
                       <tr>
                         <td class="text-center" style="max-width: 200px;">
                           <div>{{ item.url  }}</div>
+                        </td>
+                        <td class="text-center" style="max-width: 200px;">
+                          <div>{{ item.domain  }}</div>
                         </td>
                         <td  class="text-center">
                             {{item.pricePerView}}

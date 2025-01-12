@@ -25,10 +25,14 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 
 			if (request.CampainId == Guid.Empty)
 			{
+
 				var token = "";
-				token = token.GenerateLinkToken(9);
+				//get token form domain
+				token = await _unitOfWork.Campains.GetTokenByDomain(request.Domain);
+                if (token == string.Empty) token = token.GenerateLinkToken(9);
+
 				var campainCreate = new Campain
-				{
+				{					
 					Id = Guid.NewGuid(),
 					Flatform = request.Flatform,
 					DateCreated = DateTime.Now,
@@ -38,6 +42,7 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 					Status = true,
 					TimeOnSitePerView = request.Time,
 					Url = request.UrlWeb,
+					Domain = request.Domain,
 					ImageUrl = request.Thumbnail,
 					KeySearch = request.Key,
 					PricePerView = request.Price,
@@ -45,7 +50,7 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 					ToTalPrice = 0,
 					ToTalView = 0,
 					VideoUrl = "",
-					ViewPerDay = request.View					
+					ViewPerDay = request.View
 				};
 				_unitOfWork.Campains.Add(campainCreate);
 			}
@@ -57,6 +62,7 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 				campainUpdate.ViewPerDay = request.View;
 				campainUpdate.KeySearch = request.Key;
 				campainUpdate.ImageUrl = request.Thumbnail;
+				campainUpdate.Domain = request.Domain;
 				campainUpdate.TimeOnSitePerView= request.Time;
 				campainUpdate.DateModified = DateTime.Now;
 				_unitOfWork.Campains.Update(campainUpdate);
@@ -65,10 +71,11 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 			return result > 0 ? Ok() : BadRequest();
 		} 
 		[HttpGet]
-		public async Task<ActionResult<CampainDto?>> GetCampainByKeyToken(string keytoken)
+		public async Task<ActionResult<CampainDto?>> GetCampainByKeyTokenAndFlatform(string keytoken,string flatform)
 		{
-			var result = await _unitOfWork.Campains.GetCampainByKeyToken(keytoken);
-			return Ok(result);
+			var result = await _unitOfWork.Campains.GetCampainByKeyToken(keytoken,flatform);
+			if (result == null) return BadRequest("Không có chiến dịch phù hợp");
+            return Ok(result);
 		}
 		[HttpGet]
 		[Route("getCampainByCampainId")]

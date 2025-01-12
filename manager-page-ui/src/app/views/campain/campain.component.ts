@@ -77,6 +77,7 @@ export class CampainComponent implements OnInit, OnDestroy{
         price: new FormControl(this.selectedEntity.pricePerView || '', Validators.required),
         view: new FormControl(this.selectedEntity.viewPerDay || '', Validators.required),
         time: new FormControl(this.selectedEntity.timeOnSitePerView || '', Validators.required),
+        domain: new FormControl(this.selectedEntity.domain || '', Validators.required),
         thumbnail: new FormControl(
           this.selectedEntity.imageUrl || null
         ),
@@ -110,7 +111,11 @@ export class CampainComponent implements OnInit, OnDestroy{
       }     
       let urlWeb = this.campainForm.controls['urlWeb'].value;
       if (urlWeb == null || urlWeb == '') {
-        this.alertService.showError('Đường dẫn website không đc bỏ trống');
+        urlWeb = '';
+      }
+      let domain = this.campainForm.controls['domain'].value;
+      if (domain == null || domain == '') {
+        this.alertService.showError('Domain không đc bỏ trống');
         return;
       }
       var request: CreateOrUpdateCampainRequest = new CreateOrUpdateCampainRequest({
@@ -120,7 +125,8 @@ export class CampainComponent implements OnInit, OnDestroy{
         time: this.campainForm.controls['time'].value,
         view: this.campainForm.controls['view'].value,
         thumbnail: this.campainForm.controls['thumbnail'].value,
-        flatform: this.config.data?.flatform
+        flatform: this.config.data?.flatform,
+        domain:this.campainForm.controls['domain'].value
       });
       if (this.utilService.isEmpty(this.config.data?.id) == false) {
         request.campainId = this.config.data?.id;
