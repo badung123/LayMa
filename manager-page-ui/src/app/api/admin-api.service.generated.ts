@@ -2578,9 +2578,10 @@ export class AdminApiUserApiClient {
      * @param pageIndex (optional) 
      * @param pageSize (optional) 
      * @param keySearch (optional) 
+     * @param isVerify (optional) 
      * @return Success
      */
-    getListUser(pageIndex?: number | undefined, pageSize?: number | undefined, keySearch?: string | null | undefined): Observable<UserDtoInListPagedResult> {
+    getListUser(pageIndex?: number | undefined, pageSize?: number | undefined, keySearch?: string | null | undefined, isVerify?: string | null | undefined): Observable<UserDtoInListPagedResult> {
         let url_ = this.baseUrl + "/api/admin/user/GetListUser?";
         if (pageIndex === null)
             throw new Error("The parameter 'pageIndex' cannot be null.");
@@ -2592,6 +2593,8 @@ export class AdminApiUserApiClient {
             url_ += "pageSize=" + encodeURIComponent("" + pageSize) + "&";
         if (keySearch !== undefined && keySearch !== null)
             url_ += "keySearch=" + encodeURIComponent("" + keySearch) + "&";
+        if (isVerify !== undefined && isVerify !== null)
+            url_ += "isVerify=" + encodeURIComponent("" + isVerify) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {

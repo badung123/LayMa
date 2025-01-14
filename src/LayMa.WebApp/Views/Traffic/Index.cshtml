@@ -30,6 +30,7 @@
 	} *@
 	var referrer_pattern_FB = '^http(s|)\:\/\/(www|l|m|lm|mobile|web|touch|fbclid|)(\.)?facebook\.[a-z]{2,3}([.a-z]{2,4}|)';
 	var referrer_pattern_GG = '^http(s|)\:\/\/(?:www\.)?google\.[a-z]{2,3}([.a-z]{2,4}|)';
+	var referrer_pattern_INS = '^http(s|)\:\/\/(www|l|m|lm|mobile|web|touch|fbclid|)(\.)?instagram\.[a-z]{2,3}([.a-z]{2,4}|)';
 
 	var check_ref = false;
 	var get_code = true;
@@ -134,6 +135,11 @@
 		if (referrer.match(regexFB)) {
 			return 'facebook';
 		}
+		var regexINS = new RegExp(referrer_pattern_INS,"i");
+		if (referrer.match(regexINS)) {
+			return 'instagram';
+		}
+		
 	}
 	const ajax = function(url, method = 'GET', data, onSuccess = null, onError = null, onDone = null) {
 		let postData = JSON.stringify(data);
@@ -528,16 +534,7 @@
 			var flatform = checkReferer(referrer);
 			if(flatform != ''){
 				check_ref =true;
-			}
-
-	@* if(checkAdsClick()){
-				return false;
-			} *@
-
-	@* check_ref =true; *@
-
-	@* get thong tin chien dich bay token và flatform *@
-			ajaxGet(
+				ajaxGet(
 					apiUrl + "/api/admin/campain?keytoken=" + traffic_key + "&flatform=" + flatform,
 					(result) => {
 						console.log(result);
@@ -662,15 +659,25 @@
 								});
 								return false;
 							});
-						}						
+						}
 					},
 					(event) => {
 						console.log(event);
 					},
 					() => {
-						
-					});		
+
+					});
 		}
+			}
+
+		@* if(checkAdsClick()){
+					return false;
+				} *@
+
+		@* check_ref =true; *@
+
+		@* get thong tin chien dich bay token và flatform *@
+			
 		@* window.onload = initScript; *@
 		jQuery(document).ready(initScript);
 	}

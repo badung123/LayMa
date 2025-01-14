@@ -19,7 +19,7 @@ namespace LayMa.Core.Repositories
 		Task<PagedResult<AgentListDto>> GetAllPaging(string refcode, int pageIndex = 1, int pageSize = 10, string? keySearch = "");
         Task<AppUser?> GetUserAgentByRefcode(string refcode);
 		Task UpdateBalanceCount(Guid userid,double amount);
-		Task<PagedResult<UserDtoInList>> GetAllUserPaging(int pageIndex = 1, int pageSize = 10, string? keySearch = "");
+		Task<PagedResult<UserDtoInList>> GetAllUserPaging(int pageIndex = 1, int pageSize = 10, string? keySearch = "", string isVerify = "");
         Task<AppUser?> GetUserByUserToken(string token);
 		Task<List<ThongKeViewClickByUser>> GetAllUser(string? userName = "");
         Task<PagedResult<ThongKeViewClickByUser>> GetAllUserTHongKe(DateTime from, DateTime to, int pageIndex = 1, int pageSize = 10, string? userName = "");

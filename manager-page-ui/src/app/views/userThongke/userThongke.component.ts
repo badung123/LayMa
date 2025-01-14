@@ -62,6 +62,8 @@ export class UserThongkeComponent implements OnInit, OnDestroy{
     public from: Date;
     public to: Date;
     public rangeDates: Date[] = [new Date(),new Date()];
+    public sumClick: number = 0;
+    public sumView: number = 0;
     constructor(private fb: FormBuilder,
       private router: Router,
       private alertService: AlertService,
@@ -84,15 +86,20 @@ export class UserThongkeComponent implements OnInit, OnDestroy{
       this.loadData();  
     }
     loadData(){
-      console.log(this.from);
-      console.log(this.to);
       this.shortLinkApiClient.getThongKeClickUserByDate(this.from,this.to,this.pageIndex,this.pageSize,this.userNameSearch)
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe({
         next: (response: ThongKeViewClickByUserPagedResult) => {
           this.items = response.results!;
-          console.log(this.items);
           this.totalCount = response.rowCount!;
+          this.sumClick = this.items.map(a => a.click!).reduce(function(a, b)
+          {
+            return a + b;
+          });
+          this.sumView = this.items.map(a => a.view!).reduce(function(a, b)
+          {
+            return a + b;
+          });
         },
         error: (error: any) => {
           console.log(error);

@@ -133,7 +133,7 @@ namespace LayMa.Api.Controllers.AdminApi
                 }
                 permissions.AddRange(allPermissions.Select(x => x.Value));
             }
-            else
+            else if (roles.Contains(Roles.User))
             {
 				var types = typeof(Permissions).GetTypeInfo().DeclaredNestedTypes;
 				foreach (var type in types)
@@ -142,7 +142,16 @@ namespace LayMa.Api.Controllers.AdminApi
 				}
 				permissions.AddRange(allPermissions.Select(x => x.Value));
 			}
-            return permissions.Distinct().ToList();
+			else
+			{
+				var types = typeof(KetoanPermissions).GetTypeInfo().DeclaredNestedTypes;
+				foreach (var type in types)
+				{
+					allPermissions.GetPermissions(type);
+				}
+				permissions.AddRange(allPermissions.Select(x => x.Value));
+			}
+			return permissions.Distinct().ToList();
         }
 
         [HttpPost]

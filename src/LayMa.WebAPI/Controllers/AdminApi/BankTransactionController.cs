@@ -46,6 +46,7 @@ namespace LayMa.WebAPI.Controllers.AdminApi
             var user = await _userManager.FindByIdAsync(userId.ToString());
             if (user == null) return BadRequest("User không tồn tại");
             //check lệnh rút trước cách bao lâu
+            if (!user.IsVerify) return BadRequest("Cần xác minh để rút tiền");
             if (request.Money < 50000) return BadRequest("Rút tối thiểu 50.000 VNĐ");
 			if (user.Balance < request.Money) return BadRequest("Số dư không đủ");
 			var transaction = _mapper.Map<CreateBankTransactionDto, TransactionBank>(request);

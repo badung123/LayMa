@@ -10,5 +10,6 @@ namespace LayMa.Core.Constants
     {
         public static string Admin = "Admin";
 		public static string User = "User";
+		public static string Accountant = "Accountant";
 	}
 }

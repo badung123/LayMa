@@ -101,7 +101,7 @@ export class WithDrawManagerComponent implements OnInit, OnDestroy{
       .subscribe({
         next: (response: BankTransactionInListDtoPagedResult) => {
           this.items = response.results!;
-          this.totalCount = response.rowCount!;
+          this.totalCount = response.rowCount!;         
         },
         error: (error: any) => {
           console.log(error);

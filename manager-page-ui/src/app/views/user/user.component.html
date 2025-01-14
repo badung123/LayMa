@@ -6,6 +6,23 @@
           <h2><strong>Quản lý Người dùng</strong></h2>
         </c-card-header>
         <c-card-body class="p-4">
+          <c-row [xl]="2" [lg]="2" [sm]="2" [xs]="1">
+            <c-col>
+              <c-input-group class="mb-3">
+                <input aria-describedby="button-addon2"
+                       aria-label="userName"
+                       cFormControl
+                       id="txtKeyword" pInputText (keyup.enter)="loadData()" [(ngModel)]="userNameSearch"
+                       placeholder="userName"
+                />
+              </c-input-group>
+            </c-col>
+            <c-col>
+              <select cSelect id="floatingSelectGrid" [(ngModel)]="verifySearch" (change)="loadData()">
+                <option *ngFor="let a of listVerify" [ngValue]="a.value">{{a.name}}</option>
+              </select>
+            </c-col>
+          </c-row>
             <c-row>
                 <c-col xs>
                   <c-card class="mb-4">

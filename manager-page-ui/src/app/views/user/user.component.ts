@@ -40,7 +40,11 @@ import { XacMinhUserComponent } from './xacminhuser.component';
 import { PaginatorModule } from 'primeng/paginator';
 //import { AdminApiShortLinkApiClient, AdminApiTestApiClient, CreateShortLinkDto } from 'src/app/api/admin-api.service.generatesrc';
 
-
+interface IVerify {
+  id: number,
+  name: string,
+  value: string
+}
 @Component({
     selector: 'app-user',
     templateUrl: './user.component.html',
@@ -55,7 +59,13 @@ export class UserComponent implements OnInit, OnDestroy{
     public pageIndex: number = 1;
     public pageSize: number = 10;
     public totalCount: number;
-
+    public verifySearch: string = '';
+    public userNameSearch: string = '';
+    public listVerify: IVerify[] =[
+      {id:1,name:'All',value:""},
+      {id:2,name:'Đã Xác Minh',value:"true"},
+      {id:3,name:'Chưa Xác Minh',value:"false"}
+    ];
     //Business variables
     public items: UserDtoInList[];
     public keyword: string = '';
@@ -77,7 +87,7 @@ export class UserComponent implements OnInit, OnDestroy{
       this.loadData();  
     }
     loadData(){
-      this.userApiClient.getListUser(this.pageIndex,this.pageSize,this.keyword)
+      this.userApiClient.getListUser(this.pageIndex,this.pageSize,this.userNameSearch,this.verifySearch)
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe({
         next: (response: UserDtoInListPagedResult) => {
