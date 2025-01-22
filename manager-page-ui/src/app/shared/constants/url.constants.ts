@@ -6,6 +6,7 @@ export class UrlConstants{
     public static ACCESS_DENIED = "/auth/403";
     public static LiST_SHORT_LINK = "/shortlink/list";
     public static CAMPAIN = "/campain/google";
+    public static WITHDRAWMANAGER = "/withdrawmanager";
     public static REFCODE_URL = "https://layma.net/Home/DaiLy?refcode=";
 
 }

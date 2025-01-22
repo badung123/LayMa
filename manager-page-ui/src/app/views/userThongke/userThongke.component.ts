@@ -38,6 +38,7 @@ import { Router } from '@angular/router';
 import { DialogService, DynamicDialogComponent } from 'primeng/dynamicdialog';
 import { PaginatorModule } from 'primeng/paginator';
 import { CalendarModule } from 'primeng/calendar';
+import { userThongkeChartComponent } from './userThongkeChart.component';
 //import { AdminApiShortLinkApiClient, AdminApiTestApiClient, CreateShortLinkDto } from 'src/app/api/admin-api.service.generatesrc';
 
 
@@ -118,6 +119,22 @@ export class UserThongkeComponent implements OnInit, OnDestroy{
         this.to = event[1];
         this.loadData();
       }     
+    }
+    showModalDetail(id: string,userName: string){
+      const ref = this.dialogService.open(userThongkeChartComponent, {
+        data: {
+          id:id
+        },
+        header: 'Thống kê ' + userName,
+        width: '100%'
+      });
+      const dialogRef = this.dialogService.dialogComponentRefMap.get(ref);
+      const dynamicComponent = dialogRef?.instance as DynamicDialogComponent;
+      const ariaLabelledBy = dynamicComponent.getAriaLabelledBy();
+      dynamicComponent.getAriaLabelledBy = () => ariaLabelledBy;
+      ref.onClose.subscribe((data: any) => {
+        //this.loadData();  
+      });
     }
     
 }

@@ -16,6 +16,7 @@ namespace LayMa.Core.Repositories
 	{
 		Task<CampainDto> GetCampainByKeyToken(string key,string flatform);
 		Task<Guid> GetCampainIdRandom();
+		Task<List<Campain>> GetListCampainAutoOff();
 		Task<Guid> GetCampainIdRandomByOldID(Guid oldId);
 		Task<string> GetFlatformByCampainId(Guid campainId);
 		Task<string> GetTokenByDomain(string domain);
@@ -25,7 +26,6 @@ namespace LayMa.Core.Repositories
 		Task<PagedResult<CampainInListDto>> GetAllPaging(int pageIndex = 1, int pageSize = 10,string flatform = "google", string? keySearch = "");
 
 		Task<ThongKeView> GetThongKeView();
-		Task UpdateViewPerDayCount(Guid id, long viewCount);
         Task UpdateActive(Guid id, bool isActive);
 
     }

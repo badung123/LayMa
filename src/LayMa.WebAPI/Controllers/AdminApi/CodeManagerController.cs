@@ -72,31 +72,47 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 			}
 			var ips = HttpContext.Request.GetIpAddress();
 			var shortLink = await _unitOfWork.ShortLinks.GetByTokenAsync(request.Token);
-			if (shortLink == null)
-			{
-				return BadRequest("Link rút gọn không tồn tại");
-			}
+			
 			var check = await _unitOfWork.CodeManagers.CheckCode(request.Code, Guid.Parse(request.CampainId));
             if (!check) return BadRequest("Code đã được dùng hoặc không hợp lệ");
+			if (shortLink == null) return BadRequest("Link rút gọn không tồn tại");
 			var userId = shortLink.UserId;
 			var user = await _userManager.FindByIdAsync(userId.ToString());
 			if (user == null || user.IsActive == false) return BadRequest("User không hợp lệ");
-            //tiến hành update
-            var date = DateTime.Now;
-            var start = date.Date;
-            var end = date.Date.AddDays(1);
-            var countCampain = await _unitOfWork.ViewDetails.CountClickByDateRangeAndCampainId(start, end, Guid.Parse(request.CampainId));
-            var campain = await _unitOfWork.Campains.GetCampainByID(Guid.Parse(request.CampainId));
-            if (campain == null) return BadRequest("Chiến dịch không hợp lệ");
+            //tiến hành update          
+            var campain = await _unitOfWork.Campains.GetCampainByCampainID(Guid.Parse(request.CampainId));
+            if (campain == null) return BadRequest("Chiến dịch không hợp lệ hoặc đã tạm dừng");
 
-            if (campain.ViewPerDay < countCampain) return Ok(shortLink.Duphong);
-			if (countCampain == (campain.ViewPerDay - 1))
+			var date = DateTime.Now;
+			var start = date.Date;
+			var end = date.Date.AddDays(1);
+			if (campain.TypeRun == 1)
 			{
-				//tat chien dich
-				await _unitOfWork.Campains.UpdateActive(campain.Id, false);
+				start = start.AddHours(date.Hour);
+				end = start.AddHours(1);
 			}
-            //check 1 ngày 1 user chỉ đc dùng 1 IP,user agent
-            var checkIp = await _unitOfWork.ViewDetails.CheckIP(ips, request.DeviceScreen);
+			var countCampain = await _unitOfWork.ViewDetails.CountClickByDateRangeAndCampainId(start, end, Guid.Parse(request.CampainId));
+			if (campain.TypeRun == 0)
+            {
+                if (campain.Status)
+                {
+					if (campain.ViewPerDay < countCampain) return Ok(shortLink.Duphong);
+					if (countCampain == (campain.ViewPerDay - 1))
+					{
+						//tat chien dich
+						await _unitOfWork.Campains.UpdateActive(campain.Id, false);
+					}
+				}           
+			}
+			if (campain.TypeRun == 1)			
+			{
+                if (campain.Status && countCampain == (campain.ViewPerHour - 1))
+                {
+					await _unitOfWork.Campains.UpdateActive(campain.Id, false);
+				}
+            }
+			//check 1 ngày 1 user chỉ đc dùng 1 IP,user agent
+			var checkIp = await _unitOfWork.ViewDetails.CheckIP(ips, request.DeviceScreen);
 			if (!checkIp) {
 				var transLog = new TransactionLog
 				{
@@ -119,40 +135,9 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 				_unitOfWork.TransactionLogs.Add(transLog);
 				await _unitOfWork.CompleteAsync();
 				return Ok(shortLink.OriginLink);
-			}
-			//var checkUserAgent = await _unitOfWork.ViewDetails.CheckUserAgent(request.UserAgent, request.DeviceScreen);
-			//if (!checkUserAgent)
-			//{
-			//	var transLog = new TransactionLog
-			//	{
-			//		Id = Guid.NewGuid(),
-			//		UserId = user.Id,
-			//		UserName = user.UserName,
-			//		Amount = 0,
-			//		OldBalance = Int64.Parse(user.Balance.ToString()),
-			//		CreatedBy = user.UserName,
-			//		Description = "trùng user agent - " + shortLink.Link,
-			//		TranSactionType = TranSactionType.ClickCode,
-			//		ShortLink = shortLink.Link,
-			//		DeviceScreen = request.DeviceScreen,
-			//		UserAgent = request.UserAgent,
-			//		IPAddress = ips,
-			//		DateCreated = DateTime.Now,
-			//		DateModified = DateTime.Now,
-			//		Flatform = campain.Flatform
-			//	};
-			//	_unitOfWork.TransactionLogs.Add(transLog);
-			//	await _unitOfWork.CompleteAsync();
-			//	return Ok(shortLink.OriginLink);
-			//}
-
-
-			// phải nằm trong transaction
-			//update viewcount in shortlink
-			//await _unitOfWork.ShortLinks.UpdateViewCount(shortLink.Id);
+			}			
 			//update code đã dùng
 			await _unitOfWork.CodeManagers.UpdateIsUsed(request.Code, Guid.Parse(request.CampainId));
-
 			//insert view detail
 			var viewDetail = new ViewDetail()
 			{

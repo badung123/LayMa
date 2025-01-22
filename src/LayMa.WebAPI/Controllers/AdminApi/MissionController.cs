@@ -33,43 +33,72 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 			var mission = await _unitOfWork.Missions.GetMissionByUserId(userId,shortLink.Id);
 			if (mission == null) return BadRequest("Không tìm thấy nhiệm vụ nào cho bạn");
 			//get flatform
-			var campain = await _unitOfWork.Campains.GetCampainByID(mission.CampainId);
-			if (campain == null)
-			{
-                await _unitOfWork.Missions.UpdateIsChange(mission.Id);
-                var campainId = await _unitOfWork.Campains.GetCampainIdRandomByOldID(mission.CampainId);
-                if (campainId == Guid.Empty) return BadRequest("Hiện tại không có chiến dịch nào phù hợp");
-                campain = await _unitOfWork.Campains.GetCampainByID(campainId);
-                var newMissionId = Guid.NewGuid();
-                var newMission = new Mission()
-                {
-                    Id = newMissionId,
-                    CampainId = campainId,
-                    ShortLinkId = shortLink.Id,
-                    TokenUrl = shortLink.Token,
-                    ShortLink = shortLink.OriginLink,
-                    UserId = userId,
-                    DateCreated = DateTime.Now,
-                    DateModified = DateTime.Now,
-                    IsActive = true
-                };
-                _unitOfWork.Missions.Add(newMission);
-                var result = await _unitOfWork.CompleteAsync();
-				if (result > 0)
-				{
-					mission = newMission;
-
-                }
-				else
-				{
-                    return BadRequest("Bạn không còn nhiệm vụ nào");
-                }
-            }
-
+			var campain = await _unitOfWork.Campains.GetCampainByIDNotCheckStatus(mission.CampainId);
+			int countCampain = 0;
+			int viewCheck = 0;
 			var date = DateTime.Now;
 			var start = date.Date;
 			var end = date.Date.AddDays(1);
-			var countCampain = await _unitOfWork.ViewDetails.CountClickByDateRangeAndCampainId(start, end, campain.Id);
+			if (!campain.Status) {
+                if (campain.ViewPerHour == 0 && campain.ViewPerDay == 0)
+                {
+					await _unitOfWork.Missions.UpdateIsChange(mission.Id);
+					var campainId = await _unitOfWork.Campains.GetCampainIdRandomByOldID(mission.CampainId);
+					if (campainId == Guid.Empty) return BadRequest("Hiện tại không có chiến dịch nào phù hợp");
+					campain = await _unitOfWork.Campains.GetCampainByID(campainId);
+					var newMissionId = Guid.NewGuid();
+					var newMission = new Mission()
+					{
+						Id = newMissionId,
+						CampainId = campainId,
+						ShortLinkId = shortLink.Id,
+						TokenUrl = shortLink.Token,
+						ShortLink = shortLink.OriginLink,
+						UserId = userId,
+						DateCreated = DateTime.Now,
+						DateModified = DateTime.Now,
+						IsActive = true
+					};
+					_unitOfWork.Missions.Add(newMission);
+					var result = await _unitOfWork.CompleteAsync();
+					if (result > 0)
+					{
+						mission = newMission;
+						countCampain = await _unitOfWork.ViewDetails.CountClickByDateRangeAndCampainId(start, end, campain.Id);
+
+					}
+					else
+					{
+						return BadRequest("Bạn không còn nhiệm vụ nào");
+					}
+				}
+				else
+				{
+                    if (campain.TypeRun == 0)
+                    {						
+						countCampain = await _unitOfWork.ViewDetails.CountClickByDateRangeAndCampainId(start, end, campain.Id);
+                        if (countCampain == 0)
+                        {
+							await _unitOfWork.Campains.UpdateActive(campain.Id, true);
+                        }
+						viewCheck = campain.ViewPerDay;
+
+					}
+					if (campain.TypeRun == 1)
+					{
+						start = start.AddHours(date.Hour);
+						end = start.AddHours(1);
+						countCampain = await _unitOfWork.ViewDetails.CountClickByDateRangeAndCampainId(start, end, campain.Id);
+						if (countCampain == 0)
+						{
+							await _unitOfWork.Campains.UpdateActive(campain.Id, true);
+						}
+						viewCheck = campain.ViewPerHour;
+					}
+				}
+            }
+
+			
 			var missionDto = new MissionDto()
 			{
 				Id = mission.Id,
@@ -83,7 +112,7 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 				IsHetMa = false,
 				LinkDuPhong = shortLink.Duphong
 			};
-			if (countCampain > campain.ViewPerDay) missionDto.IsHetMa = true;
+			if (countCampain > viewCheck) missionDto.IsHetMa = true;
             return Ok(missionDto);
 		}
 		[HttpPost]

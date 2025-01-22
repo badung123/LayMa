@@ -34,6 +34,8 @@
                     <th class="bg-body-tertiary text-center">Link</th>
                     <th class="bg-body-tertiary text-center">Domain</th>
                     <th class="bg-body-tertiary text-center">Giá/View</th>
+                    <th class="bg-body-tertiary text-center">Loại chiến dịch</th>                    
+                    <th class="bg-body-tertiary text-center">View trong giờ</th>
                     <th class="bg-body-tertiary text-center">View trong ngày</th>
                     <th class="bg-body-tertiary text-center">Time lấy mã</th>
                     <th class="bg-body-tertiary">Trạng thái</th>
@@ -57,8 +59,16 @@
                             {{item.pricePerView}}
                         </td>
                         <td class="text-center">
+                          <span *ngIf="item.typeRun == 0">Theo Ngày</span>
+                          <span *ngIf="item.typeRun == 1">Theo Giờ</span>
+                        </td>
+                        <td class="text-center">
+                          {{item.toTalViewHour}}/{{item.viewPerHour}}
+                        </td>
+                        <td class="text-center">
                           {{item.toTalView}}/{{item.viewPerDay}}
                         </td>
+                        
                         <td class="text-center">
                             {{item.timeOnSitePerView}}
                         </td>

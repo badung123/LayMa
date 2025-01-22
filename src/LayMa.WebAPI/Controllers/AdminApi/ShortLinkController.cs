@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using LayMa.Core.Domain.Campain;
 using LayMa.Core.Domain.Identity;
 using LayMa.Core.Domain.Link;
 using LayMa.Core.Domain.Mission;
@@ -15,6 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using System.Reflection.Metadata.Ecma335;
+using static LayMa.Core.Constants.AdminPermissions;
 using static LayMa.Core.Constants.Permissions;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -58,6 +60,25 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 			_unitOfWork.ShortLinks.Add(link);
 			//add nhiem vu
 			//get campainid random
+			//check xem có campain nào đang tắt và view = 0 thì bật lên
+			var listAutoOff = await _unitOfWork.Campains.GetListCampainAutoOff();
+			
+			if (listAutoOff.Count > 0) {
+                foreach (var autoOff in listAutoOff)
+                {
+					var date = DateTime.Now;
+					var start = date.Date;
+					var end = date.Date.AddDays(1);
+					if (autoOff.TypeRun == 1)
+					{
+						start = start.AddHours(date.Hour);
+						end = start.AddHours(1);
+					}
+					//check count
+					var countCampain = await _unitOfWork.ViewDetails.CountClickByDateRangeAndCampainId(start, end, autoOff.Id);
+                    if (countCampain == 0) await _unitOfWork.Campains.UpdateActive(autoOff.Id, true);
+				}
+            }
 			var campainId = await _unitOfWork.Campains.GetCampainIdRandom();
 			if (campainId == Guid.Empty) return BadRequest();
 			var missionId = Guid.NewGuid();
@@ -201,6 +222,26 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 				From = "API"
 			};
 			_unitOfWork.ShortLinks.Add(link);
+
+			var listAutoOff = await _unitOfWork.Campains.GetListCampainAutoOff();
+
+			if (listAutoOff.Count > 0)
+			{
+				foreach (var autoOff in listAutoOff)
+				{
+					var date = DateTime.Now;
+					var start = date.Date;
+					var end = date.Date.AddDays(1);
+					if (autoOff.TypeRun == 1)
+					{
+						start = start.AddHours(date.Hour);
+						end = start.AddHours(1);
+					}
+					//check count
+					var countCampain = await _unitOfWork.ViewDetails.CountClickByDateRangeAndCampainId(start, end, autoOff.Id);
+					if (countCampain == 0) await _unitOfWork.Campains.UpdateActive(autoOff.Id, true);
+				}
+			}
 			//add nhiem vu
 			//get campainid random
 			var campainId = await _unitOfWork.Campains.GetCampainIdRandom();
@@ -289,6 +330,34 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 				RowCount = totalRow,
 				PageSize = pageSize
 			};
+			return rs;
+		}
+		[HttpGet]
+		[Route("thongkeClickViewUserInMonth")]
+		public async Task<ThongKeClickViewUser30Day> thongkeClickViewUserInMonth(Guid userId)
+		{
+			var rs = new ThongKeClickViewUser30Day();
+			var listDate = new List<string>();
+			var lstClick = new List<int>();
+			var lstView = new List<int>();
+			var dateNow = DateTime.Now.Date;
+			var dateBefere30 = dateNow.AddDays(-30);
+			var listClick = await _unitOfWork.ViewDetails.CountClickByDateUserIdInMonth(userId);
+			var listView = await _unitOfWork.Visitors.CountViewByDateUserIdInMonth(userId);
+			while (dateBefere30 <= dateNow) {
+				
+				var click = listClick.Where(x => x.Date == dateBefere30).FirstOrDefault();
+				var countClick = click != null ? click.Count : 0;
+				lstClick.Add(countClick);
+				var view = listClick.Where(x => x.Date == dateBefere30).FirstOrDefault();
+				var countView = view != null ? view.Count : 0;
+				lstClick.Add(countView);
+				listDate.Add(dateBefere30.ToString("dd-MM"));
+				dateBefere30 = dateBefere30.AddDays(1);
+			}
+			rs.Date = listDate;
+			rs.Clicks = lstClick;
+			rs.Views = lstView;
 			return rs;
 		}
 	}

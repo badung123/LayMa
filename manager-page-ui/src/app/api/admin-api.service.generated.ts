@@ -2116,6 +2116,62 @@ export class AdminApiShortLinkApiClient {
         }
         return _observableOf(null as any);
     }
+
+    /**
+     * @param userId (optional) 
+     * @return Success
+     */
+    thongkeClickViewUserInMonth(userId?: string | undefined): Observable<ThongKeClickViewUser30Day> {
+        let url_ = this.baseUrl + "/api/admin/shortlink/thongkeClickViewUserInMonth?";
+        if (userId === null)
+            throw new Error("The parameter 'userId' cannot be null.");
+        else if (userId !== undefined)
+            url_ += "userId=" + encodeURIComponent("" + userId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processThongkeClickViewUserInMonth(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processThongkeClickViewUserInMonth(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ThongKeClickViewUser30Day>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ThongKeClickViewUser30Day>;
+        }));
+    }
+
+    protected processThongkeClickViewUserInMonth(response: HttpResponseBase): Observable<ThongKeClickViewUser30Day> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ThongKeClickViewUser30Day.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
 }
 
 @Injectable()
@@ -3081,7 +3137,10 @@ export class CampainInListDto implements ICampainInListDto {
     url?: string | undefined;
     domain?: string | undefined;
     viewPerDay?: number;
+    viewPerHour?: number;
     toTalView?: number;
+    toTalViewHour?: number;
+    typeRun?: number;
     pricePerView?: number;
     timeOnSitePerView?: number;
     status?: boolean;
@@ -3108,7 +3167,10 @@ export class CampainInListDto implements ICampainInListDto {
             this.url = _data["url"];
             this.domain = _data["domain"];
             this.viewPerDay = _data["viewPerDay"];
+            this.viewPerHour = _data["viewPerHour"];
             this.toTalView = _data["toTalView"];
+            this.toTalViewHour = _data["toTalViewHour"];
+            this.typeRun = _data["typeRun"];
             this.pricePerView = _data["pricePerView"];
             this.timeOnSitePerView = _data["timeOnSitePerView"];
             this.status = _data["status"];
@@ -3135,7 +3197,10 @@ export class CampainInListDto implements ICampainInListDto {
         data["url"] = this.url;
         data["domain"] = this.domain;
         data["viewPerDay"] = this.viewPerDay;
+        data["viewPerHour"] = this.viewPerHour;
         data["toTalView"] = this.toTalView;
+        data["toTalViewHour"] = this.toTalViewHour;
+        data["typeRun"] = this.typeRun;
         data["pricePerView"] = this.pricePerView;
         data["timeOnSitePerView"] = this.timeOnSitePerView;
         data["status"] = this.status;
@@ -3155,7 +3220,10 @@ export interface ICampainInListDto {
     url?: string | undefined;
     domain?: string | undefined;
     viewPerDay?: number;
+    viewPerHour?: number;
     toTalView?: number;
+    toTalViewHour?: number;
+    typeRun?: number;
     pricePerView?: number;
     timeOnSitePerView?: number;
     status?: boolean;
@@ -3380,6 +3448,8 @@ export class CreateOrUpdateCampainRequest implements ICreateOrUpdateCampainReque
     price?: number;
     time?: number;
     view?: number;
+    viewPerHour?: number;
+    typeRun?: number;
     flatform?: string | undefined;
 
     constructor(data?: ICreateOrUpdateCampainRequest) {
@@ -3401,6 +3471,8 @@ export class CreateOrUpdateCampainRequest implements ICreateOrUpdateCampainReque
             this.price = _data["price"];
             this.time = _data["time"];
             this.view = _data["view"];
+            this.viewPerHour = _data["viewPerHour"];
+            this.typeRun = _data["typeRun"];
             this.flatform = _data["flatform"];
         }
     }
@@ -3422,6 +3494,8 @@ export class CreateOrUpdateCampainRequest implements ICreateOrUpdateCampainReque
         data["price"] = this.price;
         data["time"] = this.time;
         data["view"] = this.view;
+        data["viewPerHour"] = this.viewPerHour;
+        data["typeRun"] = this.typeRun;
         data["flatform"] = this.flatform;
         return data;
     }
@@ -3436,6 +3510,8 @@ export interface ICreateOrUpdateCampainRequest {
     price?: number;
     time?: number;
     view?: number;
+    viewPerHour?: number;
+    typeRun?: number;
     flatform?: string | undefined;
 }
 
@@ -4216,6 +4292,74 @@ export interface IShortLinkInListDtoPagedResult {
     lastRowOnPage?: number;
     additionalData?: string | undefined;
     results?: ShortLinkInListDto[] | undefined;
+}
+
+export class ThongKeClickViewUser30Day implements IThongKeClickViewUser30Day {
+    date?: string[] | undefined;
+    clicks?: number[] | undefined;
+    views?: number[] | undefined;
+
+    constructor(data?: IThongKeClickViewUser30Day) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["date"])) {
+                this.date = [] as any;
+                for (let item of _data["date"])
+                    this.date!.push(item);
+            }
+            if (Array.isArray(_data["clicks"])) {
+                this.clicks = [] as any;
+                for (let item of _data["clicks"])
+                    this.clicks!.push(item);
+            }
+            if (Array.isArray(_data["views"])) {
+                this.views = [] as any;
+                for (let item of _data["views"])
+                    this.views!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): ThongKeClickViewUser30Day {
+        data = typeof data === 'object' ? data : {};
+        let result = new ThongKeClickViewUser30Day();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.date)) {
+            data["date"] = [];
+            for (let item of this.date)
+                data["date"].push(item);
+        }
+        if (Array.isArray(this.clicks)) {
+            data["clicks"] = [];
+            for (let item of this.clicks)
+                data["clicks"].push(item);
+        }
+        if (Array.isArray(this.views)) {
+            data["views"] = [];
+            for (let item of this.views)
+                data["views"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IThongKeClickViewUser30Day {
+    date?: string[] | undefined;
+    clicks?: number[] | undefined;
+    views?: number[] | undefined;
 }
 
 export class ThongKeView implements IThongKeView {

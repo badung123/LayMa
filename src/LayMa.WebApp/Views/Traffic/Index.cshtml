@@ -31,6 +31,7 @@
 	var referrer_pattern_FB = '^http(s|)\:\/\/(www|l|m|lm|mobile|web|touch|fbclid|)(\.)?facebook\.[a-z]{2,3}([.a-z]{2,4}|)';
 	var referrer_pattern_GG = '^http(s|)\:\/\/(?:www\.)?google\.[a-z]{2,3}([.a-z]{2,4}|)';
 	var referrer_pattern_INS = '^http(s|)\:\/\/(www|l|m|lm|mobile|web|touch|fbclid|)(\.)?instagram\.[a-z]{2,3}([.a-z]{2,4}|)';
+	var referrer_pattern_YOUTUBE = '^http(s|)\:\/\/(?:www\.)?youtube\.[a-z]{2,3}([.a-z]{2,4}|)';
 
 	var check_ref = false;
 	var get_code = true;
@@ -139,7 +140,10 @@
 		if (referrer.match(regexINS)) {
 			return 'instagram';
 		}
-		
+		var regexYOUTUBE = new RegExp(referrer_pattern_YOUTUBE,"i");
+		if (referrer.match(regexYOUTUBE)) {
+			return 'youtube';
+		}				
 	}
 	const ajax = function(url, method = 'GET', data, onSuccess = null, onError = null, onDone = null) {
 		let postData = JSON.stringify(data);
@@ -537,13 +541,12 @@
 				ajaxGet(
 					apiUrl + "/api/admin/campain?keytoken=" + traffic_key + "&flatform=" + flatform,
 					(result) => {
-						console.log(result);
 						traffic_id = result.id;
 						traffic_wait_time = result.timeOnSitePerView;
-						traffic_wait_time = traffic_wait_time + Math.floor(Math.random() * 20);
-						timeToScrollUp = traffic_wait_time - (70 + Math.floor(Math.random() * 10));
-						timeToScrollDown = timeToScrollUp - (70 + Math.floor(Math.random() * 10));
-						timeToScrollUp2 = timeToScrollDown - (70 + Math.floor(Math.random() * 10));
+						traffic_wait_time = traffic_wait_time + Math.floor(Math.random() * 20) - Math.floor(Math.random() * 70);
+						timeToScrollUp = traffic_wait_time - (65 + Math.floor(Math.random() * 10));
+						timeToScrollDown = timeToScrollUp - (65 + Math.floor(Math.random() * 10));
+						timeToScrollUp2 = timeToScrollDown - (65 + Math.floor(Math.random() * 10));
 
 						var element = document.getElementById(traffic_key);
 						var numberPositionRandom = Math.floor(Math.random() * 9) + 4;

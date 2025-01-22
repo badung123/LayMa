@@ -48,9 +48,10 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 					PricePerView = request.Price,
 					RemainView = 0,
 					ToTalPrice = 0,
-					ToTalView = 0,
+					ViewPerHour = request.ViewPerHour,
 					VideoUrl = "",
-					ViewPerDay = request.View
+					ViewPerDay = request.View,
+					TypeRun = request.TypeRun
 				};
 				_unitOfWork.Campains.Add(campainCreate);
 			}
@@ -60,10 +61,11 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 				campainUpdate.PricePerView = request.Price;
 				campainUpdate.KeySearch = request.Key;
 				campainUpdate.ViewPerDay = request.View;
-				campainUpdate.KeySearch = request.Key;
 				campainUpdate.ImageUrl = request.Thumbnail;
 				campainUpdate.Domain = request.Domain;
 				campainUpdate.TimeOnSitePerView= request.Time;
+				campainUpdate.ViewPerHour = request.ViewPerHour;
+				campainUpdate.TypeRun = request.TypeRun;
 				campainUpdate.DateModified = DateTime.Now;
 				_unitOfWork.Campains.Update(campainUpdate);
 			}
@@ -110,6 +112,10 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 			foreach (var item in result.Results) {		
 				var viewCountInday = await _unitOfWork.ViewDetails.CountClickByDateRangeAndCampainId(start, end, item.Id);
 				item.ToTalView = viewCountInday;
+				var startHour = date.Date.AddHours(date.Hour);
+				var endHour = startHour.AddHours(1);
+				var viewCountHour = await _unitOfWork.ViewDetails.CountClickByDateRangeAndCampainId(startHour, endHour, item.Id);
+				item.ToTalViewHour = viewCountHour;
 			}
 			return Ok(result);
 		}

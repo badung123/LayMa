@@ -24,7 +24,8 @@ namespace LayMa.Core.Domain.Campain
         public int ViewPerDay { get; set; }
 		public int PricePerView { get; set; }
 		public int TimeOnSitePerView { get; set; }
-		public long ToTalView { get; set; }
+		public int ViewPerHour { get; set; }
+		public int TypeRun { get; set; } // 1 là theo giờ,2 là theo ngày
 		public long ToTalPrice { get; set; }
 		public string? Decription { get; set; }
 		public string? Flatform { get; set; }

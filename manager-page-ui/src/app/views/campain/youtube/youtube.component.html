@@ -3,7 +3,7 @@
     <c-col xs="12">
       <c-card class="mb-4">
         <c-card-header>
-          <h2><strong>CHIẾN DỊCH FACEBOOK</strong></h2>
+          <h2><strong>CHIẾN DỊCH YOUTUBE</strong></h2>
         </c-card-header>
         <c-card-body class="p-4">
             <c-row class="mb-4">
@@ -33,6 +33,8 @@
                     <th class="bg-body-tertiary text-center">Link</th>
                     <th class="bg-body-tertiary text-center">Domain</th>
                     <th class="bg-body-tertiary text-center">Giá/View</th>
+                    <th class="bg-body-tertiary text-center">Loại chiến dịch</th>                    
+                    <th class="bg-body-tertiary text-center">View trong giờ</th>
                     <th class="bg-body-tertiary text-center">View trong ngày</th>
                     <th class="bg-body-tertiary text-center">Time lấy mã</th>
                     <th class="bg-body-tertiary">Trạng thái</th>
@@ -51,6 +53,13 @@
                         </td>
                         <td  class="text-center">
                             {{item.pricePerView}}
+                        </td>
+                        <td class="text-center">
+                          <span *ngIf="item.typeRun == 0">Theo Ngày</span>
+                          <span *ngIf="item.typeRun == 1">Theo Giờ</span>
+                        </td>
+                        <td class="text-center">
+                          {{item.toTalViewHour}}/{{item.viewPerHour}}
                         </td>
                         <td class="text-center">
                             {{item.toTalView}}/{{item.viewPerDay}}

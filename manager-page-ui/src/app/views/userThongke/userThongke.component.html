@@ -59,6 +59,7 @@
                         <th class="bg-body-tertiary text-center">Username</th>
                         <th class="bg-body-tertiary text-center">Số Click</th>
                         <th class="bg-body-tertiary text-center">Số View</th>
+                        <th class="bg-body-tertiary text-center">Hành Động</th>
                       </tr>
                       </thead>
                       <tbody>
@@ -75,9 +76,11 @@
                               {{item.click}}
                             </td>
                             <td class="text-center">
-                                {{item.view}}
-                              </td>
-                            
+                              {{item.view}}
+                            </td>
+                            <td class="text-center">
+                              <button cButton color="primary" (click) ="showModalDetail(item.id,item.userName)">Thống kê</button>
+                            </td>                                               
                           </tr>
                         }
                       </tbody>

@@ -49,6 +49,9 @@ background-repeat: no-repeat !important;
   position: relative;
   z-index: 2000 !important;
 }
+.p-dialog-mask{
+  z-index: 3101 !important;
+}
 .p-message .p-message-wrapper {
   padding: 0.25rem 0.75rem;
 }

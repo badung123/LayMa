@@ -7,7 +7,7 @@ import {
   Validators
 } from '@angular/forms';
 import { IconDirective } from '@coreui/icons-angular';
-import { ContainerComponent, RowComponent, ColComponent, TextColorDirective, CardComponent,CardHeaderComponent, CardBodyComponent, FormDirective, InputGroupComponent, InputGroupTextDirective, FormControlDirective, ButtonDirective } from '@coreui/angular';
+import { ContainerComponent, RowComponent, ColComponent, TextColorDirective, CardComponent,CardHeaderComponent, CardBodyComponent, FormDirective, InputGroupComponent, InputGroupTextDirective, FormControlDirective, ButtonDirective, ButtonGroupComponent } from '@coreui/angular';
 import { Router } from '@angular/router';
 import { DialogService, DynamicDialogComponent, DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AlertService } from '../../shared/services/alert.service';
@@ -22,7 +22,7 @@ import { UtilityService } from '../../shared/services/utility.service';
 @Component({
     templateUrl: './campain.component.html',
     standalone: true,
-    imports: [ContainerComponent, RowComponent, ColComponent, TextColorDirective, CardComponent,CardHeaderComponent, CardBodyComponent, FormDirective, InputGroupComponent, InputGroupTextDirective, IconDirective, FormControlDirective, ButtonDirective,ReactiveFormsModule,ImageModule,CommonModule]
+    imports: [ContainerComponent,ButtonGroupComponent, RowComponent, ColComponent, TextColorDirective, CardComponent,CardHeaderComponent, CardBodyComponent, FormDirective, InputGroupComponent, InputGroupTextDirective, IconDirective, FormControlDirective, ButtonDirective,ReactiveFormsModule,ImageModule,CommonModule]
 })
 export class CampainComponent implements OnInit, OnDestroy{
     campainForm: FormGroup;
@@ -30,6 +30,7 @@ export class CampainComponent implements OnInit, OnDestroy{
     public thumbnailImage;
     public selectedEntity = {} as CampainInListDto;
     public isGoogle = true;
+    public typeRun : number = 0;
     constructor(public dialogService: DialogService,
       private alertService: AlertService,
       private fb: FormBuilder,
@@ -81,6 +82,8 @@ export class CampainComponent implements OnInit, OnDestroy{
         thumbnail: new FormControl(
           this.selectedEntity.imageUrl || null
         ),
+        viewPerHour:new FormControl(this.selectedEntity.viewPerHour || '', Validators.required),
+        trafficRadio: new FormControl('Day')
         
       });
     }
@@ -126,7 +129,9 @@ export class CampainComponent implements OnInit, OnDestroy{
         view: this.campainForm.controls['view'].value,
         thumbnail: this.campainForm.controls['thumbnail'].value,
         flatform: this.config.data?.flatform,
-        domain:this.campainForm.controls['domain'].value
+        domain:this.campainForm.controls['domain'].value,
+        viewPerHour: this.campainForm.controls['viewPerHour'].value,
+        typeRun: this.typeRun
       });
       if (this.utilService.isEmpty(this.config.data?.id) == false) {
         request.campainId = this.config.data?.id;
@@ -142,6 +147,10 @@ export class CampainComponent implements OnInit, OnDestroy{
             error: () => {
             },
           }); 
+    }
+    setTypeRun(type:string){
+      if (type == 'Day') this.typeRun = 0;
+      else this.typeRun = 1;
     }
 
 }

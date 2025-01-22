@@ -39,5 +39,14 @@ export const routes: Routes = [
         },
         canActivate: [AuthGuard]
     },
+    {
+        path: 'tructiep',
+        loadComponent: () => import('./tructiep/tructiep.component').then(m => m.TructiepComponent),
+        data: {
+            title: 'Chiến dịch vào trực tiếp',
+            requiredPolicy:'Permissions.Campain.View'
+        },
+        canActivate: [AuthGuard]
+    },
 ];
 

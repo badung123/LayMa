@@ -16,6 +16,8 @@ namespace LayMa.Core.Model.Campain
 		public int Price { get; set; }
 		public int Time { get; set; }
 		public int View { get; set; }
+		public int ViewPerHour { get; set; }
+		public int TypeRun { get; set; }
 		public required string Flatform { get; set; }
 	}
 }

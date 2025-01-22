@@ -1,6 +1,7 @@
 ﻿using LayMa.Core.Domain.Mission;
 using LayMa.Core.Domain.Visitor;
 using LayMa.Core.Interface;
+using LayMa.Core.Model.ShortLink;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,5 +14,6 @@ namespace LayMa.Core.Repositories
 	{
 		Task<int> CountViewByDateRangeAndShortLink(DateTime from, DateTime to, Guid shortLinkId);
 		Task<int> CountViewByDateRangeAndUserId(DateTime from, DateTime to, Guid userId);
+		Task<List<ThongKeClickViewInMonth>> CountViewByDateUserIdInMonth(Guid userId);
 	}
 }

@@ -83,6 +83,9 @@ export class LoginComponent implements OnDestroy,OnInit{
           if (loggedInUser.roles.includes("Admin")) {
             this.router.navigate([UrlConstants.CAMPAIN]);
           }
+          if (loggedInUser.roles.includes("Accountant")) {
+            this.router.navigate([UrlConstants.WITHDRAWMANAGER]);
+          }
         }
         
 

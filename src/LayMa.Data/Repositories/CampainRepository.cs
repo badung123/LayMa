@@ -38,9 +38,15 @@ namespace LayMa.Data.Repositories
 			if (key == null) return Guid.Empty;
 			return key.Id;
 		}
+		public async Task<List<Campain>> GetListCampainAutoOff()
+		{
+			var campain = await _context.Campains.Where(x => x.ViewPerDay > 0 && x.ViewPerHour > 0 && !x.Status).ToListAsync();
+			return campain;
+		}
 		public async Task<Guid> GetCampainIdRandomByOldID(Guid oldId)
 		{
 			var key = await _context.Campains.Where(x=> x.Id != oldId && x.Status).OrderBy(x => Guid.NewGuid()).FirstOrDefaultAsync();
+
 			if (key == null) return Guid.Empty;
 			return key.Id;
 		}
@@ -54,7 +60,7 @@ namespace LayMa.Data.Repositories
 		{
 			var campain = await _context.Campains.Where(x => x.Domain == domain).FirstOrDefaultAsync();
 			if (campain == null) return string.Empty;
-			return campain.Domain;
+			return campain.KeyToken;
 		}
 		public async Task<Campain> GetCampainByID(Guid campainId)
 		{
@@ -104,12 +110,6 @@ namespace LayMa.Data.Repositories
 				RowCount = totalRow,
 				PageSize = pageSize
 			};
-		}
-		public async Task UpdateViewPerDayCount(Guid id,long viewCount)
-		{
-			var campain = await _context.Campains.FirstOrDefaultAsync(x => x.Id == id);
-			campain.ToTalView = viewCount;
-			_context.Campains.Update(campain);
 		}
 		public async Task UpdateActive(Guid id, bool isActive)
 		{

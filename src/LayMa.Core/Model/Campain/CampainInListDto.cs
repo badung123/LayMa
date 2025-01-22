@@ -18,7 +18,10 @@ namespace LayMa.Core.Model.Campain
 		public string Url { get; set; }
 		public string? Domain { get; set; }
 		public int ViewPerDay { get; set; }
-		public long ToTalView { get; set; }
+		public int ViewPerHour { get; set; }
+		public int ToTalView { get; set; }
+		public int ToTalViewHour { get; set; }
+		public int TypeRun { get; set; }
 		public int PricePerView { get; set; }
 		public int TimeOnSitePerView { get; set; }
 		public bool Status { get; set; }
