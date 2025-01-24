@@ -98,8 +98,13 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 				}
             }
 
-			
-			var missionDto = new MissionDto()
+			var noidung = "";
+            if (campain.Flatform == "tructiep")
+            {
+				//get noi dung
+				noidung = await _unitOfWork.Comments.GetNoidung();
+            }
+            var missionDto = new MissionDto()
 			{
 				Id = mission.Id,
 				Key	= campain.KeySearch,
@@ -110,7 +115,8 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 				UrlWeb = campain.Url,
 				CampainId = campain.Id,
 				IsHetMa = false,
-				LinkDuPhong = shortLink.Duphong
+				LinkDuPhong = shortLink.Duphong,
+				Noidung = noidung
 			};
 			if (countCampain > viewCheck) missionDto.IsHetMa = true;
             return Ok(missionDto);

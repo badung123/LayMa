@@ -12,5 +12,6 @@
         public Guid CampainId { get; set; }
 		public bool IsHetMa { get; set; }
 		public string? LinkDuPhong { get; set; }
-    }
+		public string? Noidung { get; set; }
+	}
 }

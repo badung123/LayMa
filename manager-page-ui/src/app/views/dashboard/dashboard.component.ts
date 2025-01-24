@@ -45,12 +45,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
   //System variables
   private ngUnsubscribe = new Subject<void>();
   //public items: ShortLinkInListDto[];
-  public thongkeviewconlai: string = "";
-  public balance: string = "";
-  public hoahong: string = "";
-  public tongview: string = "";
-  public tongclick: string = "";
-  public tongthunhap: string = "";
+  public thongkeviewconlai: string = "0";
+  public balance: string = "0";
+  public hoahong: string = "0";
+  public tongview: string = "0";
+  public tongclick: string = "0";
+  public tongthunhap: string = "0";
   public stringDate: string;
   public rangeDates: Date[] = [new Date(),new Date()];
   public from: Date;

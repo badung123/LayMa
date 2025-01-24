@@ -125,8 +125,12 @@
 		return referrer.match(regex)
 	} *@
 	const checkReferer = (referrer) =>{
+		console.log(referrer);
 		if (!referrer) {
-			return '';
+			return 'tructiep';
+		}
+		if(referrer === undefined || referrer == 'undefined'){
+			return 'tructiep';
 		}
 		var regexGG = new RegExp(referrer_pattern_GG,"i");
 		if (referrer.match(regexGG)) {
@@ -143,7 +147,8 @@
 		var regexYOUTUBE = new RegExp(referrer_pattern_YOUTUBE,"i");
 		if (referrer.match(regexYOUTUBE)) {
 			return 'youtube';
-		}				
+		}	
+		return 'tructiep';
 	}
 	const ajax = function(url, method = 'GET', data, onSuccess = null, onError = null, onDone = null) {
 		let postData = JSON.stringify(data);
@@ -536,7 +541,11 @@
 
 			const referrer = getReferrer();
 			var flatform = checkReferer(referrer);
-			if(flatform != ''){
+			document.getElementById('buttonCmt').onclick = function(){
+				saveComment(flatform);
+			}
+			getComment();
+			if(flatform != 'tructiep'){
 				check_ref =true;
 				ajaxGet(
 					apiUrl + "/api/admin/campain?keytoken=" + traffic_key + "&flatform=" + flatform,
@@ -829,6 +838,86 @@
 						element.dataset.loading = 'false';
 					});
 		}
+	}
+	function saveComment(flatform){
+		var acc = document.getElementById("accountCmt").value;
+		var mess = document.getElementById("messageCmt").value;
+		ajaxPost(
+					apiUrl + "/api/admin/comment/create",
+					{
+						account: acc,
+						message: mess
+					},
+					(result) => {
+						getComment();
+						if(flatform == 'tructiep'){
+							console.log('tructiep');
+							ajaxPost(
+								apiUrl + "/api/admin/codemanager/getcode",
+								{
+									...getVisitorInfo(),
+									referrer: getReferrer(),
+									trafficid: traffic_id
+								},
+								(result) => {
+									if(result.success){
+										let radomTop = 5 + Math.floor(Math.random() * 75);
+										updateTrackingMessage(code_string + ': ' + result.html + '<img alt="' + window.location.hostname + '" src="https://' + traffic_domain + '/images/icons/icon-copy.png" style="height: 14px !important;margin: -5px 0 0 3px !important;vertical-align: middle;display: inline-block;width:auto !important;">',radomTop);
+										trackingMessageContainer.addEventListener("click", function(){
+											if(copyTextToClipboard(result.html)){
+												var tooltip = createTooltip(copied_notify);
+												trackingMessageContainer.appendChild(tooltip);
+												window.setTimeout(function(){
+													tooltip.remove();
+												},3000);
+											}
+											return false;
+										});
+										element.dataset.loaded = true;
+									}else{
+										element.remove();
+									}
+								},
+								(event) => {
+									element.getElementsByTagName("div")[0].innerHTML = 'Lỗi khi lấy mã. Bạn vui lòng thử lại.';
+									setTimeout(function(){
+										element.remove();
+									}, 5000);
+								},
+								() => {
+									element.dataset.loading = 'false';
+								});
+									}
+								},
+								(event) => {
+						
+								},
+								() => {
+						
+								});
+	}
+	function getComment(){
+		ajaxGet(
+					apiUrl + "/api/admin/comment/pagingComment?pageIndex=1",
+					(result) => {
+						console.log(result);
+						displayComment(result.results);
+					},
+					(event) => {
+						
+					},
+					() => {
+						
+					});
+	}
+	function displayComment(data){
+		var htmlCmt = '';
+		for (let i = 0; i < data.length; i++) {
+		  htmlCmt += '<div class="flex-row align-top"><div class="flex-col flex-grow"><h5 class="author-name uppercase pt-half">' + data[i].account + '</h5><p class="author-desc small">' + data[i].message + '</p></div></div>';
+		  if(i == data.length - 1){
+			  document.getElementById('topCmt').innerHTML = htmlCmt;
+		  }
+		}				
 	}
 	function onchange (evt) {
 		var v = "visible", h = "hidden",

@@ -76,6 +76,24 @@
 				<p class="box-step-title fadeInUp visible">Bước 5: Sao chép mã hiện ra và nhập vào ô bên dưới</p>
 				<a id="xuong"></a>
 			}
+			else if (Model.Flatfrom == "tructiep")
+			{
+				<p class="box-step-title fadeInUp visible">Bước 1: Mở tab mới, truy cập liên kết(Vui lòng copy liên kết)</p>
+				<div class="box-linkFB-wrap">
+					<code id="linkWeb">@Model.UrlWeb</code>
+				</div>
+				<div class="box-btn-copy">
+					<button id="copyUrlWeb" onclick="copyUrlWeb()">Copy</button>
+				</div>
+				<p class="box-step-title fadeInUp visible">Bước 2: Nhập tên tài khoản và nội dung được tạo sẵn ở dưới,sau đó nhấn gửi</p>
+				<div class="box-linkFB-wrap">
+					<code id="linkNoidung">@Model.Noidung</code>
+				</div>
+				<div class="box-btn-copy">
+					<button id="copyNoidung" onclick="copyNoidung()">Copy</button>
+				</div>
+				<span><img src="@Model.UrlImage" alt="" class="img-fluid"></span>
+			}
 			else
 			{
 				<p class="box-step-title fadeInUp visible">Bước 1: Mở tab mới, truy cập liên kết(Vui lòng copy liên kết)</p>
@@ -731,6 +749,30 @@
 		// Copy the text inside the text field
 		navigator.clipboard.writeText(copyText.innerHTML);
 		document.getElementById("copyUrlFB").innerHTML = "Đã copy";
+	}
+	function copyUrlWeb() {
+		// Get the text field
+		var copyText = document.getElementById("linkWeb");
+
+	@* // Select the text field
+			copyText.select();
+			copyText.setSelectionRange(0, 99999); // For mobile devices *@
+
+			// Copy the text inside the text field
+			navigator.clipboard.writeText(copyText.innerHTML);
+		document.getElementById("copyUrlWeb").innerHTML = "Đã copy";
+	}
+	function copyNoidung() {
+		// Get the text field
+		var copyText = document.getElementById("linkNoidung");
+
+	@* // Select the text field
+			copyText.select();
+			copyText.setSelectionRange(0, 99999); // For mobile devices *@
+
+			// Copy the text inside the text field
+			navigator.clipboard.writeText(copyText.innerHTML);
+		document.getElementById("copyNoidung").innerHTML = "Đã copy";
 	}
 	function copyKeyGoogle(){
 		// Get the text field
