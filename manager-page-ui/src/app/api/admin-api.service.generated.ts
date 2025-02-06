@@ -1382,6 +1382,61 @@ export class AdminApiMediaApiClient {
         }
         return _observableOf(null as any);
     }
+
+    /**
+     * @param file (optional) 
+     * @return Success
+     */
+    uploadExcel(file?: FileParameter | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/admin/media/uploadExcel";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = new FormData();
+        if (file === null || file === undefined)
+            throw new Error("The parameter 'file' cannot be null.");
+        else
+            content_.append("file", file.data, file.fileName ? file.fileName : "file");
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUploadExcel(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUploadExcel(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processUploadExcel(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return _observableOf(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
 }
 
 @Injectable()
@@ -4187,6 +4242,7 @@ export class MissionDto implements IMissionDto {
     campainId?: string;
     isHetMa?: boolean;
     linkDuPhong?: string | undefined;
+    noidung?: string | undefined;
 
     constructor(data?: IMissionDto) {
         if (data) {
@@ -4209,6 +4265,7 @@ export class MissionDto implements IMissionDto {
             this.campainId = _data["campainId"];
             this.isHetMa = _data["isHetMa"];
             this.linkDuPhong = _data["linkDuPhong"];
+            this.noidung = _data["noidung"];
         }
     }
 
@@ -4231,6 +4288,7 @@ export class MissionDto implements IMissionDto {
         data["campainId"] = this.campainId;
         data["isHetMa"] = this.isHetMa;
         data["linkDuPhong"] = this.linkDuPhong;
+        data["noidung"] = this.noidung;
         return data;
     }
 }
@@ -4246,6 +4304,7 @@ export interface IMissionDto {
     campainId?: string;
     isHetMa?: boolean;
     linkDuPhong?: string | undefined;
+    noidung?: string | undefined;
 }
 
 export class NotiSettings implements INotiSettings {
@@ -5324,6 +5383,11 @@ export interface IVerifyUserRequest {
     origin?: string | undefined;
     contact?: string | undefined;
     thumbnail?: string | undefined;
+}
+
+export interface FileParameter {
+    data: any;
+    fileName: string;
 }
 
 export class SwaggerException extends Error {

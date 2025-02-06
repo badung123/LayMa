@@ -31,7 +31,7 @@
 	var referrer_pattern_FB = '^http(s|)\:\/\/(www|l|m|lm|mobile|web|touch|fbclid|)(\.)?facebook\.[a-z]{2,3}([.a-z]{2,4}|)';
 	var referrer_pattern_GG = '^http(s|)\:\/\/(?:www\.)?google\.[a-z]{2,3}([.a-z]{2,4}|)';
 	var referrer_pattern_INS = '^http(s|)\:\/\/(www|l|m|lm|mobile|web|touch|fbclid|)(\.)?instagram\.[a-z]{2,3}([.a-z]{2,4}|)';
-	var referrer_pattern_YOUTUBE = '^http(s|)\:\/\/(?:www\.)?youtube\.[a-z]{2,3}([.a-z]{2,4}|)';
+	var referrer_pattern_YOUTUBE = '^http(s|)\:\/\/(www|l|m|lm|mobile|web|touch|)(\.)?youtube\.[a-z]{2,3}([.a-z]{2,4}|)';
 
 	var check_ref = false;
 	var get_code = true;
@@ -541,10 +541,6 @@
 
 			const referrer = getReferrer();
 			var flatform = checkReferer(referrer);
-			document.getElementById('buttonCmt').onclick = function(){
-				saveComment(flatform);
-			}
-			getComment();
 			if(flatform != 'tructiep'){
 				check_ref =true;
 				ajaxGet(
@@ -680,6 +676,13 @@
 
 					});
 		}
+		@* document.getElementById('buttonCmt').onclick = function(){
+				saveComment(flatform);
+			} *@
+			if(traffic_key == 'viyjUHvaj'){
+				getComment();
+			}
+		
 			}
 
 		@* if(checkAdsClick()){
@@ -691,6 +694,7 @@
 		@* get thong tin chien dich bay token và flatform *@
 			
 		@* window.onload = initScript; *@
+		
 		jQuery(document).ready(initScript);
 	}
 	function isFirstLoad(namesp){
@@ -849,6 +853,7 @@
 						message: mess
 					},
 					(result) => {
+						hideErrorComment();
 						getComment();
 						if(flatform == 'tructiep'){
 							console.log('tructiep');
@@ -887,14 +892,22 @@
 								() => {
 									element.dataset.loading = 'false';
 								});
-									}
-								},
-								(event) => {
+						}
+					},
+					(event) => {
+						console.log(event);
+						displayErrorComment(event);
+					},
+					() => {
 						
-								},
-								() => {
-						
-								});
+					});
+	}
+	function displayErrorComment(error){
+		document.getElementById('error-display').style.display="block";
+		document.getElementById('error-display').innerHTML=error;
+	}
+	function hideErrorComment(){
+		document.getElementById('error-display').style.display="none";
 	}
 	function getComment(){
 		ajaxGet(
@@ -904,7 +917,7 @@
 						displayComment(result.results);
 					},
 					(event) => {
-						
+						console.log(event);
 					},
 					() => {
 						
@@ -913,7 +926,10 @@
 	function displayComment(data){
 		var htmlCmt = '';
 		for (let i = 0; i < data.length; i++) {
-		  htmlCmt += '<div class="flex-row align-top"><div class="flex-col flex-grow"><h5 class="author-name uppercase pt-half">' + data[i].account + '</h5><p class="author-desc small">' + data[i].message + '</p></div></div>';
+
+		  @* htmlCmt += '<div class="flex-row align-top"><div class="flex-col flex-grow"><h5 class="author-name uppercase pt-half">' + data[i].account + '</h5><p class="author-desc small">' + data[i].message + '</p></div></div>'; *@
+		  var mydate = new Date(data[i].dateCreated);
+		  htmlCmt += '<div class="flex-row align-top"><div class="flex-col flex-grow"><div class="title-cmt"><span class="author-name uppercase">' + data[i].account + '</span><span class="pull-right">'+ mydate.toLocaleTimeString() +'</span></div><p class="author-desc small">' + data[i].message +'</p></div></div>';
 		  if(i == data.length - 1){
 			  document.getElementById('topCmt').innerHTML = htmlCmt;
 		  }

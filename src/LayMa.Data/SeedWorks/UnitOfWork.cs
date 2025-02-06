@@ -30,6 +30,7 @@ namespace LayMa.Data.SeedWorks
             Visitors = new VisitorRepository(context, mapper);
             TransactionLogs = new TransactionLogRepository(context, mapper);
             Comments = new CommentRepository(context, mapper);
+            Messages = new MessageRepository(context, mapper);
 		}
         public IShortLinkRepository ShortLinks { get; private set; }
 		public IKeySearchRepository KeySearchs { get; private set; }
@@ -42,6 +43,7 @@ namespace LayMa.Data.SeedWorks
 		public IVisitorRepository Visitors { get; private set; }
 		public ITransactionLogRepository TransactionLogs { get; private set; }
 		public ICommentRepository Comments { get; private set; }
+		public IMessageRepository Messages { get; private set; }
 		public async Task<int> CompleteAsync()
         {
             return await _context.SaveChangesAsync();

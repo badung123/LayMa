@@ -52,7 +52,7 @@ namespace LayMa.Data.Repositories
 		}
 		public async Task<bool> CheckUser(string account)
 		{
-			return await _context.Comments.AnyAsync(x => x.Account == account);
+            return await _context.Comments.AnyAsync(x => x.Account == account);
 		}
 		
 	}

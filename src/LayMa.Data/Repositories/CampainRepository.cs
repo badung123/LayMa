@@ -34,7 +34,7 @@ namespace LayMa.Data.Repositories
 		}
 		public async Task<Guid> GetCampainIdRandom()
 		{
-			var key = await _context.Campains.Where(x=> x.Status).OrderBy(x => Guid.NewGuid()).FirstOrDefaultAsync();
+			var key = await _context.Campains.Where(x=> x.Status && x.Flatform != "tructiep").OrderBy(x => Guid.NewGuid()).FirstOrDefaultAsync();
 			if (key == null) return Guid.Empty;
 			return key.Id;
 		}

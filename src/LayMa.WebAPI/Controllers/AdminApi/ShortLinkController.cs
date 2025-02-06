@@ -136,18 +136,17 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 			var countView = 0;
 			var userId = User.GetUserId();
 			//get list token short link
-			var listTokenShortLinkOfUser = await _unitOfWork.ShortLinks.GetListShortLinkIDOfUser(userId);
-			if (listTokenShortLinkOfUser.Count > 0)
-			{
-				foreach (var item in listTokenShortLinkOfUser)
-				{
-					var countC = await _unitOfWork.ViewDetails.CountClickByDateRangeAndShortLink(from, to, item);
-					countClick += countC;
-					var countV = await _unitOfWork.Visitors.CountViewByDateRangeAndShortLink(from, to, item);
-					countView += countV;
+			//var listTokenShortLinkOfUser = await _unitOfWork.ShortLinks.GetListShortLinkIDOfUser(userId);
+			//if (listTokenShortLinkOfUser.Count > 0)
+			//{
+			//	foreach (var item in listTokenShortLinkOfUser)
+			//	{
+			//		var countC = await _unitOfWork.ViewDetails.CountClickByDateRangeAndShortLink(from, to, item);
+			//		countClick += countC;
+			//	}
+			//}
+			countClick = await _unitOfWork.ViewDetails.CountClickByDateRangeAndUserId(from, to, userId);
 
-				}
-			}
 			//count click thanh cong
 			return Ok(new ThongKeViewClick
 			{

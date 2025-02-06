@@ -20,6 +20,7 @@ namespace LayMa.Core.Interface
 		IVisitorRepository Visitors { get; }
 		ITransactionLogRepository TransactionLogs { get; }
 		ICommentRepository Comments { get; }
+		IMessageRepository Messages { get; }
 		Task<int> CompleteAsync();
     }
 }

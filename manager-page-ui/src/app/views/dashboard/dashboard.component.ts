@@ -78,11 +78,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
     //this.initCharts();
     //this.updateChartOnColorModeChange();
     
-    this.loadBalance();
-    this.loadhoahong();
+    this.loadBalance(); 
     //this.loadTopLink();
     this.loadTongViewByRangeDate('Day');
     this.loadThongkeView();
+    this.loadhoahong();
   }
   ngOnDestroy(): void {
     this.ngUnsubscribe.next();
@@ -139,7 +139,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       next: (response: ThongKeViewClick) => {
         this.tongclick = new Intl.NumberFormat('vi').format(response.click!);
         this.tongthunhap = new Intl.NumberFormat('vi').format(response.click! *1000);
-        this.tongview = new Intl.NumberFormat('vi').format(response.view!);
+        //this.tongview = new Intl.NumberFormat('vi').format(response.view!);
       },
       error: (error: any) => {
         console.log(error);

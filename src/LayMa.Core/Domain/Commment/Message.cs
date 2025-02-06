@@ -13,6 +13,7 @@ namespace LayMa.Core.Domain.Commment
 	{
 		[Key]
 		public Guid Id { get; set; }
+		public string? Account { get; set; }
 		public string? Message { get; set; }
 		public bool IsUsed { get; set; }
 		public DateTime? DateUsed { get; set; }

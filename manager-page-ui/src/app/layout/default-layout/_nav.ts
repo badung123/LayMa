@@ -126,6 +126,14 @@ export const navItems: INavData[] = [
         attributes: {
           "policyName": "Permissions.Campain.View"
         }
+      },
+      {
+        name: 'Chiến dịch trực tiếp',
+        url: '/campain/tructiep',
+        icon: 'nav-icon-bullet',
+        attributes: {
+          "policyName": "Permissions.Campain.View"
+        }
       }
     ]
   },
