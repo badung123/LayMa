@@ -74,7 +74,7 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 			var shortLink = await _unitOfWork.ShortLinks.GetByTokenAsync(request.Token);
 			
 			var check = await _unitOfWork.CodeManagers.CheckCode(request.Code, Guid.Parse(request.CampainId));
-            if (!check) return BadRequest("Code đã được dùng hoặc không hợp lệ");
+            if (!check) return BadRequest("Code" + request.Code + "đã được dùng hoặc không hợp lệ");
 			if (shortLink == null) return BadRequest("Link rút gọn không tồn tại");
 			var userId = shortLink.UserId;
 			var user = await _userManager.FindByIdAsync(userId.ToString());
