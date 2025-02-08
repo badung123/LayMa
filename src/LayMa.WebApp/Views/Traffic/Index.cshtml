@@ -11,6 +11,9 @@
 	var traffic_id = '';
 	var traffic_domain = 's1.what-on.com';
 	var cache_time = "cache_remain_time";
+	var cache_solution = "cache_solution";
+	var count_step = "count_step";
+	var cache_flatform = "cache_flatform";
 	var initTrafficScript = initTrafficScript || {};
 	var traffic_wait_time = 300;
 	var timeToScrollUp = 0;
@@ -23,11 +26,6 @@
 	var hidden = "hidden";
 	let trackingMessageContainer;
 	let elementToClickScreenContainer;
-	@* var referrer_pattern = '^http(s|)\:\/\/(?:www\.)?google\.[a-z]{2,3}([.a-z]{2,4}|)';
-	if ('@Html.Raw(Model.Flatform)' == 'facebook')
-	{
-		referrer_pattern = '^http(s|)\:\/\/(www|l|m|lm|mobile|web|touch|fbclid|)(\.)?facebook\.[a-z]{2,3}([.a-z]{2,4}|)';
-	} *@
 	var referrer_pattern_FB = '^http(s|)\:\/\/(www|l|m|lm|mobile|web|touch|fbclid|)(\.)?facebook\.[a-z]{2,3}([.a-z]{2,4}|)';
 	var referrer_pattern_GG = '^http(s|)\:\/\/(?:www\.)?google\.[a-z]{2,3}([.a-z]{2,4}|)';
 	var referrer_pattern_INS = '^http(s|)\:\/\/(www|l|m|lm|mobile|web|touch|fbclid|)(\.)?instagram\.[a-z]{2,3}([.a-z]{2,4}|)';
@@ -43,6 +41,7 @@
 	var close_private_mode_message = 'Vui lòng tắt chế độ Ẩn danh để tiếp tục. Xin cảm ơn.';
 	var requiredScrollUp = 'Vui lòng cuộn lên để tiếp tục lấy mã';
 	var requiredScrollDown = 'Vui lòng cuộn xuống để tiếp tục lấy mã';
+	var requiredClickPost = 'Vui lòng nhấn vài bài viết bất kỳ để lấy mã';
 	var loaded_script = false;
 
 	if (hidden in document)
@@ -112,18 +111,6 @@
 
 		return referrer
 	}
-	@* const isReferrerValid = (referrer) => {
-		if (!referrer) {
-			return false
-		}
-
-		if (!referrer_pattern) {
-			return false
-		}
-
-		const regex = new RegExp(referrer_pattern,"i")
-		return referrer.match(regex)
-	} *@
 	const checkReferer = (referrer) =>{
 		console.log(referrer);
 		if (!referrer) {
@@ -538,163 +525,302 @@
 			if(loaded_script){
 				return;
 			}
-
-			const referrer = getReferrer();
-			var flatform = checkReferer(referrer);
-			if(flatform != 'tructiep'){
-				check_ref =true;
-				ajaxGet(
-					apiUrl + "/api/admin/campain?keytoken=" + traffic_key + "&flatform=" + flatform,
-					(result) => {
-						traffic_id = result.id;
-						traffic_wait_time = result.timeOnSitePerView;
-						traffic_wait_time = traffic_wait_time + Math.floor(Math.random() * 20) - Math.floor(Math.random() * 70);
-						timeToScrollUp = traffic_wait_time - (65 + Math.floor(Math.random() * 10));
-						timeToScrollDown = timeToScrollUp - (65 + Math.floor(Math.random() * 10));
-						timeToScrollUp2 = timeToScrollDown - (65 + Math.floor(Math.random() * 10));
-
-						var element = document.getElementById(traffic_key);
-						var numberPositionRandom = Math.floor(Math.random() * 9) + 4;
-						var widthRan = Math.floor(numberPositionRandom *100 /12);
-						var numberFloatRandom = Math.floor((Math.random() * 2));
-						var styleFloat = numberFloatRandom == 0 ? 'left' : 'right';
-						var styleRandom = document.createElement('style');
-						styleRandom.type = 'text/css';
-						styleRandom.innerHTML = '.colRan-' +  numberPositionRandom + ' { width:' + widthRan + '%;flex:0 0 auto;float:'+styleFloat+'}';
-						document.getElementsByTagName('head')[0].appendChild(styleRandom);
-						var numberAlignRandom = Math.floor(Math.random() * 3);
-						var alignText = numberAlignRandom == 0 ? 'left !important' : (numberAlignRandom == 1 ? 'center !important' : 'right !important');
-						var styleAlignRandom = document.createElement('style');
-						styleAlignRandom.type = 'text/css';
-						styleAlignRandom.innerHTML = '.alignRan' + ' { text-align:' + alignText + ';}';
-						document.getElementsByTagName('head')[0].appendChild(styleAlignRandom);
-						element.classList.add('colRan-' +  numberPositionRandom);
-						element.classList.add('alignRan');
-						if(element
-							&& check_ref
-							&& get_code
-						){
-							//showElementToClickScreen();
-							loaded_script = true;
-
-							// element.style.background = '#fff';
-							element.style.padding = '5px';
-							element.style.color = '#000';
-							element.style.position = 'relative';
-							element.style.clear = 'both';
-
-
-							var button = document.createElement("span");
-							button.innerHTML = '<img alt="' + window.location.hostname + '" src="https://' + traffic_domain + '/images/icons/icon-x64.png" height="" style="padding:0;vertical-align:middle;padding-right:5px !important;width:auto !important;height:15px !important;display:inline-block !important;margin: 0!important;border: none!important;border-radius: unset!important;float: unset!important;background:none !important;" /> <span style="display:inline-block;vertical-align:middle;color:#fff">' + get_code_string + '</span>';
-							button.style.background = '#ed1c24';
-							button.style.border = '1px solid #fff';
-							button.style.color = '#fff';
-							button.style.fontWeight = '700';
-							button.style.fontSize = '14px';
-							button.style.borderRadius = '7px';
-							button.style.padding = '5px 10px';
-							button.style.margin = '5px';
-							button.style.minHeight = 'auto';
-							button.style.minWidth = '130px';
-							button.style.lineHeight = '20px';
-							button.style.verticalAlign = 'middle';
-							button.style.width = 'auto';
-							button.style.cursor = 'pointer';
-							button.style.display = 'inline-block';
-
-							var show_code_button = document.createElement("div");
-							show_code_button.innerHTML = '';
-							show_code_button.style.background = '#ed1c24';
-							show_code_button.style.border = '1px solid #fff';
-							show_code_button.style.color = '#fff';
-							show_code_button.style.fontWeight = '700';
-							show_code_button.style.fontSize = '14px';
-							show_code_button.style.borderRadius = '7px';
-							show_code_button.style.padding = '5px 10px';
-							show_code_button.style.margin = '5px';
-							show_code_button.style.display = 'inline-block';
-							show_code_button.style.minHeight = 'auto';
-							show_code_button.style.minWidth = '130px';
-							show_code_button.style.lineHeight = '20px';
-							show_code_button.style.verticalAlign = 'middle';
-							show_code_button.style.width = 'auto';
-
-							element.appendChild(button);
-
-							var n=1e3*traffic_wait_time;
-							window.localStorage.setItem(cache_time,n);
-							var clickHandler = ('ontouchstart' in document.documentElement ? "touchstart" : "click");
-
-
-							button.addEventListener('mouseenter', e => {
-								button.style.background = '#c40b11';
-							});
-
-							button.addEventListener('mouseleave', e => {
-								button.style.background = '#ed1c24';
-							});
-
-							button.addEventListener('mousedown', e => {
-								button.style.background = '#9a070d';
-							});
-
-							button.addEventListener('mouseup', e => {
-								button.style.background = '#ed1c24';
-							});
-
-							button.addEventListener(clickHandler, function(event){
-								event.preventDefault();
-								detectIncognito().then((result) => {
-									if(result.isPrivate){
-										show_code_button.innerHTML= close_private_mode_message;
-										element.innerHTML='';
-										element.appendChild(show_code_button);
-									}else{
-										show_code_button.innerHTML= get_code_after_string + ' ' + n/1e3;
-										element.innerHTML='';
-										element.appendChild(show_code_button);
-										element.dataset.time = traffic_wait_time;
-										element.dataset.click = 'true';
-										let t = setInterval(function(){
-											traffic_blurred
-												||(n-=1e3,
-													(element.dataset.click=='true'&&(show_code_button.innerHTML= get_code_after_string + ' ' + n/1e3,element.innerHTML='',element.appendChild(show_code_button))),
-													element.dataset.time = n/1e3,
-													n==(window.localStorage.getItem(cache_time)-1e3*timeSangManHinh)&&(clearInterval(t),window.localStorage.setItem(cache_time,(window.localStorage.getItem(cache_time) - 1e3*timeSangManHinh)),checkClickManHinh(show_code_button,element))
-												);
-										},1e3)
-									}
-								});
-								return false;
-							});
-						}
-					},
-					(event) => {
-						console.log(event);
-					},
-					() => {
-
-					});
-		}
-		@* document.getElementById('buttonCmt').onclick = function(){
-				saveComment(flatform);
-			} *@
-			@* if(traffic_key == 'viyjUHvaj'){
-				getComment();
-			} *@
-		
+			var randomSolution = window.localStorage.getItem(cache_solution);
+			if (randomSolution === null) {
+				randomSolution = Math.floor((Math.random() * 2));
 			}
+			window.localStorage.setItem(cache_solution,randomSolution);
+			if (randomSolution == 0) {
+				const referrer = getReferrer();
+				var flatform = checkReferer(referrer);
+				if(flatform != 'tructiep'){
+					check_ref =true;
+					ajaxGet(
+						apiUrl + "/api/admin/campain?keytoken=" + traffic_key + "&flatform=" + flatform,
+						(result) => {
+							traffic_id = result.id;						
+							var element = document.getElementById(traffic_key);
+							var numberPositionRandom = Math.floor(Math.random() * 9) + 4;
+							var widthRan = Math.floor(numberPositionRandom *100 /12);
+							var numberFloatRandom = Math.floor((Math.random() * 2));
+							var styleFloat = numberFloatRandom == 0 ? 'left' : 'right';
+							var styleRandom = document.createElement('style');
+							styleRandom.type = 'text/css';
+							styleRandom.innerHTML = '.colRan-' +  numberPositionRandom + ' { width:' + widthRan + '%;flex:0 0 auto;float:'+styleFloat+'}';
+							document.getElementsByTagName('head')[0].appendChild(styleRandom);
+							var numberAlignRandom = Math.floor(Math.random() * 3);
+							var alignText = numberAlignRandom == 0 ? 'left !important' : (numberAlignRandom == 1 ? 'center !important' : 'right !important');
+							var styleAlignRandom = document.createElement('style');
+							styleAlignRandom.type = 'text/css';
+							styleAlignRandom.innerHTML = '.alignRan' + ' { text-align:' + alignText + ';}';
+							document.getElementsByTagName('head')[0].appendChild(styleAlignRandom);
+							element.classList.add('colRan-' +  numberPositionRandom);
+							element.classList.add('alignRan');
 
-		@* if(checkAdsClick()){
-					return false;
-				} *@
+							//start solution 1
+							traffic_wait_time = result.timeOnSitePerView;
+							traffic_wait_time = traffic_wait_time + Math.floor(Math.random() * 20) - Math.floor(Math.random() * 70);
+							timeToScrollUp = traffic_wait_time - (65 + Math.floor(Math.random() * 10));
+							timeToScrollDown = timeToScrollUp - (65 + Math.floor(Math.random() * 10));
+							timeToScrollUp2 = timeToScrollDown - (65 + Math.floor(Math.random() * 10));
+							if(element
+								&& check_ref
+								&& get_code
+							){
+								//showElementToClickScreen();
+								loaded_script = true;
 
-		@* check_ref =true; *@
+								// element.style.background = '#fff';
+								element.style.padding = '5px';
+								element.style.color = '#000';
+								element.style.position = 'relative';
+								element.style.clear = 'both';
 
-		@* get thong tin chien dich bay token và flatform *@
-			
-		@* window.onload = initScript; *@
-		
+
+								var button = document.createElement("span");
+								button.innerHTML = '<img alt="' + window.location.hostname + '" src="https://' + traffic_domain + '/images/icons/icon-x64.png" height="" style="padding:0;vertical-align:middle;padding-right:5px !important;width:auto !important;height:15px !important;display:inline-block !important;margin: 0!important;border: none!important;border-radius: unset!important;float: unset!important;background:none !important;" /> <span style="display:inline-block;vertical-align:middle;color:#fff">' + get_code_string + '</span>';
+								button.style.background = '#ed1c24';
+								button.style.border = '1px solid #fff';
+								button.style.color = '#fff';
+								button.style.fontWeight = '700';
+								button.style.fontSize = '14px';
+								button.style.borderRadius = '7px';
+								button.style.padding = '5px 10px';
+								button.style.margin = '5px';
+								button.style.minHeight = 'auto';
+								button.style.minWidth = '130px';
+								button.style.lineHeight = '20px';
+								button.style.verticalAlign = 'middle';
+								button.style.width = 'auto';
+								button.style.cursor = 'pointer';
+								button.style.display = 'inline-block';
+
+								var show_code_button = document.createElement("div");
+								show_code_button.innerHTML = '';
+								show_code_button.style.background = '#ed1c24';
+								show_code_button.style.border = '1px solid #fff';
+								show_code_button.style.color = '#fff';
+								show_code_button.style.fontWeight = '700';
+								show_code_button.style.fontSize = '14px';
+								show_code_button.style.borderRadius = '7px';
+								show_code_button.style.padding = '5px 10px';
+								show_code_button.style.margin = '5px';
+								show_code_button.style.display = 'inline-block';
+								show_code_button.style.minHeight = 'auto';
+								show_code_button.style.minWidth = '130px';
+								show_code_button.style.lineHeight = '20px';
+								show_code_button.style.verticalAlign = 'middle';
+								show_code_button.style.width = 'auto';
+
+								element.appendChild(button);
+
+								var n=1e3*traffic_wait_time;
+								window.localStorage.setItem(cache_time,n);
+								var clickHandler = ('ontouchstart' in document.documentElement ? "touchstart" : "click");
+
+
+								button.addEventListener('mouseenter', e => {
+									button.style.background = '#c40b11';
+								});
+
+								button.addEventListener('mouseleave', e => {
+									button.style.background = '#ed1c24';
+								});
+
+								button.addEventListener('mousedown', e => {
+									button.style.background = '#9a070d';
+								});
+
+								button.addEventListener('mouseup', e => {
+									button.style.background = '#ed1c24';
+								});
+
+								button.addEventListener(clickHandler, function(event){
+									event.preventDefault();
+									detectIncognito().then((result) => {
+										if(result.isPrivate){
+											show_code_button.innerHTML= close_private_mode_message;
+											element.innerHTML='';
+											element.appendChild(show_code_button);
+										}else{
+											show_code_button.innerHTML= get_code_after_string + ' ' + n/1e3;
+											element.innerHTML='';
+											element.appendChild(show_code_button);
+											element.dataset.time = traffic_wait_time;
+											element.dataset.click = 'true';
+											let t = setInterval(function(){
+												traffic_blurred
+													||(n-=1e3,
+														(element.dataset.click=='true'&&(show_code_button.innerHTML= get_code_after_string + ' ' + n/1e3,element.innerHTML='',element.appendChild(show_code_button))),
+														element.dataset.time = n/1e3,
+														n==(window.localStorage.getItem(cache_time)-1e3*timeSangManHinh)&&(clearInterval(t),window.localStorage.setItem(cache_time,(window.localStorage.getItem(cache_time) - 1e3*timeSangManHinh)),checkClickManHinh(show_code_button,element))
+													);
+											},1e3)
+										}
+									});
+									return false;
+								});
+							}
+						},
+						(event) => {
+							console.log(event);
+						},
+						() => {
+
+						});
+				}
+			}
+			else{
+				var step = window.localStorage.getItem(count_step);
+				if (step === null) {
+					step = 1;
+				}
+				window.localStorage.setItem(count_step,step + 1);
+				var flatform = 'tructiep';		
+				if (step == 1) {	
+					const referrer = getReferrer();
+					flatform = checkReferer(referrer);
+					window.localStorage.setItem(cache_flatform,flatform);				
+					
+				}
+				else{
+					flatform = window.localStorage.getItem(cache_flatform);
+				}
+				if(flatform != 'tructiep'){
+					check_ref =true;
+					ajaxGet(
+						apiUrl + "/api/admin/campain?keytoken=" + traffic_key + "&flatform=" + flatform,
+						(result) => {
+							traffic_id = result.id;						
+							var element = document.getElementById(traffic_key);
+							var numberPositionRandom = Math.floor(Math.random() * 9) + 4;
+							var widthRan = Math.floor(numberPositionRandom *100 /12);
+							var numberFloatRandom = Math.floor((Math.random() * 2));
+							var styleFloat = numberFloatRandom == 0 ? 'left' : 'right';
+							var styleRandom = document.createElement('style');
+							styleRandom.type = 'text/css';
+							styleRandom.innerHTML = '.colRan-' +  numberPositionRandom + ' { width:' + widthRan + '%;flex:0 0 auto;float:'+styleFloat+'}';
+							document.getElementsByTagName('head')[0].appendChild(styleRandom);
+							var numberAlignRandom = Math.floor(Math.random() * 3);
+							var alignText = numberAlignRandom == 0 ? 'left !important' : (numberAlignRandom == 1 ? 'center !important' : 'right !important');
+							var styleAlignRandom = document.createElement('style');
+							styleAlignRandom.type = 'text/css';
+							styleAlignRandom.innerHTML = '.alignRan' + ' { text-align:' + alignText + ';}';
+							document.getElementsByTagName('head')[0].appendChild(styleAlignRandom);
+							element.classList.add('colRan-' +  numberPositionRandom);
+							element.classList.add('alignRan');
+
+							//start solution 1
+							traffic_wait_time = Math.floor(Math.random() * 30) + 50;
+							timeSangManHinh = Math.floor(traffic_wait_time/2);
+							if(element
+								&& check_ref
+								&& get_code
+							){
+								//showElementToClickScreen();
+								loaded_script = true;
+
+								// element.style.background = '#fff';
+								element.style.padding = '5px';
+								element.style.color = '#000';
+								element.style.position = 'relative';
+								element.style.clear = 'both';
+
+
+								var button = document.createElement("span");
+								button.innerHTML = '<img alt="' + window.location.hostname + '" src="https://' + traffic_domain + '/images/icons/icon-x64.png" height="" style="padding:0;vertical-align:middle;padding-right:5px !important;width:auto !important;height:15px !important;display:inline-block !important;margin: 0!important;border: none!important;border-radius: unset!important;float: unset!important;background:none !important;" /> <span style="display:inline-block;vertical-align:middle;color:#fff">' + get_code_string + '</span>';
+								button.style.background = '#ed1c24';
+								button.style.border = '1px solid #fff';
+								button.style.color = '#fff';
+								button.style.fontWeight = '700';
+								button.style.fontSize = '14px';
+								button.style.borderRadius = '7px';
+								button.style.padding = '5px 10px';
+								button.style.margin = '5px';
+								button.style.minHeight = 'auto';
+								button.style.minWidth = '130px';
+								button.style.lineHeight = '20px';
+								button.style.verticalAlign = 'middle';
+								button.style.width = 'auto';
+								button.style.cursor = 'pointer';
+								button.style.display = 'inline-block';
+
+								var show_code_button = document.createElement("div");
+								show_code_button.innerHTML = '';
+								show_code_button.style.background = '#ed1c24';
+								show_code_button.style.border = '1px solid #fff';
+								show_code_button.style.color = '#fff';
+								show_code_button.style.fontWeight = '700';
+								show_code_button.style.fontSize = '14px';
+								show_code_button.style.borderRadius = '7px';
+								show_code_button.style.padding = '5px 10px';
+								show_code_button.style.margin = '5px';
+								show_code_button.style.display = 'inline-block';
+								show_code_button.style.minHeight = 'auto';
+								show_code_button.style.minWidth = '130px';
+								show_code_button.style.lineHeight = '20px';
+								show_code_button.style.verticalAlign = 'middle';
+								show_code_button.style.width = 'auto';
+
+								element.appendChild(button);
+
+								var n=1e3*traffic_wait_time;
+								window.localStorage.setItem(cache_time,n);
+								var clickHandler = ('ontouchstart' in document.documentElement ? "touchstart" : "click");
+
+
+								button.addEventListener('mouseenter', e => {
+									button.style.background = '#c40b11';
+								});
+
+								button.addEventListener('mouseleave', e => {
+									button.style.background = '#ed1c24';
+								});
+
+								button.addEventListener('mousedown', e => {
+									button.style.background = '#9a070d';
+								});
+
+								button.addEventListener('mouseup', e => {
+									button.style.background = '#ed1c24';
+								});
+
+								button.addEventListener(clickHandler, function(event){
+									event.preventDefault();
+									detectIncognito().then((result) => {
+										if(result.isPrivate){
+											show_code_button.innerHTML= close_private_mode_message;
+											element.innerHTML='';
+											element.appendChild(show_code_button);
+										}else{
+											show_code_button.innerHTML= get_code_after_string + ' ' + n/1e3;
+											element.innerHTML='';
+											element.appendChild(show_code_button);
+											element.dataset.time = traffic_wait_time;
+											element.dataset.click = 'true';
+											let t = setInterval(function(){
+												traffic_blurred
+													||(n-=1e3,
+														(element.dataset.click=='true'&&(show_code_button.innerHTML= get_code_after_string + ' ' + n/1e3,element.innerHTML='',element.appendChild(show_code_button))),
+														element.dataset.time = n/1e3,
+														n==(window.localStorage.getItem(cache_time)-1e3*timeSangManHinh)&&(clearInterval(t),window.localStorage.setItem(cache_time,(window.localStorage.getItem(cache_time) - 1e3*timeSangManHinh)),checkClickManHinhSolution2(show_code_button,element,step))
+													);
+											},1e3)
+										}
+									});
+									return false;
+								});
+							}
+						},
+						(event) => {
+							console.log(event);
+						},
+						() => {
+
+						});
+				}				
+			}								
+		}		
 		jQuery(document).ready(initScript);
 	}
 	function isFirstLoad(namesp){
@@ -796,52 +922,78 @@
 		window.addEventListener(clickHandler, clickManHinh);
 
 	}
-	function checkButtonClick(){
-		var element = document.getElementById(traffic_key);
+	function checkClickManHinhSolution2(show_code_button,element,step){
+		var clickHandler = ('ontouchstart' in document.documentElement ? "touchstart" : "click");
+		updateTrackingMessage('Chạm vào màn hình để lấy mã');
+		updateCounterMessage(window.localStorage.getItem(cache_time)/1e3);
+		const clickManHinh = () =>{
+			window.removeEventListener(clickHandler, clickManHinh);
+			var n = window.localStorage.getItem(cache_time);
+			updateTrackingMessage('Tiếp tục lấy mã sau:');
+			let t2=setInterval(function(){
+				traffic_blurred
+					||(n-=1e3,
+						(element.dataset.click=='true'&&(show_code_button.innerHTML= get_code_after_string + ' ' + n/1e3,element.innerHTML='',element.appendChild(show_code_button),updateCounterMessage(n/1e3))),
+						element.dataset.time = n/1e3,
+						n<=0&&(clearInterval(t2),checkButtonClick(step))
 
-		if((element.dataset.loading == undefined || element.dataset.loading == 'false')
-			&& element.dataset.click == 'true'
-			&& element.dataset.loaded == undefined
-			&& element.dataset.time <= 0
-		){
-			var code = element.dataset.code;
-			element.dataset.loading = 'true';
-			ajaxPost(
-					apiUrl + "/api/admin/codemanager/getcode",
-					{
-						...getVisitorInfo(),
-						referrer: getReferrer(),
-						trafficid: traffic_id
-					},
-					(result) => {
-						if(result.success){
-							let radomTop = 5 + Math.floor(Math.random() * 75);
-							updateTrackingMessage(code_string + ': ' + result.html + '<img alt="' + window.location.hostname + '" src="https://' + traffic_domain + '/images/icons/icon-copy.png" style="height: 14px !important;margin: -5px 0 0 3px !important;vertical-align: middle;display: inline-block;width:auto !important;">',radomTop);
-							trackingMessageContainer.addEventListener("click", function(){
-								if(copyTextToClipboard(result.html)){
-									var tooltip = createTooltip(copied_notify);
-									trackingMessageContainer.appendChild(tooltip);
-									window.setTimeout(function(){
-										tooltip.remove();
-									},3000);
-								}
-								return false;
-							});
-							element.dataset.loaded = true;
-						}else{
-							element.remove();
-						}
-					},
-					(event) => {
-						element.getElementsByTagName("div")[0].innerHTML = 'Lỗi khi lấy mã. Bạn vui lòng thử lại.';
-						setTimeout(function(){
-							element.remove();
-						}, 5000);
-					},
-					() => {
-						element.dataset.loading = 'false';
-					});
+					);
+			},1e3)
 		}
+		window.addEventListener(clickHandler, clickManHinh);
+	}
+	function checkButtonClick(step = 3){
+		if (step == 3) {
+			var element = document.getElementById(traffic_key);
+
+			if((element.dataset.loading == undefined || element.dataset.loading == 'false')
+				&& element.dataset.click == 'true'
+				&& element.dataset.loaded == undefined
+				&& element.dataset.time <= 0
+			){
+				var code = element.dataset.code;
+				element.dataset.loading = 'true';
+				ajaxPost(
+						apiUrl + "/api/admin/codemanager/getcode",
+						{
+							...getVisitorInfo(),
+							referrer: getReferrer(),
+							trafficid: traffic_id
+						},
+						(result) => {
+							if(result.success){
+								let radomTop = 5 + Math.floor(Math.random() * 75);
+								updateTrackingMessage(code_string + ': ' + result.html + '<img alt="' + window.location.hostname + '" src="https://' + traffic_domain + '/images/icons/icon-copy.png" style="height: 14px !important;margin: -5px 0 0 3px !important;vertical-align: middle;display: inline-block;width:auto !important;">',radomTop);
+								trackingMessageContainer.addEventListener("click", function(){
+									if(copyTextToClipboard(result.html)){
+										var tooltip = createTooltip(copied_notify);
+										trackingMessageContainer.appendChild(tooltip);
+										window.setTimeout(function(){
+											tooltip.remove();
+										},3000);
+									}
+									return false;
+								});
+								element.dataset.loaded = true;
+							}else{
+								element.remove();
+							}
+						},
+						(event) => {
+							element.getElementsByTagName("div")[0].innerHTML = 'Lỗi khi lấy mã. Bạn vui lòng thử lại.';
+							setTimeout(function(){
+								element.remove();
+							}, 5000);
+						},
+						() => {
+							element.dataset.loading = 'false';
+						});
+			}
+		}
+		else{
+			updateTrackingMessage(requiredClickPost);
+		}
+		
 	}
 	function saveComment(flatform){
 		var acc = document.getElementById("accountCmt").value;
@@ -926,8 +1078,6 @@
 	function displayComment(data){
 		var htmlCmt = '';
 		for (let i = 0; i < data.length; i++) {
-
-		  @* htmlCmt += '<div class="flex-row align-top"><div class="flex-col flex-grow"><h5 class="author-name uppercase pt-half">' + data[i].account + '</h5><p class="author-desc small">' + data[i].message + '</p></div></div>'; *@
 		  var mydate = new Date(data[i].dateCreated);
 		  htmlCmt += '<div class="flex-row align-top"><div class="flex-col flex-grow"><div class="title-cmt"><span class="author-name uppercase">' + data[i].account + '</span><span class="pull-right">'+ mydate.toLocaleTimeString() +'</span></div><p class="author-desc small">' + data[i].message +'</p></div></div>';
 		  if(i == data.length - 1){
