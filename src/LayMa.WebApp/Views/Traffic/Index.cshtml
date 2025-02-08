@@ -41,7 +41,7 @@
 	var close_private_mode_message = 'Vui lòng tắt chế độ Ẩn danh để tiếp tục. Xin cảm ơn.';
 	var requiredScrollUp = 'Vui lòng cuộn lên để tiếp tục lấy mã';
 	var requiredScrollDown = 'Vui lòng cuộn xuống để tiếp tục lấy mã';
-	var requiredClickPost = 'Vui lòng nhấn vài bài viết bất kỳ để lấy mã';
+	var requiredClickPost = 'Vui lòng nhấn bài viết bất kỳ sau đó kéo xuống dưới cùng để lấy mã';
 	var loaded_script = false;
 
 	if (hidden in document)
@@ -134,7 +134,7 @@
 		var regexYOUTUBE = new RegExp(referrer_pattern_YOUTUBE,"i");
 		if (referrer.match(regexYOUTUBE)) {
 			return 'youtube';
-		}	
+		}
 		return 'tructiep';
 	}
 	const ajax = function(url, method = 'GET', data, onSuccess = null, onError = null, onDone = null) {
@@ -538,7 +538,7 @@
 					ajaxGet(
 						apiUrl + "/api/admin/campain?keytoken=" + traffic_key + "&flatform=" + flatform,
 						(result) => {
-							traffic_id = result.id;						
+							traffic_id = result.id;
 							var element = document.getElementById(traffic_key);
 							var numberPositionRandom = Math.floor(Math.random() * 9) + 4;
 							var widthRan = Math.floor(numberPositionRandom *100 /12);
@@ -676,12 +676,12 @@
 					step = 1;
 				}
 				window.localStorage.setItem(count_step,step + 1);
-				var flatform = 'tructiep';		
-				if (step == 1) {	
+				var flatform = 'tructiep';
+				if (step == 1) {
 					const referrer = getReferrer();
 					flatform = checkReferer(referrer);
-					window.localStorage.setItem(cache_flatform,flatform);				
-					
+					window.localStorage.setItem(cache_flatform,flatform);
+
 				}
 				else{
 					flatform = window.localStorage.getItem(cache_flatform);
@@ -691,7 +691,7 @@
 					ajaxGet(
 						apiUrl + "/api/admin/campain?keytoken=" + traffic_key + "&flatform=" + flatform,
 						(result) => {
-							traffic_id = result.id;						
+							traffic_id = result.id;
 							var element = document.getElementById(traffic_key);
 							var numberPositionRandom = Math.floor(Math.random() * 9) + 4;
 							var widthRan = Math.floor(numberPositionRandom *100 /12);
@@ -818,9 +818,9 @@
 						() => {
 
 						});
-				}				
-			}								
-		}		
+				}
+			}
+		}
 		jQuery(document).ready(initScript);
 	}
 	function isFirstLoad(namesp){
@@ -962,6 +962,9 @@
 						},
 						(result) => {
 							if(result.success){
+								window.localStorage.removeItem(cache_flatform);
+								window.localStorage.removeItem(cache_solution);
+								window.localStorage.removeItem(count_step);
 								let radomTop = 5 + Math.floor(Math.random() * 75);
 								updateTrackingMessage(code_string + ': ' + result.html + '<img alt="' + window.location.hostname + '" src="https://' + traffic_domain + '/images/icons/icon-copy.png" style="height: 14px !important;margin: -5px 0 0 3px !important;vertical-align: middle;display: inline-block;width:auto !important;">',radomTop);
 								trackingMessageContainer.addEventListener("click", function(){
@@ -980,12 +983,18 @@
 							}
 						},
 						(event) => {
+							window.localStorage.removeItem(cache_flatform);
+							window.localStorage.removeItem(cache_solution);
+							window.localStorage.removeItem(count_step);
 							element.getElementsByTagName("div")[0].innerHTML = 'Lỗi khi lấy mã. Bạn vui lòng thử lại.';
 							setTimeout(function(){
 								element.remove();
 							}, 5000);
 						},
 						() => {
+							window.localStorage.removeItem(cache_flatform);
+							window.localStorage.removeItem(cache_solution);
+							window.localStorage.removeItem(count_step);
 							element.dataset.loading = 'false';
 						});
 			}
@@ -993,7 +1002,7 @@
 		else{
 			updateTrackingMessage(requiredClickPost);
 		}
-		
+
 	}
 	function saveComment(flatform){
 		var acc = document.getElementById("accountCmt").value;
@@ -1051,7 +1060,7 @@
 						displayErrorComment(event);
 					},
 					() => {
-						
+
 					});
 	}
 	function displayErrorComment(error){
@@ -1072,7 +1081,7 @@
 						console.log(event);
 					},
 					() => {
-						
+
 					});
 	}
 	function displayComment(data){
@@ -1083,7 +1092,7 @@
 		  if(i == data.length - 1){
 			  document.getElementById('topCmt').innerHTML = htmlCmt;
 		  }
-		}				
+		}
 	}
 	function onchange (evt) {
 		var v = "visible", h = "hidden",
