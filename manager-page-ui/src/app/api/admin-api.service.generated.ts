@@ -2033,9 +2033,10 @@ export class AdminApiShortLinkApiClient {
      * @param screen (optional) 
      * @param ip (optional) 
      * @param flatform (optional) 
+     * @param solution (optional) 
      * @return Success
      */
-    getLogShortLinkPaging(from?: Date | undefined, to?: Date | undefined, pageIndex?: number | undefined, pageSize?: number | undefined, userName?: string | null | undefined, type?: number | undefined, userAgent?: string | null | undefined, shortLink?: string | null | undefined, screen?: string | null | undefined, ip?: string | null | undefined, flatform?: string | null | undefined): Observable<LogShortLinkDtoPagedResult> {
+    getLogShortLinkPaging(from?: Date | undefined, to?: Date | undefined, pageIndex?: number | undefined, pageSize?: number | undefined, userName?: string | null | undefined, type?: number | undefined, userAgent?: string | null | undefined, shortLink?: string | null | undefined, screen?: string | null | undefined, ip?: string | null | undefined, flatform?: string | null | undefined, solution?: number | null | undefined): Observable<LogShortLinkDtoPagedResult> {
         let url_ = this.baseUrl + "/api/admin/shortlink/paging-log-shortlink?";
         if (from === null)
             throw new Error("The parameter 'from' cannot be null.");
@@ -2069,6 +2070,8 @@ export class AdminApiShortLinkApiClient {
             url_ += "ip=" + encodeURIComponent("" + ip) + "&";
         if (flatform !== undefined && flatform !== null)
             url_ += "flatform=" + encodeURIComponent("" + flatform) + "&";
+        if (solution !== undefined && solution !== null)
+            url_ += "solution=" + encodeURIComponent("" + solution) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -4043,6 +4046,7 @@ export class LogShortLinkDto implements ILogShortLinkDto {
     dateCreated?: Date;
     dateModified?: Date | undefined;
     flatform?: string | undefined;
+    solution?: number | undefined;
 
     constructor(data?: ILogShortLinkDto) {
         if (data) {
@@ -4070,6 +4074,7 @@ export class LogShortLinkDto implements ILogShortLinkDto {
             this.dateCreated = _data["dateCreated"] ? new Date(_data["dateCreated"].toString()) : <any>undefined;
             this.dateModified = _data["dateModified"] ? new Date(_data["dateModified"].toString()) : <any>undefined;
             this.flatform = _data["flatform"];
+            this.solution = _data["solution"];
         }
     }
 
@@ -4097,6 +4102,7 @@ export class LogShortLinkDto implements ILogShortLinkDto {
         data["dateCreated"] = this.dateCreated ? this.dateCreated.toISOString() : <any>undefined;
         data["dateModified"] = this.dateModified ? this.dateModified.toISOString() : <any>undefined;
         data["flatform"] = this.flatform;
+        data["solution"] = this.solution;
         return data;
     }
 }
@@ -4117,6 +4123,7 @@ export interface ILogShortLinkDto {
     dateCreated?: Date;
     dateModified?: Date | undefined;
     flatform?: string | undefined;
+    solution?: number | undefined;
 }
 
 export class LogShortLinkDtoPagedResult implements ILogShortLinkDtoPagedResult {

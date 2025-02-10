@@ -137,7 +137,7 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 				return Ok(shortLink.OriginLink);
 			}			
 			//update code đã dùng
-			await _unitOfWork.CodeManagers.UpdateIsUsed(request.Code, Guid.Parse(request.CampainId));
+			var solution = await _unitOfWork.CodeManagers.UpdateIsUsed(request.Code, Guid.Parse(request.CampainId));
 			//insert view detail
 			var viewDetail = new ViewDetail()
 			{
@@ -151,6 +151,7 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 				UserAgent = request.UserAgent,
 				IPAddress = ips,
 				CampainId = Guid.Parse(request.CampainId),
+				Solution = solution
 			};
 			_unitOfWork.ViewDetails.Add(viewDetail);
 			//get User and update balane
@@ -176,7 +177,8 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 				IPAddress = ips,
 				DateCreated = DateTime.Now,
 				DateModified = DateTime.Now,
-                Flatform = campain.Flatform
+                Flatform = campain.Flatform,
+				Solution = solution
             };
 			_unitOfWork.TransactionLogs.Add(transLogUser);
 			if (!string.IsNullOrEmpty(user.Agent))
@@ -230,7 +232,8 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 				IsUsed = false,
 				KeySearchId = Guid.NewGuid(),
 				CampainId = Guid.Parse(request["trafficid"].ToString()),
-				IPAddress = ""
+				IPAddress = "",
+				Solution = Int32.Parse(request["solution"].ToString()) + 1
 			};
 			_unitOfWork.CodeManagers.Add(code);
 			var result = await _unitOfWork.CompleteAsync();			

@@ -21,6 +21,6 @@ namespace LayMa.Core.Repositories
         Task UpdateOriginOfShortLink(string origin, Guid shortlinkId,string duphong = "");
         Task UpdateView(Guid id);
 		//Task UpdateLockShortLink(Guid id,bool isLock);
-		Task<PagedResult<LogShortLinkDto>> GetAllLogPaging(DateTime from, DateTime to,int pageIndex = 1, int pageSize = 10, string? userName = "",int type = -1, string? userAgent = "", string? shortLink = "", string? screen = "", string? ip = "", string? flatform = "");
+		Task<PagedResult<LogShortLinkDto>> GetAllLogPaging(DateTime from, DateTime to,int pageIndex = 1, int pageSize = 10, string? userName = "",int type = -1, string? userAgent = "", string? shortLink = "", string? screen = "", string? ip = "", string? flatform = "",int? solution = 0);
 	}
 }

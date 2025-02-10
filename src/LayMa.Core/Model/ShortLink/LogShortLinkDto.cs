@@ -25,7 +25,8 @@ namespace LayMa.Core.Model.ShortLink
 		public DateTime DateCreated { get; set; }
 		public DateTime? DateModified { get; set; }
         public string? Flatform { get; set; }
-        public class AutoMapperProfiles : Profile
+		public int? Solution { get; set; }
+		public class AutoMapperProfiles : Profile
 		{
 			public AutoMapperProfiles()
 			{

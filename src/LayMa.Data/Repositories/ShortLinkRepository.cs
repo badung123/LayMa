@@ -90,7 +90,7 @@ namespace LayMa.Data.Repositories
 		//	_context.ShortLinks.Update(link);
 		//}
 
-		public async Task<PagedResult<LogShortLinkDto>> GetAllLogPaging(DateTime from, DateTime to, int pageIndex = 1, int pageSize = 10, string? userName = "", int type = -1, string? userAgent = "", string? shortLink = "", string? screen = "", string? ip = "", string? flatform = "")
+		public async Task<PagedResult<LogShortLinkDto>> GetAllLogPaging(DateTime from, DateTime to, int pageIndex = 1, int pageSize = 10, string? userName = "", int type = -1, string? userAgent = "", string? shortLink = "", string? screen = "", string? ip = "", string? flatform = "", int? solution = 0)
 		{
 			var query = _context.TransactionLogs.AsQueryable();
 			query = query.Where(x => x.DateCreated >= from && x.DateCreated < to);
@@ -122,7 +122,11 @@ namespace LayMa.Data.Repositories
             {
                 query = query.Where(x => x.Flatform == flatform);
             }
-            var totalRow = await query.CountAsync();
+			if (solution != 0)
+			{
+				query = query.Where(x => x.Solution == solution);
+			}
+			var totalRow = await query.CountAsync();
 			query = query.OrderByDescending(x => x.DateCreated)
 			   .Skip((pageIndex - 1) * pageSize)
 			   .Take(pageSize);

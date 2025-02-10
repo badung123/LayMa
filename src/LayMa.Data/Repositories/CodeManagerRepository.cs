@@ -24,13 +24,19 @@ namespace LayMa.Data.Repositories
 			var isValid = await _context.Codes.AnyAsync(x => x.CodeString == code && !x.IsUsed && x.CampainId == keyId);
 			return isValid;
 		}
-		public async Task UpdateIsUsed(string code, Guid keyId)
+		public async Task<int?> UpdateIsUsed(string code, Guid keyId)
 		{
 			var codeValue = await _context.Codes.FirstOrDefaultAsync(x => x.CodeString == code && x.CampainId == keyId  && !x.IsUsed);
-			if (codeValue == null) return;
+			if (codeValue == null) return null;
             codeValue.IsUsed = true;
 			codeValue.DateModified = DateTime.Now;
 			_context.Codes.Update(codeValue);
+			return codeValue.Solution == null ? null : codeValue.Solution.Value;
+		}
+		public async Task<int?> GetSolution(string code, Guid keyId)
+		{
+			var codeV =  await _context.Codes.FirstOrDefaultAsync(x => x.CodeString == code && x.CampainId == keyId);
+			return codeV.Solution;
 		}
 	}
 }

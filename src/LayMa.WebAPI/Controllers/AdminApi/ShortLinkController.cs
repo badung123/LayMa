@@ -190,11 +190,11 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 		[HttpGet]
 		[Route("paging-log-shortlink")]
 		//[Authorize(ShortLinks.View)]
-		public async Task<ActionResult<PagedResult<LogShortLinkDto>>> GetLogShortLinkPaging(DateTime from, DateTime to, int pageIndex = 1, int pageSize = 10, string? userName = "", int type = -1, string? userAgent = "", string? shortLink = "", string? screen = "", string? ip = "", string? flatform = "")
+		public async Task<ActionResult<PagedResult<LogShortLinkDto>>> GetLogShortLinkPaging(DateTime from, DateTime to, int pageIndex = 1, int pageSize = 10, string? userName = "", int type = -1, string? userAgent = "", string? shortLink = "", string? screen = "", string? ip = "", string? flatform = "",int? solution = 0)
 		{
 			from = from.ToLocalTime().Date;
 			to = to.ToLocalTime().Date;
-			var result = await _unitOfWork.ShortLinks.GetAllLogPaging(from, to, pageIndex, pageSize, userName, type, userAgent, shortLink, screen, ip, flatform);
+			var result = await _unitOfWork.ShortLinks.GetAllLogPaging(from, to, pageIndex, pageSize, userName, type, userAgent, shortLink, screen, ip, flatform,solution);
 			return Ok(result);
 		}
 		[HttpGet]

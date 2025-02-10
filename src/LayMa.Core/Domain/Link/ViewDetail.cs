@@ -22,5 +22,6 @@ namespace LayMa.Core.Domain.Link
 		public string? UserAgent { get; set; }
 		public DateTime DateCreated { get; set; }
 		public DateTime? DateModified { get; set; }
+		public int? Solution { get; set; }
 	}
 }
