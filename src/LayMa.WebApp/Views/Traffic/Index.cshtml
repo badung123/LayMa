@@ -532,12 +532,18 @@
 				randomSolution = Math.floor((Math.random() * 2));
 			}else{
 				//check reference
-				let refe = checkReferer(getReferrer());
+				let referen = getReferrer();
+				let refe = checkReferer(referen);
 				if(refe != 'tructiep'){
 					window.localStorage.removeItem(cache_flatform);
 					window.localStorage.removeItem(cache_solution);
 					window.localStorage.removeItem(count_step);
 					randomSolution = Math.floor((Math.random() * 2));
+				}
+				else{
+					if(referen){
+
+					}
 				}
 			}
 			window.localStorage.setItem(cache_solution,randomSolution);
@@ -691,7 +697,6 @@
 					const referrer = getReferrer();
 					flatform = checkReferer(referrer);
 					window.localStorage.setItem(cache_flatform,flatform);
-
 				}
 				else{
 					flatform = window.localStorage.getItem(cache_flatform);

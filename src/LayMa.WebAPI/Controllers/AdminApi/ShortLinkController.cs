@@ -348,9 +348,9 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 				var click = listClick.Where(x => x.Date == dateBefere30).FirstOrDefault();
 				var countClick = click != null ? click.Count : 0;
 				lstClick.Add(countClick);
-				var view = listClick.Where(x => x.Date == dateBefere30).FirstOrDefault();
+				var view = listView.Where(x => x.Date == dateBefere30).FirstOrDefault();
 				var countView = view != null ? view.Count : 0;
-				lstClick.Add(countView);
+				lstView.Add(countView);
 				listDate.Add(dateBefere30.ToString("dd-MM"));
 				dateBefere30 = dateBefere30.AddDays(1);
 			}
