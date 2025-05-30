@@ -60,6 +60,7 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 				var campainUpdate = await _unitOfWork.Campains.GetCampainByIDNotCheckStatus(request.CampainId);
 				campainUpdate.PricePerView = request.Price;
 				campainUpdate.KeySearch = request.Key;
+				campainUpdate.Url = request.UrlWeb;
 				campainUpdate.ViewPerDay = request.View;
 				campainUpdate.ImageUrl = request.Thumbnail;
 				campainUpdate.Domain = request.Domain;

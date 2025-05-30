@@ -12,7 +12,7 @@ import {
 import { DropdownModule, SidebarModule } from '@coreui/angular';
 import { IconSetService } from '@coreui/icons-angular';
 import { routes } from './app.routes';
-import { ADMIN_API_BASE_URL, AdminApiAuthApiClient, AdminApiTokenApiClient,AdminApiTestApiClient, AdminApiShortLinkApiClient, AdminApiKeySearchApiClient, AdminApiBankTransactionApiClient, AdminApiCampainApiClient, AdminApiUserApiClient } from './api/admin-api.service.generated';
+import { ADMIN_API_BASE_URL, AdminApiAuthApiClient, AdminApiTokenApiClient,AdminApiTestApiClient, AdminApiShortLinkApiClient, AdminApiKeySearchApiClient, AdminApiBankTransactionApiClient, AdminApiCampainApiClient, AdminApiUserApiClient, AdminApiVisitorApiClient } from './api/admin-api.service.generated';
 import { environment } from './../environments/environment';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
@@ -68,6 +68,7 @@ export const appConfig: ApplicationConfig = {
     AdminApiKeySearchApiClient,
     AdminApiCampainApiClient,
     AdminApiBankTransactionApiClient,
+    AdminApiVisitorApiClient,
     provideAnimations()
   ]
 };

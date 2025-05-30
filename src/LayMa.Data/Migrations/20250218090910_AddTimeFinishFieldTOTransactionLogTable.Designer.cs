@@ -4,6 +4,7 @@ using LayMa.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LayMa.Data.Migrations
 {
     [DbContext(typeof(LayMaContext))]
-    partial class LayMaContextModelSnapshot : ModelSnapshot
+    [Migration("20250218090910_AddTimeFinishFieldTOTransactionLogTable")]
+    partial class AddTimeFinishFieldTOTransactionLogTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -228,9 +231,6 @@ namespace LayMa.Data.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<int>("MaxClickInDay")
-                        .HasColumnType("int");
-
                     b.Property<string>("NormalizedEmail")
                         .HasColumnType("nvarchar(max)");
 
@@ -251,9 +251,6 @@ namespace LayMa.Data.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
-
-                    b.Property<int>("Rate")
-                        .HasColumnType("int");
 
                     b.Property<string>("RefCode")
                         .HasColumnType("nvarchar(max)");

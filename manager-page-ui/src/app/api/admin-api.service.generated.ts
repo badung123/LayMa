@@ -2948,6 +2948,68 @@ export class AdminApiVisitorApiClient {
         }
         return _observableOf(null as any);
     }
+
+    /**
+     * @param link (optional) 
+     * @param userId (optional) 
+     * @param screen (optional) 
+     * @return Success
+     */
+    getVisitor(link?: string | null | undefined, userId?: string | undefined, screen?: string | null | undefined): Observable<VisitorViewModel> {
+        let url_ = this.baseUrl + "/api/admin/visitor?";
+        if (link !== undefined && link !== null)
+            url_ += "link=" + encodeURIComponent("" + link) + "&";
+        if (userId === null)
+            throw new Error("The parameter 'userId' cannot be null.");
+        else if (userId !== undefined)
+            url_ += "userId=" + encodeURIComponent("" + userId) + "&";
+        if (screen !== undefined && screen !== null)
+            url_ += "screen=" + encodeURIComponent("" + screen) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetVisitor(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetVisitor(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<VisitorViewModel>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<VisitorViewModel>;
+        }));
+    }
+
+    protected processGetVisitor(response: HttpResponseBase): Observable<VisitorViewModel> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = VisitorViewModel.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
 }
 
 export class AgentListDto implements IAgentListDto {
@@ -4047,6 +4109,7 @@ export class LogShortLinkDto implements ILogShortLinkDto {
     dateModified?: Date | undefined;
     flatform?: string | undefined;
     solution?: number | undefined;
+    timeFinish?: number | undefined;
 
     constructor(data?: ILogShortLinkDto) {
         if (data) {
@@ -4075,6 +4138,7 @@ export class LogShortLinkDto implements ILogShortLinkDto {
             this.dateModified = _data["dateModified"] ? new Date(_data["dateModified"].toString()) : <any>undefined;
             this.flatform = _data["flatform"];
             this.solution = _data["solution"];
+            this.timeFinish = _data["timeFinish"];
         }
     }
 
@@ -4103,6 +4167,7 @@ export class LogShortLinkDto implements ILogShortLinkDto {
         data["dateModified"] = this.dateModified ? this.dateModified.toISOString() : <any>undefined;
         data["flatform"] = this.flatform;
         data["solution"] = this.solution;
+        data["timeFinish"] = this.timeFinish;
         return data;
     }
 }
@@ -4124,6 +4189,7 @@ export interface ILogShortLinkDto {
     dateModified?: Date | undefined;
     flatform?: string | undefined;
     solution?: number | undefined;
+    timeFinish?: number | undefined;
 }
 
 export class LogShortLinkDtoPagedResult implements ILogShortLinkDtoPagedResult {
@@ -5106,6 +5172,8 @@ export class UserDtoInList implements IUserDtoInList {
     dateCreated?: Date;
     lastLoginDate?: Date | undefined;
     balance?: number;
+    maxClickInDay?: number;
+    rate?: number;
     userTelegram?: string | undefined;
     refCode?: string | undefined;
     agent?: string | undefined;
@@ -5132,6 +5200,8 @@ export class UserDtoInList implements IUserDtoInList {
             this.dateCreated = _data["dateCreated"] ? new Date(_data["dateCreated"].toString()) : <any>undefined;
             this.lastLoginDate = _data["lastLoginDate"] ? new Date(_data["lastLoginDate"].toString()) : <any>undefined;
             this.balance = _data["balance"];
+            this.maxClickInDay = _data["maxClickInDay"];
+            this.rate = _data["rate"];
             this.userTelegram = _data["userTelegram"];
             this.refCode = _data["refCode"];
             this.agent = _data["agent"];
@@ -5158,6 +5228,8 @@ export class UserDtoInList implements IUserDtoInList {
         data["dateCreated"] = this.dateCreated ? this.dateCreated.toISOString() : <any>undefined;
         data["lastLoginDate"] = this.lastLoginDate ? this.lastLoginDate.toISOString() : <any>undefined;
         data["balance"] = this.balance;
+        data["maxClickInDay"] = this.maxClickInDay;
+        data["rate"] = this.rate;
         data["userTelegram"] = this.userTelegram;
         data["refCode"] = this.refCode;
         data["agent"] = this.agent;
@@ -5177,6 +5249,8 @@ export interface IUserDtoInList {
     dateCreated?: Date;
     lastLoginDate?: Date | undefined;
     balance?: number;
+    maxClickInDay?: number;
+    rate?: number;
     userTelegram?: string | undefined;
     refCode?: string | undefined;
     agent?: string | undefined;
@@ -5390,6 +5464,54 @@ export interface IVerifyUserRequest {
     origin?: string | undefined;
     contact?: string | undefined;
     thumbnail?: string | undefined;
+}
+
+export class VisitorViewModel implements IVisitorViewModel {
+    timeVisit?: Date[] | undefined;
+    codeSuccess?: Date;
+
+    constructor(data?: IVisitorViewModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["timeVisit"])) {
+                this.timeVisit = [] as any;
+                for (let item of _data["timeVisit"])
+                    this.timeVisit!.push(new Date(item));
+            }
+            this.codeSuccess = _data["codeSuccess"] ? new Date(_data["codeSuccess"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): VisitorViewModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new VisitorViewModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.timeVisit)) {
+            data["timeVisit"] = [];
+            for (let item of this.timeVisit)
+                data["timeVisit"].push(item.toISOString());
+        }
+        data["codeSuccess"] = this.codeSuccess ? this.codeSuccess.toISOString() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IVisitorViewModel {
+    timeVisit?: Date[] | undefined;
+    codeSuccess?: Date;
 }
 
 export interface FileParameter {

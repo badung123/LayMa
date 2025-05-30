@@ -28,6 +28,7 @@ namespace LayMa.Core.Domain.Transaction
 		public DateTime? DateModified { get; set; }
         public string? Flatform { get; set; }
 		public int? Solution { get; set; }
+		public int? TimeFinish { get; set; }
 
 	}
 	public enum TranSactionType

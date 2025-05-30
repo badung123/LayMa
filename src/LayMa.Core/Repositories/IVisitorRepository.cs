@@ -15,5 +15,7 @@ namespace LayMa.Core.Repositories
 		Task<int> CountViewByDateRangeAndShortLink(DateTime from, DateTime to, Guid shortLinkId);
 		Task<int> CountViewByDateRangeAndUserId(DateTime from, DateTime to, Guid userId);
 		Task<List<ThongKeClickViewInMonth>> CountViewByDateUserIdInMonth(Guid userId);
+		Task<DateTime> GetStartTimeOfShortLink(Guid userId,Guid shortLinkId);
+		Task<List<DateTime>> GetListTimeVisitShortLink(Guid shortLinkId, Guid userId, string screen);
 	}
 }

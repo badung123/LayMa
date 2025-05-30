@@ -2,6 +2,7 @@
 using LayMa.Core.Domain.Visitor;
 using LayMa.Core.Interface;
 using LayMa.Core.Model.CodeManager;
+using LayMa.Core.Model.ShortLink;
 using LayMa.WebAPI.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using YamlDotNet.Core.Tokens;
@@ -54,5 +55,22 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 			var result = await _unitOfWork.CompleteAsync();
 			return result > 0 ? Ok(new CodeResponse { Success = true }) : BadRequest(new CodeResponse { Success = false });
 		}
+
+		[HttpGet]
+		public async Task<ActionResult<VisitorViewModel>> GetVisitor(string link,Guid userId,string screen)
+		{
+			// bo sung cac thong tin ip,browser,client ui sau
+			//Dictionary<string, string> res = JsonConvert.DeserializeObject<Dictionary<string, string>>(request);
+			//
+			var model = new VisitorViewModel();
+			var shortLink = await _unitOfWork.ShortLinks.GetByLinkAsync(link);
+			if (shortLink == null) return BadRequest("Link rút gọn không tồn tại");
+			var shortlinkID = shortLink.Id;
+			model.TimeVisit = await _unitOfWork.Visitors.GetListTimeVisitShortLink(shortlinkID, userId, screen);
+			model.CodeSuccess = await _unitOfWork.ViewDetails.GetTimeSuccess(shortlinkID, userId, screen);
+
+			return model;
+		}
+
 	}
 }

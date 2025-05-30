@@ -45,5 +45,15 @@ namespace LayMa.Data.Repositories
 				}).ToList();
 			return list;
 		}
+		public async Task<DateTime> GetStartTimeOfShortLink(Guid userId, Guid shortLinkId)
+		{
+			var visitor = await _context.Visitors.Where(x => x.UserId == userId && x.ShortLinkId == shortLinkId).OrderByDescending(x => x.DateCreated).FirstOrDefaultAsync();
+			return visitor.DateCreated;
+		}
+		public async Task<List<DateTime>> GetListTimeVisitShortLink(Guid shortLinkId, Guid userId, string screen)
+		{
+			return await _context.Visitors.Where(x => x.UserId == userId && x.ShortLinkId == shortLinkId && x.DeviceScreen == screen).OrderByDescending(x => x.DateCreated).Select(x => x.DateCreated).ToListAsync();
+			
+		}
 	}
 }

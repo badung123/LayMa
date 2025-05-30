@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel;
 
 namespace LayMa.Core.Domain.Identity
 {
@@ -20,7 +21,10 @@ namespace LayMa.Core.Domain.Identity
         public DateTime DateCreated { get; set; }
         public DateTime? LastLoginDate { get; set; }
         public double Balance { get; set; }
-        public string? UserTelegram { get; set; }
+		public int MaxClickInDay { get; set; }
+		[DefaultValue("1000")]
+		public int Rate { get; set; }
+		public string? UserTelegram { get; set; }
         public string? RefCode { get; set; }
 		public string? Agent { get; set; }
         public string? Origin { get; set; }

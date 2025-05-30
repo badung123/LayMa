@@ -1,0 +1,28 @@
+<form cForm [formGroup]="editAccountForm" (ngSubmit)="editData()">
+    <c-row>
+        <c-col sm="4">
+          <c-input-group class="flex-nowrap mb-4">
+            <input aria-describedby="addon-wrapping"
+                   aria-label="click"
+                   cFormControl
+                   formControlName="click"
+                   placeholder="Số click tối đa trong ngày"
+                   type="number"
+            />
+          </c-input-group>
+        </c-col>
+        <c-col sm="4">
+          <c-input-group class="flex-nowrap mb-4">
+            <input aria-describedby="addon-wrapping"
+                   aria-label="rate"
+                   cFormControl
+                   formControlName="rate"
+                   placeholder="rate"
+                   type="number"
+            />
+          </c-input-group>
+        </c-col>
+    </c-row>
+</form>
+
+  

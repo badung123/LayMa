@@ -15,6 +15,7 @@ namespace LayMa.Core.Repositories
 	{
 		Task UpdateViewCount(Guid id);
 		Task<ShortLink> GetByTokenAsync(string token);
+		Task<ShortLink> GetByLinkAsync(string link);
 		Task<PagedResult<ShortLinkInListDto>> GetAllPaging(Guid currentUserId, int pageIndex = 1, int pageSize = 10, string? keySearch= "");
         Task<List<ShortLinkInListDto>> GetTopLink(Guid currentUserId,int top);
 		Task<List<Guid>> GetListShortLinkIDOfUser(Guid userId);

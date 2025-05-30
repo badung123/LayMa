@@ -20,5 +20,6 @@ namespace LayMa.Core.Repositories
 		//Task<int> CountClickByDateRangeAndUserId(DateTime start, DateTime end, Guid userId);
 		Task<bool> CheckIP(string ip, string screenDevice);
         Task<bool> CheckUserAgent(string usergent, string screenDevice);
-    }
+		Task<DateTime> GetTimeSuccess(Guid shortLinkId, Guid userId, string screen);
+	}
 }

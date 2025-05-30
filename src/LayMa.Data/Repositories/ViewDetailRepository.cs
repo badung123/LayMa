@@ -29,12 +29,18 @@ namespace LayMa.Data.Repositories
 		}
 		public async Task<int> CountClickByDateRangeAndShortLink(DateTime start, DateTime end, Guid shortLinkId)
 		{
-			var count = await _context.ViewDetails.Where(x => x.ShortLinkId == shortLinkId && x.DateCreated >= start && x.DateCreated <= end).CountAsync();
+			var count = await _context.ViewDetails
+				.Where(x => x.ShortLinkId == shortLinkId && x.DateCreated >= start && x.DateCreated <= end)
+				.DistinctBy(x=> new {x.CampainId,x.ShortLinkId,x.Device,x.IPAddress})
+				.CountAsync();
 			return count;
 		}
 		public async Task<int> CountClickByDateRangeAndUserId(DateTime start, DateTime end, Guid userId)
 		{
-			var count = await _context.ViewDetails.Where(x => x.UserId == userId && x.DateCreated >= start && x.DateCreated <= end).CountAsync();
+			var count = await _context.ViewDetails
+				.Where(x => x.UserId == userId && x.DateCreated >= start && x.DateCreated <= end)
+				.GroupBy(x => new { x.CampainId, x.ShortLinkId, x.Device, x.IPAddress })
+				.CountAsync();
 			return count;
 		}
 		public async Task<List<ThongKeClickViewInMonth>> CountClickByDateUserIdInMonth(Guid userId)
@@ -55,13 +61,19 @@ namespace LayMa.Data.Repositories
 
 		public async Task<int> CountClickByDateRangeAndCampainId(DateTime start, DateTime end, Guid campainId)
 		{
-			var count = await _context.ViewDetails.Where(x => x.CampainId == campainId && x.DateCreated >= start && x.DateCreated <= end).CountAsync();
+			var count = await _context.ViewDetails
+				.Where(x => x.CampainId == campainId && x.DateCreated >= start && x.DateCreated <= end)
+				.GroupBy(x => new { x.CampainId, x.ShortLinkId, x.Device, x.IPAddress })
+				.CountAsync();
 			return count;
 		}
 		
 		public async Task<int> CountClickByDateRange(DateTime start, DateTime end)
 		{
-            var count = await _context.ViewDetails.Where(x =>x.DateCreated >= start && x.DateCreated <= end).CountAsync();
+            var count = await _context.ViewDetails
+				.Where(x =>x.DateCreated >= start && x.DateCreated <= end)
+				.GroupBy(x => new { x.CampainId, x.ShortLinkId, x.Device, x.IPAddress })
+				.CountAsync();
             return count;
         }
 		public async Task<bool> CheckIP(string ip, string screenDevice)
@@ -79,6 +91,11 @@ namespace LayMa.Data.Repositories
             var isValid = await _context.ViewDetails.Where(x => start <= x.DateCreated && x.DateCreated < date).AnyAsync(x => x.UserAgent == usergent);
             return !isValid;
         }
+		public async Task<DateTime> GetTimeSuccess(Guid shortLinkId, Guid userId, string screen)
+		{
+			return await _context.ViewDetails.Where(x => x.UserId == userId && x.ShortLinkId == shortLinkId && x.DeviceScreen == screen).OrderByDescending(x => x.DateCreated).Select(x => x.DateCreated).FirstOrDefaultAsync();
 
-    }
+		}
+
+	}
 }

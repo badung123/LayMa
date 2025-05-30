@@ -79,13 +79,20 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 			var userId = shortLink.UserId;
 			var user = await _userManager.FindByIdAsync(userId.ToString());
 			if (user == null || user.IsActive == false) return BadRequest("User không hợp lệ");
+			var date = DateTime.Now;
+			var start = date.Date;
+			var end = date.Date.AddDays(1);
+			if (user.MaxClickInDay > 0)
+			{
+				var countClickInDay = await _unitOfWork.ViewDetails.CountClickByDateRangeAndUserId(start, end, user.Id);
+				if (countClickInDay >= user.MaxClickInDay) return BadRequest("Đã hết lượt view trong ngày");
+			}			
+
             //tiến hành update          
             var campain = await _unitOfWork.Campains.GetCampainByCampainID(Guid.Parse(request.CampainId));
             if (campain == null) return BadRequest("Chiến dịch không hợp lệ hoặc đã tạm dừng");
 
-			var date = DateTime.Now;
-			var start = date.Date;
-			var end = date.Date.AddDays(1);
+			
 			if (campain.TypeRun == 1)
 			{
 				start = start.AddHours(date.Hour);
@@ -154,19 +161,19 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 				Solution = solution
 			};
 			_unitOfWork.ViewDetails.Add(viewDetail);
-			//get User and update balane
-			var amountRate = 1000;
-			if (user.UserName == "buianhhiep") amountRate = 300;
-			if (user.UserName == "trungdao2k4") amountRate = 0;
-			await _unitOfWork.Users.UpdateBalanceCount(user.Id, amountRate);
 
-            //TODO: update vào bảng transation
-            var transLogUser = new TransactionLog
+			await _unitOfWork.Users.UpdateBalanceCount(user.Id, user.Rate);
+			//get start of shortlink
+			var startTimeShortLink = await _unitOfWork.Visitors.GetStartTimeOfShortLink(user.Id, shortLink.Id);
+
+			var timeDiff = DateTime.Now.Subtract(startTimeShortLink).TotalSeconds;
+			//TODO: update vào bảng transation
+			var transLogUser = new TransactionLog
 			{
 				Id = Guid.NewGuid(),
 				UserId = user.Id,
 				UserName = user.UserName,
-				Amount = amountRate,
+				Amount = user.Rate,
 				OldBalance = Int64.Parse(user.Balance.ToString()),
 				CreatedBy = user.UserName,
 				Description = "Nhận thưởng nhập code thành công link rút gọn : " + shortLink.Link,
@@ -177,23 +184,24 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 				IPAddress = ips,
 				DateCreated = DateTime.Now,
 				DateModified = DateTime.Now,
-                Flatform = campain.Flatform,
-				Solution = solution
-            };
+				Flatform = campain.Flatform,
+				Solution = solution,
+				TimeFinish = (int)timeDiff
+			};
 			_unitOfWork.TransactionLogs.Add(transLogUser);
 			if (!string.IsNullOrEmpty(user.Agent))
 			{
 				var agent = await _unitOfWork.Users.GetUserAgentByRefcode(user.Agent);
 				if (agent != null)
 				{
-					await _unitOfWork.Users.UpdateBalanceCount(agent.Id, 100);
+					await _unitOfWork.Users.UpdateBalanceCount(agent.Id, 60);
 					//TODO: update vào bảng transation
 					var transLogAgent = new TransactionLog
 					{
 						Id = Guid.NewGuid(),
 						UserId = agent.Id,
 						UserName = agent.UserName,
-						Amount = 100,
+						Amount = 60,
 						OldBalance = Int64.Parse(agent.Balance.ToString()),
 						CreatedBy = user.UserName,
 						ShortLink = shortLink.Link,

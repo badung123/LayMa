@@ -30,6 +30,7 @@
 	var referrer_pattern_GG = '^http(s|)\:\/\/(?:www\.)?google\.[a-z]{2,3}([.a-z]{2,4}|)';
 	var referrer_pattern_INS = '^http(s|)\:\/\/(www|l|m|lm|mobile|web|touch|fbclid|)(\.)?instagram\.[a-z]{2,3}([.a-z]{2,4}|)';
 	var referrer_pattern_YOUTUBE = '^http(s|)\:\/\/(www|l|m|lm|mobile|web|touch|)(\.)?youtube\.[a-z]{2,3}([.a-z]{2,4}|)';
+	var referrer_pattern_CF = '^http(s|)\:\/\/(www|l|m|lm|mobile|web|touch|)(\.)?youtube\.[a-z]{2,3}([.a-z]{2,4}|)';
 
 	var check_ref = false;
 	var get_code = true;
@@ -67,7 +68,7 @@
 	}
 	/******** Load jQuery if not present *********/
 	if (window.jQuery === undefined || window.jQuery.fn === undefined || window.jQuery.fn.jquery !== '3.6.0') {
-
+		
 		var script_tag = document.createElement('script');
 		script_tag.setAttribute("type","text/javascript");
 		script_tag.setAttribute("src",
@@ -136,6 +137,9 @@
 		if (referrer.match(regexYOUTUBE)) {
 			return 'youtube';
 		}
+		@* if (referrer.indexOf('cf_chl_tk') !== -1) {
+			return 'cloudflare';
+		} *@
 		return 'tructiep';
 	}
 	const ajax = function(url, method = 'GET', data, onSuccess = null, onError = null, onDone = null) {
@@ -440,6 +444,7 @@
 			fontWeight: 'bold',
 			position: 'fixed',
 			width: '400px',
+			color: 'black',
 			top: top +'%',
 			left: 'calc(50% - 200px)',
 			zIndex: 9999,
@@ -532,19 +537,14 @@
 				randomSolution = Math.floor((Math.random() * 2));
 			}else{
 				//check reference
-				let referen = getReferrer();
-				let refe = checkReferer(referen);
+				let refe = checkReferer(getReferrer());
 				if(refe != 'tructiep'){
 					window.localStorage.removeItem(cache_flatform);
 					window.localStorage.removeItem(cache_solution);
 					window.localStorage.removeItem(count_step);
 					randomSolution = Math.floor((Math.random() * 2));
 				}
-				else{
-					if(referen){
-
-					}
-				}
+				
 			}
 			window.localStorage.setItem(cache_solution,randomSolution);
 			if (randomSolution == 0) {
@@ -704,7 +704,6 @@
 				if(typeof step === 'string') step = parseInt(step);
 				step = step + 1;
 				window.localStorage.setItem(count_step,step);
-				
 				
 				if(flatform != 'tructiep'){
 					check_ref =true;

@@ -52,7 +52,7 @@
                     <thead class="text-nowrap text-truncate">
                     <tr>
                       <th class="bg-body-tertiary text-center ">
-                        <svg cIcon name="cilPeople"></svg>
+                        ID
                       </th>
                       <th class="bg-body-tertiary">Username</th>
                       <th class="bg-body-tertiary">Tên TK</th>
@@ -68,7 +68,7 @@
                       @for (item of items; track item.bankAccountName; let i = $index) {
                         <tr>
                           <td class="text-center">
-                            <div>{{ i + 1 }}</div>
+                            <div>{{ item.id }}</div>
                           </td>
                           <td>
                             <div>{{ item.userName }}</div>

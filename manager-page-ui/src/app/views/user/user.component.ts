@@ -23,7 +23,7 @@ import { ContainerComponent,
  } from '@coreui/angular';
 import { Subject, takeUntil } from 'rxjs';
 import { AlertService } from '../../shared/services/alert.service';
-import { AdminApiUserApiClient,ProcessStatus, UserDtoInList, UserDtoInListPagedResult } from '../../api/admin-api.service.generated';
+import { AdminApiUserApiClient,ProcessStatus, UserDtoInList, UserDtoInListPagedResult, VerifyOrLockUserRequest } from '../../api/admin-api.service.generated';
 import { CommonModule, NgStyle } from '@angular/common';
 import {
   FormBuilder,
@@ -38,6 +38,8 @@ import { Router } from '@angular/router';
 import { DialogService, DynamicDialogComponent } from 'primeng/dynamicdialog';
 import { XacMinhUserComponent } from './xacminhuser.component';
 import { PaginatorModule } from 'primeng/paginator';
+import { CongTruTienTKComponent } from './congtrutientk.component';
+import { EditUserComponent } from './editUser.component';
 //import { AdminApiShortLinkApiClient, AdminApiTestApiClient, CreateShortLinkDto } from 'src/app/api/admin-api.service.generatesrc';
 
 interface IVerify {
@@ -128,5 +130,56 @@ export class UserComponent implements OnInit, OnDestroy{
         this.loadData();  
       });
 
+    }
+    mokhoataikhoan(id: string){
+      var request: VerifyOrLockUserRequest = new VerifyOrLockUserRequest({
+        userId : id
+      });
+      this.userApiClient.lockUserByAdmin(request)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe({
+        next: (response: any) => {
+          this.loadData();
+          //reload
+        },
+        error: (error: any) => {
+          console.log(error);
+          this.alertService.showError('Có lỗi xảy ra');
+        },
+      });
+    }
+    congtrutientaikhoan(id: string){
+      const ref = this.dialogService.open(CongTruTienTKComponent, {
+        data: {
+          id: id,
+        },
+        header: 'Cộng trừ tiền tk',
+        width: '70%'
+      });
+      const dialogRef = this.dialogService.dialogComponentRefMap.get(ref);
+      const dynamicComponent = dialogRef?.instance as DynamicDialogComponent;
+      const ariaLabelledBy = dynamicComponent.getAriaLabelledBy();
+      dynamicComponent.getAriaLabelledBy = () => ariaLabelledBy;
+      ref.onClose.subscribe((data: any) => {
+        this.loadData();  
+      });
+    }
+    edittaikhoan(id: string,maxClick:number,rate:number){
+      const ref = this.dialogService.open(EditUserComponent, {
+        data: {
+          id: id,
+          maxClick: maxClick,
+          rate: rate
+        },
+        header: 'Sửa Tài khoản',
+        width: '70%'
+      });
+      const dialogRef = this.dialogService.dialogComponentRefMap.get(ref);
+      const dynamicComponent = dialogRef?.instance as DynamicDialogComponent;
+      const ariaLabelledBy = dynamicComponent.getAriaLabelledBy();
+      dynamicComponent.getAriaLabelledBy = () => ariaLabelledBy;
+      ref.onClose.subscribe((data: any) => {
+        this.loadData();  
+      });
     }
 }

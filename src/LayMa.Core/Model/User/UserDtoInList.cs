@@ -3,6 +3,7 @@ using LayMa.Core.Domain.Identity;
 using LayMa.Core.Model.Campain;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,6 +17,8 @@ namespace LayMa.Core.Model.User
 		public DateTime DateCreated { get; set; }
 		public DateTime? LastLoginDate { get; set; }
 		public double Balance { get; set; }
+		public int MaxClickInDay { get; set; }
+		public int Rate { get; set; }
 		public string? UserTelegram { get; set; }
 		public string? RefCode { get; set; }
 		public string? Agent { get; set; }

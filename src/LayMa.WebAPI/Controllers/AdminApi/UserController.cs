@@ -58,7 +58,7 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 		{
 			var user = await _userManager.FindByIdAsync(request.UserId.ToString());
 			if (user == null) return BadRequest("Tài khoản không tồn tại");
-			user.IsActive = false;
+			user.IsActive = !user.IsActive;
 			await _userManager.UpdateAsync(user);
 			return Ok();
 		}

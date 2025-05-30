@@ -198,7 +198,9 @@ namespace LayMa.Api.Controllers.AdminApi
                 IsActive = true,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 LockoutEnabled = false,
-                DateCreated = DateTime.Now
+                DateCreated = DateTime.Now,
+                MaxClickInDay = 500,
+                Rate = 600
             };
             user.PasswordHash = passwordHasher.HashPassword(user, request.Password);
             var rs = await _userManager.CreateAsync(user, request.ConfirmPassword);

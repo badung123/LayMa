@@ -21,10 +21,7 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 		public async Task<ActionResult<MissionDto>> GetMissionByTokenShortLink(string token)
 		{
 			var shortLink = await _unitOfWork.ShortLinks.GetByTokenAsync(token);
-			if (shortLink == null)
-			{
-				return BadRequest("Link rút gọn không tồn tại");
-			}
+			if (shortLink == null) return BadRequest("Link rút gọn không tồn tại");
 			//shortLink.View += 1;
 			
 			//await _unitOfWork.ShortLinks.UpdateView(shortLink.Id);

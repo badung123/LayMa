@@ -53,6 +53,11 @@ namespace LayMa.Data.Repositories
 			var shortLink = await _context.ShortLinks.FirstOrDefaultAsync(x=> x.Token == token);
 			return shortLink;
 		}
+		public async Task<ShortLink> GetByLinkAsync(string link)
+		{
+			var shortLink = await _context.ShortLinks.FirstOrDefaultAsync(x => x.Link == link);
+			return shortLink;
+		}
 		public async Task UpdateViewCount(Guid id)
 		{
 			var link = await _context.ShortLinks.FirstOrDefaultAsync(x => x.Id == id);

@@ -44,7 +44,11 @@
                     <th class="bg-body-tertiary text-center">Username</th>
                     <th class="bg-body-tertiary text-center">Email</th>
                     <th class="bg-body-tertiary text-center">Số dư</th>
+                    <th class="bg-body-tertiary text-center">Max Click</th>
+                    <th class="bg-body-tertiary text-center">Rate</th>
                     <th class="bg-body-tertiary text-center">Telegram</th>
+                    <th class="bg-body-tertiary text-center">Nguồn</th>
+                    <th class="bg-body-tertiary text-center">Image</th>
                     <th class="bg-body-tertiary text-center">Trạng Thái</th>
                     <th class="bg-body-tertiary">Xác Minh</th>
                     <th class="bg-body-tertiary">Chức năng</th>
@@ -71,7 +75,20 @@
                           {{item.balance}}
                         </td>
                         <td class="text-center">
+                          {{item.maxClickInDay}}
+                        </td>
+                        <td class="text-center">
+                          {{item.rate}}
+                        </td>
+                        <td class="text-center">
                             {{item.userTelegram}}
+                          </td>
+                          <td class="text-center">
+                            {{item.origin}}
+                          </td>
+                          <td class="text-center">
+                            <a *ngIf="item.originImage">api.layma.net{{item.originImage}}</a>
+                            
                           </td>
                         <td class="text-center">
                             <button *ngIf="item.isActive" cButton color="success">Hoạt Động</button>
@@ -88,11 +105,10 @@
                                 </button>
                                 <ul cDropdownMenu>
                                   <li><a cDropdownItem (click)="xacminh(item.isVerify,item.id,item.origin,item.originImage)">Xác minh</a></li>
-                                  <li><a cDropdownItem>Khóa tài khoản</a></li>
-                                  <li><a cDropdownItem>Cộng trừ tiền</a></li>
-                                  <li><a cDropdownItem>Xem đại lý</a></li>
-                                  <li><a cDropdownItem>Xem lịch sử</a></li>
-                                  <li><a cDropdownItem>Xem chi tiết view</a></li>
+                                  <li *ngIf="item.isActive"><a cDropdownItem (click)="mokhoataikhoan(item.id)">Khóa TK</a></li>
+                                  <li *ngIf="!item.isActive"><a cDropdownItem (click)="mokhoataikhoan(item.id)">Mở khóa TK</a></li>
+                                  <li><a cDropdownItem (click)="congtrutientaikhoan(item.id)">Cộng trừ tiền</a></li>
+                                  <li><a cDropdownItem (click)="edittaikhoan(item.id,item.maxClickInDay,item.rate)">Sửa</a></li>
                                 </ul>
                               </c-dropdown>
                         </td>
