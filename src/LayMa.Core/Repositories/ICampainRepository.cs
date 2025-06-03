@@ -23,6 +23,7 @@ namespace LayMa.Core.Repositories
 		Task<Campain> GetCampainByID(Guid campainId);
 		Task<Campain> GetCampainByIDNotCheckStatus(Guid campainId);
 		Task<CampainInListDto> GetCampainByCampainID(Guid campainId);
+		Task<CampainInListDto> GetCampainByKeySearch(string keySearch);
 		Task<PagedResult<CampainInListDto>> GetAllPaging(int pageIndex = 1, int pageSize = 10,string flatform = "google", string? keySearch = "");
 
 		Task<ThongKeView> GetThongKeView();

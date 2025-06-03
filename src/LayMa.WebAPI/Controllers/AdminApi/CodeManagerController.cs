@@ -5,6 +5,7 @@ using LayMa.Core.Domain.Link;
 using LayMa.Core.Domain.Transaction;
 using LayMa.Core.Interface;
 using LayMa.Core.Model.Auth;
+using LayMa.Core.Model.Campain;
 using LayMa.Core.Model.CodeManager;
 using LayMa.Core.Utilities;
 using LayMa.Data.Migrations;
@@ -73,9 +74,7 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 			var ips = HttpContext.Request.GetIpAddress();
 			var shortLink = await _unitOfWork.ShortLinks.GetByTokenAsync(request.Token);
 			
-			var check = await _unitOfWork.CodeManagers.CheckCode(request.Code, Guid.Parse(request.CampainId));
-            if (!check) return BadRequest("Code" + request.Code + "đã được dùng hoặc không hợp lệ");
-			if (shortLink == null) return BadRequest("Link rút gọn không tồn tại");
+			if (shortLink == null) return BadRequest("Link rút gọn " + request.Token + " không tồn tại");
 			var userId = shortLink.UserId;
 			var user = await _userManager.FindByIdAsync(userId.ToString());
 			if (user == null || user.IsActive == false) return BadRequest("User không hợp lệ");
@@ -86,19 +85,29 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 			{
 				var countClickInDay = await _unitOfWork.ViewDetails.CountClickByDateRangeAndUserId(start, end, user.Id);
 				if (countClickInDay >= user.MaxClickInDay) return BadRequest("Đã hết lượt view trong ngày");
-			}			
-
+			}
             //tiến hành update          
             var campain = await _unitOfWork.Campains.GetCampainByCampainID(Guid.Parse(request.CampainId));
-            if (campain == null) return BadRequest("Chiến dịch không hợp lệ hoặc đã tạm dừng");
-
+			if (campain == null) return BadRequest("Chiến dịch không hợp lệ hoặc đã tạm dừng");
+			//dua vao tu khoa de lay ra campainId
+			bool check = false;
+			if (campain.Flatform == "google")
+			{
+				check = await _unitOfWork.CodeManagers.CheckCodeGoogle(request.Code, campain.KeyToken);
+			}
+			else
+			{
+				check = await _unitOfWork.CodeManagers.CheckCode(request.Code, campain.Id);
+			}
 			
+			if (!check) return BadRequest("Code " + request.Code + " đã được dùng hoặc không hợp lệ");
+
 			if (campain.TypeRun == 1)
 			{
 				start = start.AddHours(date.Hour);
 				end = start.AddHours(1);
 			}
-			var countCampain = await _unitOfWork.ViewDetails.CountClickByDateRangeAndCampainId(start, end, Guid.Parse(request.CampainId));
+			var countCampain = await _unitOfWork.ViewDetails.CountClickByDateRangeAndCampainId(start, end, campain.Id);
 			if (campain.TypeRun == 0)
             {
                 if (campain.Status)
@@ -144,7 +153,7 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 				return Ok(shortLink.OriginLink);
 			}			
 			//update code đã dùng
-			var solution = await _unitOfWork.CodeManagers.UpdateIsUsed(request.Code, Guid.Parse(request.CampainId));
+			var solution = await _unitOfWork.CodeManagers.UpdateIsUsed(request.Code, campain.Id);
 			//insert view detail
 			var viewDetail = new ViewDetail()
 			{
@@ -157,7 +166,7 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 				DeviceScreen = request.DeviceScreen,
 				UserAgent = request.UserAgent,
 				IPAddress = ips,
-				CampainId = Guid.Parse(request.CampainId),
+				CampainId = campain.Id,
 				Solution = solution
 			};
 			_unitOfWork.ViewDetails.Add(viewDetail);

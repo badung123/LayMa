@@ -24,6 +24,13 @@ namespace LayMa.Data.Repositories
 			var isValid = await _context.Codes.AnyAsync(x => x.CodeString == code && !x.IsUsed && x.CampainId == keyId);
 			return isValid;
 		}
+		public async Task<bool> CheckCodeGoogle(string code, string keyToken)
+		{
+			var listIds = new List<Guid>();
+			listIds = await _context.Campains.Where(x=> x.KeyToken == keyToken).Select(x => x.Id).ToListAsync();
+			var isValid = await _context.Codes.AnyAsync(x => x.CodeString == code && !x.IsUsed && listIds.Contains(x.CampainId));
+			return isValid;
+		}
 		public async Task<int?> UpdateIsUsed(string code, Guid keyId)
 		{
 			var codeValue = await _context.Codes.FirstOrDefaultAsync(x => x.CodeString == code && x.CampainId == keyId  && !x.IsUsed);

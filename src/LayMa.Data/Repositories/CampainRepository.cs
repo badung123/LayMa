@@ -81,6 +81,12 @@ namespace LayMa.Data.Repositories
 			var campainDto = _mapper.Map<Campain, CampainInListDto>(campain);
 			return campainDto;
 		}
+		public async Task<CampainInListDto> GetCampainByKeySearch(string keySearch)
+		{
+			var campain = await _context.Campains.Where(x => x.KeySearch == keySearch).FirstOrDefaultAsync();
+			var campainDto = _mapper.Map<Campain, CampainInListDto>(campain);
+			return campainDto;
+		}
 		public async Task<ThongKeView> GetThongKeView()
         {
             var thongkeview = new ThongKeView();
