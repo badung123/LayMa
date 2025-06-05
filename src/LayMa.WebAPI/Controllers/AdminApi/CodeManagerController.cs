@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using Org.BouncyCastle.Tsp;
 
 namespace LayMa.WebAPI.Controllers.AdminApi
 {
@@ -151,9 +152,18 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 				_unitOfWork.TransactionLogs.Add(transLog);
 				await _unitOfWork.CompleteAsync();
 				return Ok(shortLink.OriginLink);
-			}			
+			}
 			//update code đã dùng
-			var solution = await _unitOfWork.CodeManagers.UpdateIsUsed(request.Code, campain.Id);
+			int? solution = null;
+			if (campain.Flatform == "google")
+			{
+				solution = await _unitOfWork.CodeManagers.UpdateIsUsedGoogle(request.Code, campain.KeyToken);
+			}
+			else
+			{
+				solution = await _unitOfWork.CodeManagers.UpdateIsUsed(request.Code, campain.Id);
+			}
+			if (solution == null) return BadRequest("Không xác định được bạn đang chạy theo phương pháp nào của nhà cung cấp.Vui lòng liên hệ nhà cung cấp");
 			//insert view detail
 			var viewDetail = new ViewDetail()
 			{

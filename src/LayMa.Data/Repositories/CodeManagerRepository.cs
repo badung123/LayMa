@@ -40,6 +40,17 @@ namespace LayMa.Data.Repositories
 			_context.Codes.Update(codeValue);
 			return codeValue.Solution == null ? null : codeValue.Solution.Value;
 		}
+		public async Task<int?> UpdateIsUsedGoogle(string code, string keyToken)
+		{
+			var listIds = new List<Guid>();
+			listIds = await _context.Campains.Where(x => x.KeyToken == keyToken).Select(x => x.Id).ToListAsync();
+			var codeValue = await _context.Codes.FirstOrDefaultAsync(x => x.CodeString == code && !x.IsUsed && listIds.Contains(x.CampainId));
+			if (codeValue == null) return null;
+			codeValue.IsUsed = true;
+			codeValue.DateModified = DateTime.Now;
+			_context.Codes.Update(codeValue);
+			return codeValue.Solution == null ? null : codeValue.Solution.Value;
+		}
 		public async Task<int?> GetSolution(string code, Guid keyId)
 		{
 			var codeV =  await _context.Codes.FirstOrDefaultAsync(x => x.CodeString == code && x.CampainId == keyId);

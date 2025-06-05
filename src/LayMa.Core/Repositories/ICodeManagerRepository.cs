@@ -13,6 +13,7 @@ namespace LayMa.Core.Repositories
 		Task<bool> CheckCode(string code,Guid keyId);
 		Task<bool> CheckCodeGoogle(string code, string keyToken);
 		Task<int?> UpdateIsUsed(string code, Guid keyId);
+		Task<int?> UpdateIsUsedGoogle(string code, string keyToken);
 		Task<int?> GetSolution(string code, Guid keyId);
 	}
 }
