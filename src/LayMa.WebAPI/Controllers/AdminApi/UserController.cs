@@ -62,6 +62,17 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 			await _userManager.UpdateAsync(user);
 			return Ok();
 		}
+		[HttpPost]
+		[Route("updateUserClickRate")]
+		public async Task<ActionResult> UpdateUserClickRate([FromBody] UpdateClickRateRequest request)
+		{
+			var user = await _userManager.FindByIdAsync(request.UserId.ToString());
+			if (user == null) return BadRequest("Tài khoản không tồn tại");
+			user.MaxClickInDay = request.MaxClickInDay;
+			user.Rate = request.Rate;
+			await _userManager.UpdateAsync(user);
+			return Ok();
+		}
 		[HttpGet]
         [Route("getInfoVerify")]
         public async Task<ActionResult<VerifyUserInfo>> GetInfoVerify()

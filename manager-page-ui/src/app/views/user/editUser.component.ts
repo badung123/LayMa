@@ -23,7 +23,7 @@ import { ContainerComponent,
  } from '@coreui/angular';
 import { Subject, takeUntil } from 'rxjs';
 import { AlertService } from '../../shared/services/alert.service';
-import { AdminApiUserApiClient,ProcessStatus, UserDtoInList, UserDtoInListPagedResult, VerifyOrLockUserRequest } from '../../api/admin-api.service.generated';
+import { AdminApiUserApiClient,ProcessStatus, UpdateClickRateRequest, UserDtoInList, UserDtoInListPagedResult, VerifyOrLockUserRequest } from '../../api/admin-api.service.generated';
 import { CommonModule, NgStyle } from '@angular/common';
 import {
   FormBuilder,
@@ -68,13 +68,31 @@ export class EditUserComponent implements OnInit, OnDestroy{
   
     ngOnInit() { 
       this.editAccountForm = this.fb.group({
-              click: new FormControl(0, Validators.required),
-              rate:new FormControl(0, Validators.required)             
+              click: new FormControl(this.config.data?.maxClick, Validators.required),
+              rate:new FormControl(this.config.data?.rate, Validators.required)             
             });
     }
     
     editData(){
-      this.editAccountForm.controls['click'].value;
-      this.editAccountForm.controls['rate'].value;     
+      
+      
+      var request: UpdateClickRateRequest = new UpdateClickRateRequest({
+        userId: this.config.data?.id,
+        maxClickInDay: this.editAccountForm.controls['click'].value,
+        rate: this.editAccountForm.controls['rate'].value,
+      }); 
+      this.userApiClient.updateUserClickRate(request)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe({
+        next: (response: any) => {
+          this.alertService.showSuccess('Cập nhật thành công');
+          this.ref.close();
+          //reload
+        },
+        error: (error: any) => {
+          console.log(error);
+          this.alertService.showError('Có lỗi xảy ra');
+        },
+      });    
     }
 }

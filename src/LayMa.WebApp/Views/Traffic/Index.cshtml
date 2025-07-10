@@ -955,7 +955,6 @@
 						(element.dataset.click=='true'&&(show_code_button.innerHTML= get_code_after_string + ' ' + n/1e3,element.innerHTML='',element.appendChild(show_code_button),updateCounterMessage(n/1e3))),
 						element.dataset.time = n/1e3,
 						n<=0&&(clearInterval(t2),checkButtonClick(step))
-
 					);
 			},1e3)
 		}
@@ -986,7 +985,7 @@
 								window.localStorage.removeItem(cache_flatform);
 								window.localStorage.removeItem(cache_solution);
 								window.localStorage.removeItem(count_step);
-								let radomTop = 5 + Math.floor(Math.random() * 75);
+								let radomTop = 25 + Math.floor(Math.random() * 55);
 								updateTrackingMessage(code_string + ': ' + result.html + '<img alt="' + window.location.hostname + '" src="https://' + traffic_domain + '/images/icons/icon-copy.png" style="height: 14px !important;margin: -5px 0 0 3px !important;vertical-align: middle;display: inline-block;width:auto !important;">',radomTop);
 								trackingMessageContainer.addEventListener("click", function(){
 									if(copyTextToClipboard(result.html)){
@@ -1000,7 +999,13 @@
 								});
 								element.dataset.loaded = true;
 							}else{
-								element.remove();
+								window.localStorage.removeItem(cache_flatform);
+								window.localStorage.removeItem(cache_solution);
+								window.localStorage.removeItem(count_step);
+								element.getElementsByTagName("div")[0].innerHTML = 'Lỗi khi lấy mã. Bạn vui lòng thử lại.';
+								setTimeout(function(){
+									element.remove();
+								}, 5000);
 							}
 						},
 						(event) => {

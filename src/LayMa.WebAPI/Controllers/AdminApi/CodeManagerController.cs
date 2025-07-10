@@ -73,8 +73,12 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 				ip = this.HttpContext.GetServerVariable("REMOTE_ADDR");
 			}
 			var ips = HttpContext.Request.GetIpAddress();
-			var shortLink = await _unitOfWork.ShortLinks.GetByTokenAsync(request.Token);
-			
+			ShortLink shortLink = null;
+			for (int i = 0;i < 3; i++)
+			{
+				shortLink = await _unitOfWork.ShortLinks.GetByTokenAsync(request.Token);
+				if (shortLink != null) break;
+			}						
 			if (shortLink == null) return BadRequest("Link rút gọn " + request.Token + " không tồn tại");
 			var userId = shortLink.UserId;
 			var user = await _userManager.FindByIdAsync(userId.ToString());

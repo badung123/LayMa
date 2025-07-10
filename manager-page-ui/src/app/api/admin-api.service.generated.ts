@@ -2699,6 +2699,58 @@ export class AdminApiUserApiClient {
     }
 
     /**
+     * @param body (optional) 
+     * @return Success
+     */
+    updateUserClickRate(body?: UpdateClickRateRequest | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/admin/user/updateUserClickRate";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdateUserClickRate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdateUserClickRate(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processUpdateUserClickRate(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return _observableOf(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
      * @return Success
      */
     getInfoVerify(): Observable<VerifyUserInfo> {
@@ -5068,6 +5120,50 @@ export class TurnOffOrOnCampainRequest implements ITurnOffOrOnCampainRequest {
 export interface ITurnOffOrOnCampainRequest {
     id?: string;
     isActive?: boolean;
+}
+
+export class UpdateClickRateRequest implements IUpdateClickRateRequest {
+    userId?: string;
+    maxClickInDay?: number;
+    rate?: number;
+
+    constructor(data?: IUpdateClickRateRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.userId = _data["userId"];
+            this.maxClickInDay = _data["maxClickInDay"];
+            this.rate = _data["rate"];
+        }
+    }
+
+    static fromJS(data: any): UpdateClickRateRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateClickRateRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userId"] = this.userId;
+        data["maxClickInDay"] = this.maxClickInDay;
+        data["rate"] = this.rate;
+        return data;
+    }
+}
+
+export interface IUpdateClickRateRequest {
+    userId?: string;
+    maxClickInDay?: number;
+    rate?: number;
 }
 
 export class UpdateNguon implements IUpdateNguon {
