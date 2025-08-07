@@ -1,8 +1,10 @@
 ﻿using Azure.Core;
 using LayMa.Core.Domain.Campain;
+using LayMa.Core.Domain.Identity;
 using LayMa.Core.Domain.Mission;
 using LayMa.Core.Interface;
 using LayMa.Core.Model.Mission;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Org.BouncyCastle.Asn1.Ocsp;
 
@@ -13,9 +15,11 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 	public class MissionController : ControllerBase
 	{
 		private readonly IUnitOfWork _unitOfWork;
-		public MissionController(IUnitOfWork unitOfWork)
+		private readonly UserManager<AppUser> _userManager;
+		public MissionController(IUnitOfWork unitOfWork, UserManager<AppUser> userManager)
 		{
 			_unitOfWork = unitOfWork;
+			_userManager = userManager;
 		}
 		[HttpGet]
 		public async Task<ActionResult<MissionDto>> GetMissionByTokenShortLink(string token)
@@ -36,6 +40,9 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 			var date = DateTime.Now;
 			var start = date.Date;
 			var end = date.Date.AddDays(1);
+			var countCLickUserInday = await _unitOfWork.ViewDetails.CountClickByDateRangeAndUserId(start, end, userId);
+			//get user
+			var userInfo = await _userManager.FindByIdAsync(userId.ToString());
 			if (!campain.Status) {
                 if (campain.ViewPerHour == 0 && campain.ViewPerDay == 0)
                 {
@@ -116,7 +123,8 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 				Noidung = noidung
 			};
 			if (countCampain > viewCheck) missionDto.IsHetMa = true;
-            return Ok(missionDto);
+			if (countCLickUserInday >= userInfo.MaxClickInDay) missionDto.IsHetMa = true;
+			return Ok(missionDto);
 		}
 		[HttpPost]
 		[Route("changeMission")]

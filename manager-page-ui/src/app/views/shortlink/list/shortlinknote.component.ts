@@ -30,10 +30,7 @@ export class ShortlinkNoteComponent implements OnInit, OnDestroy{
       public config: DynamicDialogConfig,
       public ref: DynamicDialogRef,
       private router: Router) {
-      this.shortlinkNoteForm = this.fb.group({
-        origin: new FormControl('', Validators.required),
-        duphong: new FormControl('')
-      });
+      
       
     }
     ngOnDestroy(): void {
@@ -45,16 +42,20 @@ export class ShortlinkNoteComponent implements OnInit, OnDestroy{
     }
     
       ngOnInit() {
-        this.link = this.config.data.link;   
+        this.link = this.config.data.link;  
+        this.shortlinkNoteForm = this.fb.group({
+          origin: new FormControl(this.config.data.nguon),
+          duphong: new FormControl(this.config.data.duphong)
+        }); 
       }
     updateOrigin() {
       let origin = this.shortlinkNoteForm.controls['origin'].value;
-      if (origin == null || origin == '') this.alertService.showError('Link nguồn không được bỏ trống');
+      //if (origin == null || origin == '') this.alertService.showError('Link nguồn không được bỏ trống');
       let duphong = this.shortlinkNoteForm.controls['duphong'].value;
 
       var request: UpdateNguon = new UpdateNguon({
           shortlinkId : this.config.data.id,
-          origin: this.shortlinkNoteForm.controls['origin'].value,
+          origin: origin,
           duphong: duphong          
       });
       this.shortLinkApi.updateNguon(request).subscribe({

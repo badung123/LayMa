@@ -69,11 +69,13 @@ export class ListShortLinkComponent implements OnInit, OnDestroy{
       this.pageSize = event.rows;
       this.loadData();
     }
-    showModalUpdateNguon(shortlinkId: string,link: string ){
+    showModalUpdateNguon(shortlinkId: string,link: string,nguon: string,duphong: string ){
       const ref = this.dialogService.open(ShortlinkNoteComponent, {
         data: {
           id: shortlinkId,
-          link: link
+          link: link,
+          nguon: nguon,
+          duphong: duphong
         },
         header: 'Cập nhật nguồn link rút gọn',
         width: '70%'

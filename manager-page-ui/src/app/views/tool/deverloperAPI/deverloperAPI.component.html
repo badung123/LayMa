@@ -23,7 +23,7 @@
               <p>Để sử dụng API, bạn hay gửi một <strong>GET</strong> request kèm theo API token của bạn và link muốn rút gọn tương tự như sau:</p>
               <div class="card bg-ymn-3 shadow-none">
                   <div class="card-body text-sm">
-                    {{url}}/api/admin/shortlink/quicklink?tokenUser=<b>{{apiUserToken}}</b>&amp;format=<b>json</b>&amp;url=<b>web-can-rut-gon.com</b>
+                    {{url}}/api/admin/shortlink/quicklink?tokenUser=<b>{{apiUserToken}}</b>&amp;format=<b>json</b>&amp;url=<b>web-can-rut-gon.com</b>&amp;link_du_phong=<b>link-du-phong</b>
                   </div>
               </div>
   
@@ -44,7 +44,7 @@
               <p>Nếu bạn muốn link rút gọn được trả về phản hồi dưới dạng TEXT, hãy thay <strong>format=json</strong> thành <strong>format=text</strong></p>
               <div class="card bg-ymn-3 shadow-none">
                   <div class="card-body text-sm">
-                    {{url}}/api/admin/shortlink/quicklink?tokenUser=<b>{{apiUserToken}}</b>&amp;format=<b>text</b>&amp;url=<b>web-can-rut-gon.com</b>
+                    {{url}}/api/admin/shortlink/quicklink?tokenUser=<b>{{apiUserToken}}</b>&amp;format=<b>text</b>&amp;url=<b>web-can-rut-gon.com</b>&amp;link_du_phong=<b>link-du-phong</b>
                   </div>
               </div>
   
@@ -77,8 +77,9 @@
                   <div class="card-body text-sm">
                       <div class="keo-qua text-nowrap">
                         var originUrl = "https://web-can-rut-gon.com";<br>
+                        var link_du_phong = "link_du_phong";<br>
                         var apiToken = "{{apiUserToken}}";<br>
-                        var apiUrl = String.Format("{{url}}/api/admin/shortlink/quicklink?tokenUser=&#123;0&#125;&format=json&url=&#123;1&#125;", apiToken, originUrl);<br>
+                        var apiUrl = String.Format("{{url}}/api/admin/shortlink/quicklink?tokenUser=&#123;0&#125;&format=json&url=&#123;1&#125;&link_du_phong=&#123;2&#125;", apiToken, originUrl, link_du_phong);<br>
                         using (HttpClient client = new HttpClient())<br>
                         &#123;<br>
                             &emsp;client.BaseAddress = new Uri(apiUrl);<br>
@@ -100,8 +101,9 @@
                   <div class="card-body text-sm">
                       <div class="keo-qua text-nowrap">
                         var originUrl = "https://web-can-rut-gon.com";<br>
+                        var link_du_phong = "link_du_phong";<br>
                         var apiToken = "{{apiUserToken}}";<br>
-                        var apiUrl = String.Format("{{url}}/api/admin/shortlink/quicklink?tokenUser=&#123;0&#125;&format=text&url=&#123;1&#125;", apiToken, originUrl);<br>
+                        var apiUrl = String.Format("{{url}}/api/admin/shortlink/quicklink?tokenUser=&#123;0&#125;&format=text&url=&#123;1&#125;&link_du_phong=&#123;2&#125;", apiToken, originUrl, link_du_phong);<br>
                         using (HttpClient client = new HttpClient())<br>
                         &#123;<br>
                         &emsp; client.BaseAddress = new Uri(apiUrl);<br>

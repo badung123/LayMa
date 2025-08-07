@@ -2122,9 +2122,10 @@ export class AdminApiShortLinkApiClient {
      * @param tokenUser (optional) 
      * @param format (optional) 
      * @param url (optional) 
+     * @param link_du_phong (optional) 
      * @return Success
      */
-    createShortLinkByQickLink(tokenUser?: string | null | undefined, format?: string | null | undefined, url?: string | null | undefined): Observable<void> {
+    createShortLinkByQickLink(tokenUser?: string | null | undefined, format?: string | null | undefined, url?: string | null | undefined, link_du_phong?: string | null | undefined): Observable<void> {
         let url_ = this.baseUrl + "/api/admin/shortlink/quicklink?";
         if (tokenUser !== undefined && tokenUser !== null)
             url_ += "tokenUser=" + encodeURIComponent("" + tokenUser) + "&";
@@ -2132,6 +2133,8 @@ export class AdminApiShortLinkApiClient {
             url_ += "format=" + encodeURIComponent("" + format) + "&";
         if (url !== undefined && url !== null)
             url_ += "url=" + encodeURIComponent("" + url) + "&";
+        if (link_du_phong !== undefined && link_du_phong !== null)
+            url_ += "link_du_phong=" + encodeURIComponent("" + link_du_phong) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -2869,10 +2872,10 @@ export class AdminApiUserApiClient {
      * @param pageIndex (optional) 
      * @param pageSize (optional) 
      * @param keySearch (optional) 
-     * @param isVerify (optional) 
+     * @param statusVerify (optional) 
      * @return Success
      */
-    getListUser(pageIndex?: number | undefined, pageSize?: number | undefined, keySearch?: string | null | undefined, isVerify?: string | null | undefined): Observable<UserDtoInListPagedResult> {
+    getListUser(pageIndex?: number | undefined, pageSize?: number | undefined, keySearch?: string | null | undefined, statusVerify?: number | null | undefined): Observable<UserDtoInListPagedResult> {
         let url_ = this.baseUrl + "/api/admin/user/GetListUser?";
         if (pageIndex === null)
             throw new Error("The parameter 'pageIndex' cannot be null.");
@@ -2884,8 +2887,8 @@ export class AdminApiUserApiClient {
             url_ += "pageSize=" + encodeURIComponent("" + pageSize) + "&";
         if (keySearch !== undefined && keySearch !== null)
             url_ += "keySearch=" + encodeURIComponent("" + keySearch) + "&";
-        if (isVerify !== undefined && isVerify !== null)
-            url_ += "isVerify=" + encodeURIComponent("" + isVerify) + "&";
+        if (statusVerify !== undefined && statusVerify !== null)
+            url_ += "statusVerify=" + encodeURIComponent("" + statusVerify) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -5279,6 +5282,7 @@ export class UserDtoInList implements IUserDtoInList {
     verifyDateTime?: Date | undefined;
     email?: string | undefined;
     userName?: string | undefined;
+    readonly isWaitingVerify?: boolean;
 
     constructor(data?: IUserDtoInList) {
         if (data) {
@@ -5307,6 +5311,7 @@ export class UserDtoInList implements IUserDtoInList {
             this.verifyDateTime = _data["verifyDateTime"] ? new Date(_data["verifyDateTime"].toString()) : <any>undefined;
             this.email = _data["email"];
             this.userName = _data["userName"];
+            (<any>this).isWaitingVerify = _data["isWaitingVerify"];
         }
     }
 
@@ -5335,6 +5340,7 @@ export class UserDtoInList implements IUserDtoInList {
         data["verifyDateTime"] = this.verifyDateTime ? this.verifyDateTime.toISOString() : <any>undefined;
         data["email"] = this.email;
         data["userName"] = this.userName;
+        data["isWaitingVerify"] = this.isWaitingVerify;
         return data;
     }
 }
@@ -5356,6 +5362,7 @@ export interface IUserDtoInList {
     verifyDateTime?: Date | undefined;
     email?: string | undefined;
     userName?: string | undefined;
+    isWaitingVerify?: boolean;
 }
 
 export class UserDtoInListPagedResult implements IUserDtoInListPagedResult {

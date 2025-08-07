@@ -104,10 +104,10 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 		}
 		[HttpGet]
 		[Route("GetListUser")]
-		public async Task<ActionResult<PagedResult<UserDtoInList>>> GetListUser(int pageIndex, int pageSize = 10, string? keySearch = "", string? isVerify = "")
+		public async Task<ActionResult<PagedResult<UserDtoInList>>> GetListUser(int pageIndex, int pageSize = 10, string? keySearch = "", int? statusVerify = 0)
 		{
 
-			var listUser = await _unitOfWork.Users.GetAllUserPaging(pageIndex, pageSize, keySearch, isVerify);
+			var listUser = await _unitOfWork.Users.GetAllUserPaging(pageIndex, pageSize, keySearch, statusVerify);
 
 			return Ok(listUser);
 		}

@@ -217,14 +217,14 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 				var agent = await _unitOfWork.Users.GetUserAgentByRefcode(user.Agent);
 				if (agent != null)
 				{
-					await _unitOfWork.Users.UpdateBalanceCount(agent.Id, 60);
+					await _unitOfWork.Users.UpdateBalanceCount(agent.Id, 100);
 					//TODO: update vào bảng transation
 					var transLogAgent = new TransactionLog
 					{
 						Id = Guid.NewGuid(),
 						UserId = agent.Id,
 						UserName = agent.UserName,
-						Amount = 60,
+						Amount = 100,
 						OldBalance = Int64.Parse(agent.Balance.ToString()),
 						CreatedBy = user.UserName,
 						ShortLink = shortLink.Link,

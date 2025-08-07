@@ -28,6 +28,7 @@ namespace LayMa.Core.Model.User
 		public DateTime? VerifyDateTime { get; set; }
         public string? Email { get; set; }
 		public string? UserName { get; set; }
+		public bool IsWaitingVerify { get { return !IsVerify && OriginImage != null ? true : false; } }
 		public class AutoMapperProfiles : Profile
 		{
 			public AutoMapperProfiles()

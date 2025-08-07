@@ -61,12 +61,13 @@ export class UserComponent implements OnInit, OnDestroy{
     public pageIndex: number = 1;
     public pageSize: number = 10;
     public totalCount: number;
-    public verifySearch: string = '';
+    public verifySearch: number = 0;
     public userNameSearch: string = '';
     public listVerify: IVerify[] =[
-      {id:1,name:'All',value:""},
-      {id:2,name:'Đã Xác Minh',value:"true"},
-      {id:3,name:'Chưa Xác Minh',value:"false"}
+      {id:0,name:'All',value:""},
+      {id:1,name:'Đã Xác Minh',value:"true"},
+      {id:2,name:'Chưa Xác Minh',value:"false"},
+      {id:3,name:'Chờ Xác Minh',value:"false"}
     ];
     //Business variables
     public items: UserDtoInList[];

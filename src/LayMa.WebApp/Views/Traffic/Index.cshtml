@@ -945,20 +945,20 @@
 		var clickHandler = ('ontouchstart' in document.documentElement ? "touchstart" : "click");
 		updateTrackingMessage('Chạm vào màn hình để lấy mã');
 		updateCounterMessage(window.localStorage.getItem(cache_time)/1e3);
-		const clickManHinh = () =>{
-			window.removeEventListener(clickHandler, clickManHinh);
+		const clickManHinh1 = () =>{
+			window.removeEventListener(clickHandler, clickManHinh1);
 			var n = window.localStorage.getItem(cache_time);
 			updateTrackingMessage('Tiếp tục lấy mã sau:');
-			let t2=setInterval(function(){
+			let t22=setInterval(function(){
 				traffic_blurred
 					||(n-=1e3,
 						(element.dataset.click=='true'&&(show_code_button.innerHTML= get_code_after_string + ' ' + n/1e3,element.innerHTML='',element.appendChild(show_code_button),updateCounterMessage(n/1e3))),
 						element.dataset.time = n/1e3,
-						n<=0&&(clearInterval(t2),checkButtonClick(step))
+						n<=0&&(clearInterval(t22),window.removeEventListener(clickHandler, clickManHinh1),checkButtonClick(step))
 					);
 			},1e3)
 		}
-		window.addEventListener(clickHandler, clickManHinh);
+		window.addEventListener(clickHandler, clickManHinh1);
 	}
 	function checkButtonClick(step = 4){
 		if (step == 4) {

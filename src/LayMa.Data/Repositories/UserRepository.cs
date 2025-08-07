@@ -57,16 +57,24 @@ namespace LayMa.Data.Repositories
 				PageSize = pageSize
 			};
 		}
-		public async Task<PagedResult<UserDtoInList>> GetAllUserPaging(int pageIndex = 1, int pageSize = 10, string? keySearch = "", string isVerify = "")
+		public async Task<PagedResult<UserDtoInList>> GetAllUserPaging(int pageIndex = 1, int pageSize = 10, string? keySearch = "", int? statusVerify = 0)
 		{
 			var query = _context.Users.AsQueryable();
 			if (!String.IsNullOrEmpty(keySearch))
 			{
 				query = query.Where(x => x.UserName == keySearch);
 			}
-			if (!String.IsNullOrEmpty(isVerify))
+			if (statusVerify == 1)
 			{
-				query = query.Where(x => x.IsVerify == Boolean.Parse(isVerify));
+				query = query.Where(x => x.IsVerify);
+			}
+			if (statusVerify == 2)
+			{
+				query = query.Where(x => !x.IsVerify && x.OriginImage == null);
+			}
+			if (statusVerify == 3)
+			{
+				query = query.Where(x => !x.IsVerify && x.OriginImage != null);
 			}
 			var totalRow = await query.CountAsync();
 

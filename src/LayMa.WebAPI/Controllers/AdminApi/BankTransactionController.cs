@@ -49,6 +49,9 @@ namespace LayMa.WebAPI.Controllers.AdminApi
             if (!user.IsVerify) return BadRequest("Cần xác minh để rút tiền");
             if (request.Money < 50000) return BadRequest("Rút tối thiểu 50.000 VNĐ");
 			if (user.Balance < request.Money) return BadRequest("Số dư không đủ");
+			//trừ tiền
+			await _unitOfWork.Users.UpdateBalanceCount(user.Id, -request.Money);
+			await _unitOfWork.CompleteAsync();
 			var transaction = _mapper.Map<CreateBankTransactionDto, TransactionBank>(request);
             transaction.DateCreated = DateTime.Now;
             transaction.DateModified = DateTime.Now;
@@ -58,8 +61,7 @@ namespace LayMa.WebAPI.Controllers.AdminApi
             var id = Guid.NewGuid();
             transaction.Id = id;
             _unitOfWork.BankTransactions.Add(transaction);
-			//trừ tiền
-			await _unitOfWork.Users.UpdateBalanceCount(user.Id, -request.Money);
+			
 			var transLogUser = new TransactionLog
 			{
 				Id = Guid.NewGuid(),
@@ -75,6 +77,12 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 			};
 			_unitOfWork.TransactionLogs.Add(transLogUser);
 			var result = await _unitOfWork.CompleteAsync();
+            if (result <= 0)
+            {
+				//cộng lại tiền
+				await _unitOfWork.Users.UpdateBalanceCount(user.Id, request.Money);
+				await _unitOfWork.CompleteAsync();
+			}
             return result > 0 ? Ok() : BadRequest("Có lỗi xảy ra");
         }
         [HttpGet]

@@ -200,7 +200,7 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 		[HttpGet]
 		[Route("quicklink")]
 		//[Authorize(ShortLinks.Create)]
-		public async Task<ActionResult<dynamic>> CreateShortLinkByQickLink(string tokenUser, string? format, string url)
+		public async Task<ActionResult<dynamic>> CreateShortLinkByQickLink(string tokenUser, string? format, string url,string ? link_du_phong)
 		{
 			var user = await _unitOfWork.Users.GetUserByUserToken(tokenUser);
 			var token = "";
@@ -213,7 +213,7 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 				Token = token,
 				DateCreated = DateTime.Now,
 				DateModified = DateTime.Now,
-				Duphong = "",
+				Duphong = string.IsNullOrEmpty(link_du_phong) ? "" : link_du_phong,
 				Origin = "",
 				UserId = user.Id,
 				View = 0,

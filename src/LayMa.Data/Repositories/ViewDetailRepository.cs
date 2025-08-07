@@ -57,6 +57,18 @@ namespace LayMa.Data.Repositories
 				}).ToList();
 			return list;
 		}
+		//public async Task<List<dynamic>> GetTopFourView(DateTime startTime,DateTime endTime)
+		//{
+		//	var query = _context.ViewDetails.AsQueryable();
+		//	var list = query.Where(x => x.DateCreated >= startTime && x.DateCreated < endTime)
+		//		.GroupBy(x => x.UserId)
+		//		.Select(x => new ThongKeClickViewInMonth
+		//		{
+		//			Date = x.Key,
+		//			Count = x.Count()
+		//		}).ToList();
+		//	return list;
+		//}
 
 
 		public async Task<int> CountClickByDateRangeAndCampainId(DateTime start, DateTime end, Guid campainId)

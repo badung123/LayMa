@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace LayMa.Core.Model.ShortLink
 {
-    public class UpdateNguon
-    {
-        public Guid ShortlinkId { get; set; }
-        public string? Origin { get; set; }
-		public string? Duphong { get; set; }
+	public class TopClickView
+	{
+        public int UserId { get; set; }
+		public int UserName { get; set; }
+		public int Click { get; set; }
 	}
 }

@@ -138,7 +138,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     .subscribe({
       next: (response: ThongKeViewClick) => {
         this.tongclick = new Intl.NumberFormat('vi').format(response.click!);
-        this.tongthunhap = new Intl.NumberFormat('vi').format(response.click! *800);
+        this.tongthunhap = new Intl.NumberFormat('vi').format(response.click! *1000);
         //this.tongview = new Intl.NumberFormat('vi').format(response.view!);
       },
       error: (error: any) => {

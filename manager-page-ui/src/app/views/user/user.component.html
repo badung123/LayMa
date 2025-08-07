@@ -19,7 +19,7 @@
             </c-col>
             <c-col>
               <select cSelect id="floatingSelectGrid" [(ngModel)]="verifySearch" (change)="loadData()">
-                <option *ngFor="let a of listVerify" [ngValue]="a.value">{{a.name}}</option>
+                <option *ngFor="let a of listVerify" [ngValue]="a.id">{{a.name}}</option>
               </select>
             </c-col>
           </c-row>
@@ -96,7 +96,8 @@
                         </td>
                         <td class="text-center">
                             <button *ngIf="item.isVerify" cButton color="success">Đã Xác Minh</button>
-                            <button *ngIf="!item.isVerify" cButton color="danger">Chưa Xác Minh</button>
+                            <button *ngIf="!item.isVerify && !item.isWaitingVerify" cButton color="danger">Chưa Xác Minh</button>
+                            <button *ngIf="!item.isVerify && item.isWaitingVerify" cButton color="warning">Chờ Xác Minh</button>
                         </td>
                         <td>
                             <c-dropdown>
