@@ -113,6 +113,7 @@ namespace LayMa.Data.Repositories
 			{
 				query = query.Where(x => x.UserName.Contains(userName));
 			}
+			query = query.Where(x => x.IsActive && x.IsVerify);
 			//query = query.Join(x=> )
 			return await _mapper.ProjectTo<ThongKeViewClickByUser>(query).ToListAsync();
 		}

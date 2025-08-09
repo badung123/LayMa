@@ -161,11 +161,11 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 			int? solution = null;
 			if (campain.Flatform == "google")
 			{
-				solution = await _unitOfWork.CodeManagers.UpdateIsUsedGoogle(request.Code, campain.KeyToken);
+				solution = await _unitOfWork.CodeManagers.UpdateIsUsedGoogle(request.Code, campain.KeyToken, shortLink.Id);
 			}
 			else
 			{
-				solution = await _unitOfWork.CodeManagers.UpdateIsUsed(request.Code, campain.Id);
+				solution = await _unitOfWork.CodeManagers.UpdateIsUsed(request.Code, campain.Id, shortLink.Id);
 			}
 			if (solution == null) return BadRequest("Không xác định được bạn đang chạy theo phương pháp nào của nhà cung cấp.Vui lòng liên hệ nhà cung cấp");
 			//insert view detail

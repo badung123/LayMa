@@ -1,9 +1,9 @@
 <c-row class="text-center mb-4">
   <h4>📢📢📢 LIÊN HỆ <a href="https://t.me/audit1199" target="_blank">https://t.me/audit1199</a> ĐỂ XÁC MINH NGUỒN  📢📢📢</h4>
 </c-row>
-<!-- <c-row>
+<c-row>
   <c-col [sm]="6">
-    <c-card class="mb-4">
+    <c-card class="mb-4 noiquykhuyenmai">
       <c-card-header><strong>Khuyến mãi 🎁🎁🎁</strong></c-card-header>
       <c-card-body>
         <h3>Chương trình đua TOP hàng tuần, hàng tháng</h3>                
@@ -30,57 +30,122 @@
     </c-card>
   </c-col>
   <c-col [sm]="6">
-    <c-card class="mb-4">
-      <c-card-header><strong>Top View 🔥🔥🔥</strong></c-card-header>
-      <c-card-body>
-        <table
-          [hover]="true"
-          [responsive]="true"
-          [striped]="true"
-          align="middle"
-          cTable
-          class="mb-0 border"
-        >
-          <thead class="text-nowrap text-truncate">
-          <tr>
-            <th class="bg-body-tertiary">Rank</th>
-            <th class="bg-body-tertiary">View</th>
-          </tr>
-          </thead>
-          <tbody>
-            @for (item of items; track item.token; let i = $index) {
+    <c-row>
+      <c-col xs>
+        <c-card class="mb-1">
+          <c-card-header>
+            <c-row>
+              <c-col [sm]="6">
+                <strong>Top View Trong Tuần🔥🔥🔥</strong>
+              </c-col>
+              <c-col [sm]="6" class="float-end">
+                <strong class="float-end">Áp dụng từ 01/09</strong>
+              </c-col>
+            </c-row>
+            
+            
+          </c-card-header>
+          <c-card-body>
+            <table
+              [hover]="true"
+              [responsive]="true"
+              [striped]="true"
+              align="middle"
+              cTable
+              class="mb-0 border"
+            >
+              <thead class="text-nowrap text-truncate">
               <tr>
-                <td>
-                  <div>{{ item.link }}</div>
-                </td>
-                <td>
-                  <div class="d-flex justify-content-between">
-                    <div class="float-end ms-1 text-nowrap">
-                      <small class="text-body-secondary">
-                        {{ item.viewCount }}
-                      </small>
-                    </div>
-                  </div>
-                  
-                </td>
-                <td class="text-center">
-                  <div class="d-flex justify-content-between">
-                    <div class="float-end ms-1 text-nowrap">
-                      <small class="text-body-secondary">
-                        {{ item.viewCount * 1000 }}
-                      </small>
-                    </div>
-                  </div>
-                </td>
-                
+                <th class="bg-body-tertiary">Rank</th>
+                <th class="bg-body-tertiary">UserName</th>
+                <th class="bg-body-tertiary">View</th>
               </tr>
-            }
-          </tbody>
-        </table>
-      </c-card-body>
-    </c-card>
+              </thead>
+              <tbody>
+                @for (week of topWeeks; track week.id; let i = $index) {
+                  <tr>
+                    <td>
+                      <img width="30px" height="30px" *ngIf="i == 0" class="img-fluid" src="/assets/images/rank.png" alt="top1" />
+                      <img width="30px" height="30px" *ngIf="i == 1" class="img-fluid" src="/assets/images/second-rank.png" alt="top2" />
+                      <img width="30px" height="30px" *ngIf="i == 2" class="img-fluid" src="/assets/images/3rd-place.png" alt="top3" />
+                      <img width="30px" height="30px" *ngIf="i == 3" class="img-fluid" src="/assets/images/four.png" alt="top4" />
+                    </td>
+                    <td>
+                      <div>
+                        {{ remove_n_words(week.userName)}}
+                      </div>
+                    </td>  
+                    <td>
+                      <div>
+                        {{ week.click}}
+                      </div>
+                    </td>             
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </c-card-body>
+        </c-card>
+      </c-col>
+    </c-row>
+    <c-row>
+      <c-col xs>
+        <c-card class="mb-1">
+          <c-card-header>
+            <c-row>
+              <c-col [sm]="6">
+                <strong>Top View Trong Tháng 🔥🔥🔥</strong>
+              </c-col>
+              <c-col [sm]="6" class="float-end">
+                <strong class="float-end">Áp dụng từ 01/09</strong>
+              </c-col>
+            </c-row>
+          </c-card-header>
+          <c-card-body>
+            <table
+              [hover]="true"
+              [responsive]="true"
+              [striped]="true"
+              align="middle"
+              cTable
+              class="mb-0 border"
+            >
+              <thead class="text-nowrap text-truncate">
+              <tr>
+                <th class="bg-body-tertiary">Rank</th>
+                <th class="bg-body-tertiary">UserName</th>
+                <th class="bg-body-tertiary">View</th>
+              </tr>
+              </thead>
+              <tbody>
+                @for (month of topMonths; track month.id; let i = $index) {
+                  <tr>
+                    <td>
+                      <img width="30px" height="30px" *ngIf="i == 0" class="img-fluid" src="/assets/images/rank.png" alt="top1" />
+                      <img width="30px" height="30px" *ngIf="i == 1" class="img-fluid" src="/assets/images/second-rank.png" alt="top2" />
+                      <img width="30px" height="30px" *ngIf="i == 2" class="img-fluid" src="/assets/images/3rd-place.png" alt="top3" />
+                      <img width="30px" height="30px" *ngIf="i == 3" class="img-fluid" src="/assets/images/four.png" alt="top4" />
+                    </td>
+                    <td>
+                      <div>
+                        {{ remove_n_words(month.userName)}}
+                      </div>
+                    </td>  
+                    <td>
+                      <div>
+                        {{ month.click}}
+                      </div>
+                    </td>             
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </c-card-body>
+        </c-card>
+      </c-col>
+    </c-row>
   </c-col>
-</c-row> -->
+</c-row>
 <c-card class="my-4">
   <c-card-body>
     <c-row>

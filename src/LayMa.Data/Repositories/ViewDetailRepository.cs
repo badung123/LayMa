@@ -109,5 +109,36 @@ namespace LayMa.Data.Repositories
 
 		}
 
+		public async Task<List<ThongKeViewClickByUser>> GetTopUsersByClicks(DateTime start, DateTime end, int top = 4)
+		{
+			var query = _context.ViewDetails
+				.Where(x => x.DateCreated >= start && x.DateCreated <= end)
+				.GroupBy(x => x.UserId)
+				.Select(g => new
+				{
+					UserId = g.Key,
+					ClickCount = g.GroupBy(x => new { x.CampainId, x.ShortLinkId, x.Device, x.IPAddress }).Count()
+				})
+				.OrderByDescending(x => x.ClickCount)
+				.Take(top);
+
+			var topUsers = await query.ToListAsync();
+
+			var userIds = topUsers.Select(x => x.UserId).ToList();
+			var users = await _context.Users
+				.Where(u => userIds.Contains(u.Id))
+				.ToListAsync();
+
+			var result = topUsers.Select(tu => new ThongKeViewClickByUser
+			{
+				Id = tu.UserId,
+				UserName = users.FirstOrDefault(u => u.Id == tu.UserId)?.UserName ?? "Unknown",
+				Click = tu.ClickCount,
+				View = 0 // We can add view count later if needed
+			}).ToList();
+
+			return result;
+		}
+
 	}
 }

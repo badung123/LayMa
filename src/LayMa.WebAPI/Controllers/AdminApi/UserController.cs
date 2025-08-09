@@ -3,11 +3,13 @@ using LayMa.Core.Domain.Identity;
 using LayMa.Core.Interface;
 using LayMa.Core.Model;
 using LayMa.Core.Model.Auth;
+using LayMa.Core.Model.ShortLink;
 using LayMa.Core.Model.User;
 using LayMa.WebAPI.Extensions;
 using LayMa.WebAPI.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace LayMa.WebAPI.Controllers.AdminApi
 {
@@ -110,6 +112,31 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 			var listUser = await _unitOfWork.Users.GetAllUserPaging(pageIndex, pageSize, keySearch, statusVerify);
 
 			return Ok(listUser);
+		}
+
+		[HttpGet]
+		[Route("getTopUsersByClicksInWeek")]
+		public async Task<ActionResult<List<ThongKeViewClickByUser>>> GetTopUsersByClicksInWeek()
+		{
+			// Calculate this week's date range (Monday to Sunday)
+			var today = DateTime.Now.Date;
+			var startOfWeek = today.AddDays(-(int)today.DayOfWeek + (int)DayOfWeek.Monday);
+			var endOfWeek = startOfWeek.AddDays(6).AddHours(23).AddMinutes(59).AddSeconds(59);
+
+			var topUsers = await _unitOfWork.ViewDetails.GetTopUsersByClicks(startOfWeek, endOfWeek, 4);
+			return Ok(topUsers);
+		}
+		[HttpGet]
+		[Route("getTopUsersByClicksInMonth")]
+		public async Task<ActionResult<List<ThongKeViewClickByUser>>> GetTopUsersByClicksInMonth()
+		{
+			// Calculate this week's date range (Monday to Sunday)
+			var today = DateTime.Now.Date;
+			var startOfMonth = new DateTime(today.Year, today.Month, 1);
+			var endOfMonth = startOfMonth.AddMonths(1).AddSeconds(-1);
+
+			var topUsers = await _unitOfWork.ViewDetails.GetTopUsersByClicks(startOfMonth, endOfMonth, 4);
+			return Ok(topUsers);
 		}
 	}
 }

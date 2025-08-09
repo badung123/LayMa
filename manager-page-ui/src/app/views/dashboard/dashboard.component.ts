@@ -25,10 +25,12 @@ import { ChartjsComponent } from '@coreui/angular-chartjs';
 import { IconDirective } from '@coreui/icons-angular';
 import { DashboardChartsData, IChartProps } from './dashboard-charts-data';
 import { Subject, takeUntil } from 'rxjs';
+import { Observable } from 'rxjs';
+import { interval } from 'rxjs';
 import { UtilityService } from '../../shared/services/utility.service';
 import { AlertService } from '../../shared/services/alert.service';
 
-import { AdminApiCampainApiClient, AdminApiKeySearchApiClient, AdminApiShortLinkApiClient, ShortLinkInListDto, ShortLinkInListDtoPagedResult, ThongKeView, ThongKeViewClick } from '../../api/admin-api.service.generated';
+import { AdminApiCampainApiClient, AdminApiUserApiClient, AdminApiShortLinkApiClient, ShortLinkInListDto, ShortLinkInListDtoPagedResult, ThongKeView, ThongKeViewClick, ThongKeViewClickByUser } from '../../api/admin-api.service.generated';
 
 @Component({
   templateUrl: 'dashboard.component.html',
@@ -56,11 +58,23 @@ export class DashboardComponent implements OnInit, OnDestroy {
   public from: Date;
   public to: Date;
   public isDateRange: Boolean = false;
+  public topWeeks: ThongKeViewClickByUser[];
+  public topMonths: ThongKeViewClickByUser[];
+  public topinweek;
+  public topinmonth;
+  time: Date;
   constructor(private alertService: AlertService,
     private shortlinkApiClient: AdminApiShortLinkApiClient,
     private thognkeApiClient: AdminApiCampainApiClient,
+    private userApiClient: AdminApiUserApiClient,
     private utilService: UtilityService,
-  ) {}
+  ) {
+    // First way: manual subscribe
+    
+      interval(10000)
+      .subscribe(() => {this.loadTopClickViewInWeek();
+      this.loadTopClickViewInMonth()})
+  }
 
   public mainChart: IChartProps = { type: 'line' };
   public mainChartRef: WritableSignal<any> = signal(undefined);
@@ -79,14 +93,21 @@ export class DashboardComponent implements OnInit, OnDestroy {
     //this.updateChartOnColorModeChange();
     
     this.loadBalance(); 
+    
     //this.loadTopLink();
     this.loadTongViewByRangeDate('Day');
     this.loadThongkeView();
     this.loadhoahong();
+    this.loadTopClickViewInWeek();
+    this.loadTopClickViewInMonth();
+    // this.topinweek = setInterval(this.loadTopClickViewInWeek,10000);
+    // this.topinmonth = setInterval(this.loadTopClickViewInMonth,10000);
   }
   ngOnDestroy(): void {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
+    // clearInterval(this.topinweek);
+    // clearInterval(this.topinmonth);
   }
 
   initCharts(): void {
@@ -105,6 +126,45 @@ export class DashboardComponent implements OnInit, OnDestroy {
   //     },
   //   });
   // }
+  loadTopClickViewInWeek(){
+    this.userApiClient.getTopUsersByClicksInWeek()
+          .pipe(takeUntil(this.ngUnsubscribe))
+          .subscribe({
+            next: (response: ThongKeViewClickByUser[]) => {
+              this.topWeeks = response!;
+            },
+            error: (error: any) => {
+              console.log(error);
+              this.alertService.showError('Có lỗi xảy ra');
+            },
+          });
+  }
+  loadTopClickViewInMonth(){
+    this.userApiClient.getTopUsersByClicksInMonth()
+          .pipe(takeUntil(this.ngUnsubscribe))
+          .subscribe({
+            next: (response: ThongKeViewClickByUser[]) => {
+              this.topMonths = response!;
+            },
+            error: (error: any) => {
+              console.log(error);
+              this.alertService.showError('Có lỗi xảy ra');
+            },
+          });
+  }
+  remove_n_words(words) {
+    let un = "";
+    for (let index = 0; index < words.length; index++) {
+      if (index < 3) {
+        un += words[index];
+      }
+      else{
+        un+= "*";
+      }
+      
+    }
+    return un;
+  }
   loadBalance(){
     this.shortlinkApiClient.getBalance()
     .pipe(takeUntil(this.ngUnsubscribe))
