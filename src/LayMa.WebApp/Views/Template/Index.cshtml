@@ -138,18 +138,496 @@
 			<div class="box-video fadeInUp visible">
 				<p class="box-video-title fadeInUp visible">VIDEO HƯỚNG DẪN CÁCH LẤY MÃ</p>
 				<div class="box-video-youtube fadeInUp visible">
-					@if (Model.Flatfrom == "google")
-					{
-						<iframe style="width:100%; aspect-ratio:0.452;" src="/uploads/google.mp4"></iframe>
-					}
-					else
-					{
-						<iframe style="width:100%; aspect-ratio:0.452;" src="/uploads/video_fb_hd.mp4"></iframe>
-					}
 					
-					
+					<!-- Video Grid Container -->
+					<div class="video-grid">
+						@if (Model.Flatfrom == "google")
+						{
+							<!-- Solution1 Video -->
+							<div class="video-item">
+								<h4 class="video-title">Solution 1</h4>
+								<div class="video-container">
+									<video id="google-video"
+										   class="responsive-video"
+										   controls
+										   preload="metadata"
+										   poster="/uploads/google-poster.jpg"
+										   playsinline
+										   webkit-playsinline>
+										<source src="/uploads/google.mp4" type="video/mp4">
+										<source src="/uploads/google.webm" type="video/webm">
+										<p>Trình duyệt của bạn không hỗ trợ video. <a href="/uploads/google.mp4">Tải video</a></p>
+									</video>
+								</div>
+							</div>
+
+							<!-- Solution2 Video -->
+							<div class="video-item">
+								<h4 class="video-title">Solotion 2</h4>
+								<div class="video-container">
+									<video id="facebook-video"
+										   class="responsive-video"
+										   controls
+										   preload="metadata"
+										   poster="/uploads/facebook-poster.jpg"
+										   playsinline
+										   webkit-playsinline>
+										<source src="/uploads/google2.mp4" type="video/mp4">
+										<source src="/uploads/google2.webm" type="video/webm">
+										<p>Trình duyệt của bạn không hỗ trợ video. <a href="/uploads/google2.mp4">Tải video</a></p>
+									</video>
+								</div>
+							</div>
+						}
+						else
+						{
+							<!-- Solution1 Video -->
+							<div class="video-item">
+								<h4 class="video-title">Solution 1</h4>
+								<div class="video-container">
+									<video id="google-video"
+										   class="responsive-video"
+										   controls
+										   preload="metadata"
+										   poster="/uploads/google-poster.jpg"
+										   playsinline
+										   webkit-playsinline>
+										<source src="/uploads/video_fb_hd.mp4" type="video/mp4">
+										<source src="/uploads/video_fb_hd.webm" type="video/webm">
+										<p>Trình duyệt của bạn không hỗ trợ video. <a href="/uploads/video_fb_hd.mp4">Tải video</a></p>
+									</video>
+								</div>
+							</div>
+
+							<!-- Solution2 Video -->
+							<div class="video-item">
+								<h4 class="video-title">Solotion 2</h4>
+								<div class="video-container">
+									<video id="facebook-video"
+										   class="responsive-video"
+										   controls
+										   preload="metadata"
+										   poster="/uploads/facebook-poster.jpg"
+										   playsinline
+										   webkit-playsinline>
+										<source src="/uploads/facebook2.mp4" type="video/mp4">
+										<source src="/uploads/facebook2.webm" type="video/webm">
+										<p>Trình duyệt của bạn không hỗ trợ video. <a href="/uploads/facebook2.mp4">Tải video</a></p>
+									</video>
+								</div>
+							</div>
+						}
+						
+					</div>
 				</div>
 			</div>
+
+			<!-- Video Styles for Web and Mobile -->
+			<style>
+				/* Video Grid Layout */
+				.video-grid {
+					display: grid;
+					grid-template-columns: 1fr 1fr;
+					gap: 20px;
+					width: 100%;
+					max-width: 1200px;
+					margin: 0 auto;
+				}
+
+				.video-item {
+					display: flex;
+					flex-direction: column;
+					align-items: center;
+				}
+
+				.video-title {
+					font-size: 18px;
+					font-weight: bold;
+					margin-bottom: 15px;
+					color: #333;
+					text-align: center;
+				}
+
+				.video-container {
+					position: relative;
+					width: 100%;
+					max-width: 100%; /* Remove fixed max-width to maintain original width */
+					margin: 0 auto;
+					background: #000;
+					border-radius: 8px;
+					overflow: hidden;
+					box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+				}
+
+				.responsive-video {
+					width: 100%;
+					height: auto;
+					display: block;
+					/* Remove aspect-ratio to maintain original video dimensions */
+					object-fit: contain; /* Changed from cover to contain */
+				}
+
+				/* Mobile Optimizations */
+				@@media (max-width: 768px) {
+					.video-grid {
+						grid-template-columns: 1fr; /* Stack videos vertically on mobile */
+						gap: 30px;
+					}
+
+					.video-container {
+						max-width: 100%;
+						margin: 0 10px;
+						border-radius: 6px;
+					}
+
+					.responsive-video {
+						/* Remove aspect-ratio constraint on mobile */
+						max-height: 60vh;
+						width: 100%;
+					}
+
+					.box-video-title {
+						font-size: 16px !important;
+						margin-bottom: 15px !important;
+					}
+
+					.video-title {
+						font-size: 16px;
+						margin-bottom: 10px;
+					}
+
+					/* Mobile video controls optimization */
+					.responsive-video::-webkit-media-controls {
+						background-color: rgba(0, 0, 0, 0.7);
+					}
+
+					.responsive-video::-webkit-media-controls-panel {
+						padding: 8px;
+					}
+
+					.responsive-video::-webkit-media-controls-play-button {
+						background-color: rgba(255, 255, 255, 0.9);
+						border-radius: 50%;
+						width: 40px;
+						height: 40px;
+					}
+				}
+
+				/* Tablet Optimizations */
+				@@media (min-width: 769px) and (max-width: 1024px) {
+					.video-grid {
+						grid-template-columns: 1fr 1fr; /* Keep side by side on tablet */
+						gap: 15px;
+					}
+
+					.video-container {
+						max-width: 100%; /* Maintain original width on tablet */
+					}
+
+					.responsive-video {
+						/* Remove aspect-ratio constraint on tablet */
+						max-height: 70vh;
+						width: 100%;
+					}
+
+					.video-title {
+						font-size: 16px;
+					}
+				}
+
+				/* Desktop Optimizations */
+				@@media (min-width: 1025px) {
+					.video-grid {
+						grid-template-columns: 1fr 1fr; /* Side by side on desktop */
+						gap: 30px;
+					}
+
+					.video-container {
+						max-width: 100%; /* Maintain original width on desktop */
+					}
+
+					.responsive-video {
+						/* Remove aspect-ratio constraint on desktop */
+						max-height: 80vh;
+						width: 100%;
+					}
+
+					.video-title {
+						font-size: 20px;
+					}
+				}
+
+				/* Video Loading States */
+				.video-container::before {
+					content: '';
+					position: absolute;
+					top: 50%;
+					left: 50%;
+					transform: translate(-50%, -50%);
+					width: 40px;
+					height: 40px;
+					border: 3px solid #f3f3f3;
+					border-top: 3px solid #3498db;
+					border-radius: 50%;
+					animation: spin 1s linear infinite;
+					z-index: 1;
+					opacity: 0;
+					transition: opacity 0.3s;
+				}
+
+				.video-container.loading::before {
+					opacity: 1;
+				}
+
+				@@keyframes spin {
+					0% { transform: translate(-50%, -50%) rotate(0deg); }
+					100% { transform: translate(-50%, -50%) rotate(360deg); }
+				}
+
+				/* Video Error State */
+				.video-error {
+					position: absolute;
+					top: 50%;
+					left: 50%;
+					transform: translate(-50%, -50%);
+					text-align: center;
+					color: #fff;
+					background: rgba(0, 0, 0, 0.8);
+					padding: 20px;
+					border-radius: 8px;
+					display: none;
+				}
+
+				.video-container.error .video-error {
+					display: block;
+				}
+			</style>
+
+			<!-- Video JavaScript for Enhanced Functionality -->
+			<script>
+				// Mobile detection utility
+				const isMobile = {
+					Android: function() {
+						return navigator.userAgent.match(/Android/i);
+					},
+					BlackBerry: function() {
+						return navigator.userAgent.match(/BlackBerry/i);
+					},
+					iOS: function() {
+						return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+					},
+					Opera: function() {
+						return navigator.userAgent.match(/Opera Mini/i);
+					},
+					Windows: function() {
+						return navigator.userAgent.match(/IEMobile/i);
+					},
+					any: function() {
+						return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
+					}
+				};
+
+				// Video quality detection
+				const getVideoQuality = function() {
+					const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+					if (connection) {
+						if (connection.effectiveType === '4g') return 'high';
+						if (connection.effectiveType === '3g') return 'medium';
+						return 'low';
+					}
+					return 'medium'; // Default fallback
+				};
+
+				document.addEventListener('DOMContentLoaded', function() {
+					const videos = document.querySelectorAll('.responsive-video');
+					
+					videos.forEach(function(video) {
+						const container = video.closest('.video-container');
+						
+						// Show loading state
+						container.classList.add('loading');
+						
+						// Handle video events
+						video.addEventListener('loadedmetadata', function() {
+							container.classList.remove('loading');
+							trackVideoEvent('loaded', video.id);
+						});
+						
+						video.addEventListener('error', function() {
+							container.classList.remove('loading');
+							container.classList.add('error');
+							showVideoError(container);
+							trackVideoEvent('error', video.id);
+						});
+						
+						video.addEventListener('play', function() {
+							trackVideoEvent('play', video.id);
+						});
+						
+						video.addEventListener('pause', function() {
+							trackVideoEvent('pause', video.id);
+						});
+						
+						video.addEventListener('ended', function() {
+							trackVideoEvent('ended', video.id);
+						});
+						
+						// Mobile optimizations
+						if (isMobile.any()) {
+							video.setAttribute('playsinline', '');
+							video.setAttribute('webkit-playsinline', '');
+							video.setAttribute('x-webkit-airplay', 'allow');
+							
+							// Prevent fullscreen on mobile
+							video.addEventListener('webkitbeginfullscreen', function() {
+								video.webkitExitFullscreen();
+							});
+							
+							// Add touch-friendly controls
+							addMobileControls(video, container);
+						}
+						
+						// Auto-pause when video is not visible
+						const observer = new IntersectionObserver(function(entries) {
+							entries.forEach(function(entry) {
+								if (!entry.isIntersecting && !video.paused) {
+									video.pause();
+								}
+							});
+						}, { threshold: 0.5 });
+						
+						observer.observe(video);
+						
+						// Add keyboard shortcuts for desktop
+						if (!isMobile.any()) {
+							document.addEventListener('keydown', function(e) {
+								if (document.activeElement === video || video.contains(document.activeElement)) {
+									switch(e.code) {
+										case 'Space':
+											e.preventDefault();
+											video.paused ? video.play() : video.pause();
+											break;
+										case 'ArrowRight':
+											e.preventDefault();
+											video.currentTime += 10;
+											break;
+										case 'ArrowLeft':
+											e.preventDefault();
+											video.currentTime -= 10;
+											break;
+									}
+								}
+							});
+						}
+					});
+				});
+				
+				function addMobileControls(video, container) {
+					// Add custom mobile play button overlay
+					const playOverlay = document.createElement('div');
+					playOverlay.className = 'mobile-play-overlay';
+					playOverlay.innerHTML = '<div class="play-button">▶</div>';
+					playOverlay.style.cssText = `
+						position: absolute;
+						top: 0;
+						left: 0;
+						right: 0;
+						bottom: 0;
+						background: rgba(0,0,0,0.3);
+						display: flex;
+						align-items: center;
+						justify-content: center;
+						z-index: 2;
+						cursor: pointer;
+						transition: opacity 0.3s;
+					`;
+					
+					playOverlay.querySelector('.play-button').style.cssText = `
+						width: 60px;
+						height: 60px;
+						background: rgba(255,255,255,0.9);
+						border-radius: 50%;
+						display: flex;
+						align-items: center;
+						justify-content: center;
+						font-size: 24px;
+						color: #333;
+					`;
+					
+					playOverlay.addEventListener('click', function() {
+						video.play();
+						playOverlay.style.opacity = '0';
+						setTimeout(() => playOverlay.style.display = 'none', 300);
+					});
+					
+					container.appendChild(playOverlay);
+					
+					// Hide overlay when video starts playing
+					video.addEventListener('play', function() {
+						playOverlay.style.opacity = '0';
+						setTimeout(() => playOverlay.style.display = 'none', 300);
+					});
+					
+					// Show overlay when video pauses
+					video.addEventListener('pause', function() {
+						playOverlay.style.display = 'flex';
+						playOverlay.style.opacity = '1';
+					});
+				}
+				
+				function showVideoError(container) {
+					const errorDiv = document.createElement('div');
+					errorDiv.className = 'video-error';
+					errorDiv.innerHTML = `
+						<h4>Không thể tải video</h4>
+						<p>Vui lòng kiểm tra kết nối mạng và thử lại</p>
+						<button onclick="retryVideo('${container.querySelector('video').id}')" style="
+							background: #007bff; 
+							color: white; 
+							border: none; 
+							padding: 8px 16px; 
+							border-radius: 4px; 
+							cursor: pointer;
+							margin-top: 10px;
+						">Thử lại</button>
+					`;
+					container.appendChild(errorDiv);
+				}
+				
+				function retryVideo(videoId) {
+					const video = document.getElementById(videoId);
+					const container = video.closest('.video-container');
+					
+					// Remove error state
+					container.classList.remove('error');
+					const errorDiv = container.querySelector('.video-error');
+					if (errorDiv) errorDiv.remove();
+					
+					// Show loading state
+					container.classList.add('loading');
+					
+					// Reload video
+					video.load();
+					video.play().catch(() => {
+						// If autoplay fails, that's okay
+					});
+				}
+				
+				// Video analytics tracking
+				function trackVideoEvent(event, videoId) {
+					// You can implement analytics tracking here
+					console.log('Video event:', event, 'Video ID:', videoId, 'Quality:', getVideoQuality(), 'Mobile:', isMobile.any());
+					
+					// Example: Send to analytics service
+					// if (typeof gtag !== 'undefined') {
+					//     gtag('event', 'video_' + event, {
+					//         'video_id': videoId,
+					//         'quality': getVideoQuality(),
+					//         'mobile': isMobile.any()
+					//     });
+					// }
+				}
+			</script>
 
 
 
