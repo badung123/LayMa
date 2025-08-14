@@ -17,6 +17,11 @@ namespace LayMa.WebApp.Controllers
 			ViewBag.Id = id;
 			var url = _configuration.GetValue<string>("API_URL");
 			ViewBag.ApiUrl = url;
+			
+			// Get hCaptcha site key from configuration
+			var hCaptchaSiteKey = _configuration.GetValue<string>("HCaptcha:SiteKey") ?? "your-hcaptcha-site-key";
+			ViewBag.HCaptchaSiteKey = hCaptchaSiteKey;
+			
 			//var apiUrl = url + "/api/admin/campain?keytoken=" + id;
 			////get campain or keysearch by token id
 			////string apiUrl = "https://api.layma.net/api/admin/campain?keytoken=" + id; //https://api.layma.net,https://localhost:7020

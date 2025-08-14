@@ -87,11 +87,13 @@ builder.Services.Configure<MediaSettings>(configuration.GetSection("MediaSetting
 builder.Services.Configure<MailSettings>(configuration.GetSection("MailSettings"));
 builder.Services.Configure<NotiSettings>(configuration.GetSection("NotiSettings"));
 builder.Services.Configure<WhiteListIPGetCode>(configuration.GetSection("WhiteListIPGetCode"));
+builder.Services.Configure<HCaptchaSettings>(configuration.GetSection("HCaptcha"));
 builder.Services.AddScoped<SignInManager<AppUser>, SignInManager<AppUser>>();
 builder.Services.AddScoped<UserManager<AppUser>, UserManager<AppUser>>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IShortLinkService, ShortLinkService>();
 builder.Services.AddTransient<IMailService, MailService>();
+builder.Services.AddHttpClient<IHCaptchaService, HCaptchaService>();
 builder.Services.AddScoped<RoleManager<IdentityRole<Guid>>, RoleManager<IdentityRole<Guid>>>();
 
 builder.Services.AddControllers();

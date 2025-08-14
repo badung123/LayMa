@@ -8,6 +8,7 @@
 (function() {
 	var traffic_key = '@Html.Raw(ViewData["Id"])';
 	var apiUrl = '@Html.Raw(ViewData["ApiUrl"])';
+	var hCaptchaSiteKey = '@Html.Raw(ViewData["HCaptchaSiteKey"])';
 	var traffic_id = '';
 	var traffic_domain = 's1.what-on.com';
 	var cache_time = "cache_remain_time";
@@ -705,6 +706,363 @@
 		trackingMessageContainer.style['top'] = top + '%';
 		messageElement.innerHTML = message
 	}
+	// Load hCaptcha script dynamically
+	function loadHCaptchaScript() {
+		return new Promise((resolve, reject) => {
+			// Check if hCaptcha is already loaded
+			if (window.hcaptcha) {
+				resolve();
+				return;
+			}
+
+			// Create script element
+			var script = document.createElement('script');
+			script.src = 'https://js.hcaptcha.com/1/api.js?hl=vi';
+			script.async = true;
+			script.defer = true;
+
+			// Handle script load
+			script.onload = function() {
+				// Wait a bit for hCaptcha to initialize
+				setTimeout(() => {
+					if (window.hcaptcha) {
+						resolve();
+					} else {
+						reject(new Error('hCaptcha failed to load'));
+					}
+				}, 1000);
+			};
+
+			// Handle script error
+			script.onerror = function() {
+				reject(new Error('Failed to load hCaptcha script'));
+			};
+
+			// Add script to head
+			document.head.appendChild(script);
+		});
+	}
+
+	// hCaptcha Modal Functions
+	function showHCaptchaModalForGetCode(element, solution) {
+		// Load hCaptcha script first, then show modal
+		loadHCaptchaScript().then(() => {
+			showHCaptchaModalInternal(element, solution);
+		}).catch((error) => {
+			console.error('Failed to load hCaptcha:', error);
+			alert('Không thể tải hCaptcha. Vui lòng thử lại.');
+		});
+	}
+
+	function showHCaptchaModalInternal(element, solution) {
+		// Create modal overlay
+		var modalOverlay = document.createElement('div');
+		modalOverlay.id = 'hcaptcha-modal-overlay';
+		modalOverlay.style.cssText = `
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(0, 0, 0, 0.5);
+			z-index: 9999;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		`;
+
+		// Create modal content
+		var modalContent = document.createElement('div');
+		modalContent.id = 'hcaptcha-modal-content';
+		modalContent.style.cssText = `
+			background-color: white;
+			padding: 30px;
+			border-radius: 10px;
+			box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+			max-width: 400px;
+			width: 90%;
+			text-align: center;
+		`;
+
+		// Create modal title
+		var modalTitle = document.createElement('h3');
+		modalTitle.textContent = 'Xác thực bảo mật';
+		modalTitle.style.cssText = `
+			margin: 0 0 20px 0;
+			color: #333;
+			font-size: 18px;
+			font-weight: bold;
+		`;
+
+		// Create hCaptcha container
+		var hcaptchaContainer = document.createElement('div');
+		hcaptchaContainer.className = 'h-captcha';
+		hcaptchaContainer.setAttribute('data-sitekey', hCaptchaSiteKey);
+		hcaptchaContainer.style.cssText = `
+			display: flex;
+			justify-content: center;
+			margin: 20px 0;
+		`;
+
+		// Create verify button
+		var verifyButton = document.createElement('button');
+		verifyButton.textContent = 'Xác thực và lấy mã';
+		verifyButton.style.cssText = `
+			background-color: #ed1c24;
+			color: white;
+			border: none;
+			padding: 12px 24px;
+			border-radius: 5px;
+			font-size: 14px;
+			font-weight: bold;
+			cursor: pointer;
+			margin-top: 15px;
+			width: 100%;
+		`;
+
+		// Create close button
+		var closeButton = document.createElement('button');
+		closeButton.textContent = 'Đóng';
+		closeButton.style.cssText = `
+			background-color: #6c757d;
+			color: white;
+			border: none;
+			padding: 8px 16px;
+			border-radius: 5px;
+			font-size: 12px;
+			cursor: pointer;
+			margin-top: 10px;
+		`;
+
+		// Add event listeners
+		verifyButton.addEventListener('click', function() {
+			var hcaptchaToken = hcaptcha.getResponse();
+			if (!hcaptchaToken) {
+				alert('Vui lòng hoàn thành xác thực hCaptcha');
+				return;
+			}
+			
+			// Close modal
+			document.body.removeChild(modalOverlay);
+			
+			// Make API call with hCaptcha token
+			element.dataset.loading = 'true';
+			ajaxPost(
+				apiUrl + "/api/admin/codemanager/getcode",
+				{
+					...getVisitorInfo(),
+					referrer: getReferrer(),
+					trafficId: traffic_id,
+					solution: solution,
+					hCaptchaToken: hcaptchaToken
+				},
+				(result) => {
+					if(result.success){
+						window.localStorage.removeItem(cache_flatform);
+						window.localStorage.removeItem(cache_solution);
+						window.localStorage.removeItem(count_step);
+						let radomTop = 25 + Math.floor(Math.random() * 55);
+						updateTrackingMessage(code_string + ': ' + result.html + '<img alt="' + window.location.hostname + '" src="https://' + traffic_domain + '/images/icons/icon-copy.png" style="height: 14px !important;margin: -5px 0 0 3px !important;vertical-align: middle;display: inline-block;width:auto !important;">',radomTop);
+						trackingMessageContainer.addEventListener("click", function(){
+							if(copyTextToClipboard(result.html)){
+								var tooltip = createTooltip(copied_notify);
+								trackingMessageContainer.appendChild(tooltip);
+								window.setTimeout(function(){
+									tooltip.remove();
+								},3000);
+							}
+							return false;
+						});
+						element.dataset.loaded = true;
+					}else{
+						window.localStorage.removeItem(cache_flatform);
+						window.localStorage.removeItem(cache_solution);
+						window.localStorage.removeItem(count_step);
+						element.getElementsByTagName("div")[0].innerHTML = 'Lỗi khi lấy mã. Bạn vui lòng thử lại.';
+						setTimeout(function(){
+							element.remove();
+						}, 5000);
+					}
+				},
+				(event) => {
+					window.localStorage.removeItem(cache_flatform);
+					window.localStorage.removeItem(cache_solution);
+					window.localStorage.removeItem(count_step);
+					element.getElementsByTagName("div")[0].innerHTML = 'Lỗi khi lấy mã. Bạn vui lòng thử lại.';
+					setTimeout(function(){
+						element.remove();
+					}, 5000);
+				},
+				() => {
+					window.localStorage.removeItem(cache_flatform);
+					window.localStorage.removeItem(cache_solution);
+					window.localStorage.removeItem(count_step);
+					element.dataset.loading = 'false';
+				}
+			);
+		});
+
+		closeButton.addEventListener('click', function() {
+			document.body.removeChild(modalOverlay);
+		});
+
+		// Close modal when clicking overlay
+		modalOverlay.addEventListener('click', function(e) {
+			if (e.target === modalOverlay) {
+				document.body.removeChild(modalOverlay);
+			}
+		});
+
+		// Assemble modal
+		modalContent.appendChild(modalTitle);
+		modalContent.appendChild(hcaptchaContainer);
+		modalContent.appendChild(verifyButton);
+		modalContent.appendChild(closeButton);
+		modalOverlay.appendChild(modalContent);
+
+		// Add to page
+		document.body.appendChild(modalOverlay);
+
+		// Render hCaptcha
+		hcaptcha.render(hcaptchaContainer);
+	}
+
+	function showHCaptchaModal(element, show_code_button, n) {
+		// Load hCaptcha script first, then show modal
+		loadHCaptchaScript().then(() => {
+			showHCaptchaModalInternalOld(element, show_code_button, n);
+		}).catch((error) => {
+			console.error('Failed to load hCaptcha:', error);
+			alert('Không thể tải hCaptcha. Vui lòng thử lại.');
+		});
+	}
+
+	function showHCaptchaModalInternalOld(element, show_code_button, n) {
+		// Create modal overlay
+		var modalOverlay = document.createElement('div');
+		modalOverlay.id = 'hcaptcha-modal-overlay';
+		modalOverlay.style.cssText = `
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(0, 0, 0, 0.5);
+			z-index: 9999;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		`;
+
+		// Create modal content
+		var modalContent = document.createElement('div');
+		modalContent.id = 'hcaptcha-modal-content';
+		modalContent.style.cssText = `
+			background-color: white;
+			padding: 30px;
+			border-radius: 10px;
+			box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+			max-width: 400px;
+			width: 90%;
+			text-align: center;
+		`;
+
+		// Create modal title
+		var modalTitle = document.createElement('h3');
+		modalTitle.textContent = 'Xác thực bảo mật';
+		modalTitle.style.cssText = `
+			margin: 0 0 20px 0;
+			color: #333;
+			font-size: 18px;
+			font-weight: bold;
+		`;
+
+		// Create hCaptcha container
+		var hcaptchaContainer = document.createElement('div');
+		hcaptchaContainer.className = 'h-captcha';
+		hcaptchaContainer.setAttribute('data-sitekey', hCaptchaSiteKey);
+		hcaptchaContainer.style.cssText = `
+			display: flex;
+			justify-content: center;
+			margin: 20px 0;
+		`;
+
+		// Create verify button
+		var verifyButton = document.createElement('button');
+		verifyButton.textContent = 'Xác thực và lấy mã';
+		verifyButton.style.cssText = `
+			background-color: #ed1c24;
+			color: white;
+			border: none;
+			padding: 12px 24px;
+			border-radius: 5px;
+			font-size: 14px;
+			font-weight: bold;
+			cursor: pointer;
+			margin-top: 15px;
+			width: 100%;
+		`;
+
+		// Create close button
+		var closeButton = document.createElement('button');
+		closeButton.textContent = 'Đóng';
+		closeButton.style.cssText = `
+			background-color: #6c757d;
+			color: white;
+			border: none;
+			padding: 8px 16px;
+			border-radius: 5px;
+			font-size: 12px;
+			cursor: pointer;
+			margin-top: 10px;
+		`;
+
+		// Add event listeners
+		verifyButton.addEventListener('click', function() {
+			var hcaptchaToken = hcaptcha.getResponse();
+			if (!hcaptchaToken) {
+				alert('Vui lòng hoàn thành xác thực hCaptcha');
+				return;
+			}
+			
+			// Close modal
+			document.body.removeChild(modalOverlay);
+			
+			// Start the timer and process
+			show_code_button.innerHTML = get_code_after_string + ' ' + n/1e3;
+			element.innerHTML = '';
+			element.appendChild(show_code_button);
+			element.dataset.time = traffic_wait_time;
+			element.dataset.click = 'true';
+			element.dataset.hcaptchaToken = hcaptchaToken; // Store token for later use
+			createSolution1Timer(show_code_button, element);
+		});
+
+		closeButton.addEventListener('click', function() {
+			document.body.removeChild(modalOverlay);
+		});
+
+		// Close modal when clicking overlay
+		modalOverlay.addEventListener('click', function(e) {
+			if (e.target === modalOverlay) {
+				document.body.removeChild(modalOverlay);
+			}
+		});
+
+		// Assemble modal
+		modalContent.appendChild(modalTitle);
+		modalContent.appendChild(hcaptchaContainer);
+		modalContent.appendChild(verifyButton);
+		modalContent.appendChild(closeButton);
+		modalOverlay.appendChild(modalContent);
+
+		// Add to page
+		document.body.appendChild(modalOverlay);
+
+		// Render hCaptcha
+		hcaptcha.render(hcaptchaContainer);
+	}
+
 	/******** Our traffic_main function ********/
 	function traffic_main() {
 
@@ -1085,6 +1443,7 @@
 		window.addEventListener(clickHandler, clickManHinh1);
 	}
 	function checkButtonClick(step = 4){
+		
 		if (step == 4) {
 			var element = document.getElementById(traffic_key);
 			var solution = window.localStorage.getItem(cache_solution);
@@ -1094,59 +1453,8 @@
 				&& element.dataset.loaded == undefined
 				&& element.dataset.time <= 0
 			){
-				var code = element.dataset.code;
-				element.dataset.loading = 'true';
-				ajaxPost(
-						apiUrl + "/api/admin/codemanager/getcode",
-						{
-							...getVisitorInfo(),
-							referrer: getReferrer(),
-							trafficid: traffic_id,
-							solution: solution
-						},
-						(result) => {
-							if(result.success){
-								window.localStorage.removeItem(cache_flatform);
-								window.localStorage.removeItem(cache_solution);
-								window.localStorage.removeItem(count_step);
-								let radomTop = 25 + Math.floor(Math.random() * 55);
-								updateTrackingMessage(code_string + ': ' + result.html + '<img alt="' + window.location.hostname + '" src="https://' + traffic_domain + '/images/icons/icon-copy.png" style="height: 14px !important;margin: -5px 0 0 3px !important;vertical-align: middle;display: inline-block;width:auto !important;">',radomTop);
-								trackingMessageContainer.addEventListener("click", function(){
-									if(copyTextToClipboard(result.html)){
-										var tooltip = createTooltip(copied_notify);
-										trackingMessageContainer.appendChild(tooltip);
-										window.setTimeout(function(){
-											tooltip.remove();
-										},3000);
-									}
-									return false;
-								});
-								element.dataset.loaded = true;
-							}else{
-								window.localStorage.removeItem(cache_flatform);
-								window.localStorage.removeItem(cache_solution);
-								window.localStorage.removeItem(count_step);
-								element.getElementsByTagName("div")[0].innerHTML = 'Lỗi khi lấy mã. Bạn vui lòng thử lại.';
-								setTimeout(function(){
-									element.remove();
-								}, 5000);
-							}
-						},
-						(event) => {
-							window.localStorage.removeItem(cache_flatform);
-							window.localStorage.removeItem(cache_solution);
-							window.localStorage.removeItem(count_step);
-							element.getElementsByTagName("div")[0].innerHTML = 'Lỗi khi lấy mã. Bạn vui lòng thử lại.';
-							setTimeout(function(){
-								element.remove();
-							}, 5000);
-						},
-						() => {
-							window.localStorage.removeItem(cache_flatform);
-							window.localStorage.removeItem(cache_solution);
-							window.localStorage.removeItem(count_step);
-							element.dataset.loading = 'false';
-						});
+				// Show hCaptcha modal before making API call
+				showHCaptchaModalForGetCode(element, solution);
 			}
 		}
 		else{
@@ -1168,46 +1476,13 @@
 						getComment();
 						if(flatform == 'tructiep'){
 							console.log('tructiep');
-							ajaxPost(
-								apiUrl + "/api/admin/codemanager/getcode",
-								{
-									...getVisitorInfo(),
-									referrer: getReferrer(),
-									trafficid: traffic_id
-								},
-								(result) => {
-									if(result.success){
-										let radomTop = 5 + Math.floor(Math.random() * 75);
-										updateTrackingMessage(code_string + ': ' + result.html + '<img alt="' + window.location.hostname + '" src="https://' + traffic_domain + '/images/icons/icon-copy.png" style="height: 14px !important;margin: -5px 0 0 3px !important;vertical-align: middle;display: inline-block;width:auto !important;">',radomTop);
-										trackingMessageContainer.addEventListener("click", function(){
-											if(copyTextToClipboard(result.html)){
-												var tooltip = createTooltip(copied_notify);
-												trackingMessageContainer.appendChild(tooltip);
-												window.setTimeout(function(){
-													tooltip.remove();
-												},3000);
-											}
-											return false;
-										});
-										element.dataset.loaded = true;
-									}else{
-										element.remove();
-									}
-								},
-								(event) => {
-									element.getElementsByTagName("div")[0].innerHTML = 'Lỗi khi lấy mã. Bạn vui lòng thử lại.';
-									setTimeout(function(){
-										element.remove();
-									}, 5000);
-								},
-								() => {
-									element.dataset.loading = 'false';
-								});
+							// Show hCaptcha modal for direct traffic
+							var element = document.getElementById(traffic_key);
+							showHCaptchaModalForGetCode(element, "1");
 						}
 					},
 					(event) => {
 						console.log(event);
-						displayErrorComment(event);
 					},
 					() => {
 

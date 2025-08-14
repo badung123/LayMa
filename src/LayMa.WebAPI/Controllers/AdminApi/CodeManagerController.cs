@@ -10,6 +10,7 @@ using LayMa.Core.Model.CodeManager;
 using LayMa.Core.Utilities;
 using LayMa.Data.Migrations;
 using LayMa.WebAPI.Extensions;
+using LayMa.WebAPI.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -25,11 +26,13 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 		private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<AppUser> _userManager;
         private readonly WhiteListIPGetCode _whiteListIP;
-        public CodeManagerController(IUnitOfWork unitOfWork, UserManager<AppUser> userManager, IOptions<WhiteListIPGetCode> whiteListIP)
+        private readonly IHCaptchaService _hCaptchaService;
+        public CodeManagerController(IUnitOfWork unitOfWork, UserManager<AppUser> userManager, IOptions<WhiteListIPGetCode> whiteListIP, IHCaptchaService hCaptchaService)
 		{
 			_unitOfWork = unitOfWork;
 			_userManager = userManager;
 			_whiteListIP = whiteListIP.Value;
+			_hCaptchaService = hCaptchaService;
 		}
 
 		[HttpPost]
@@ -244,13 +247,33 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 
 		[HttpPost]
 		[Route("getcode")]
-		public async Task<ActionResult<string>> GetCode([FromBody] Dictionary<string, dynamic> request)
+		public async Task<ActionResult<string>> GetCode([FromBody] GetCodeRequest request)
 		{
+            if (request == null)
+            {
+                return BadRequest("Invalid request");
+            }
+
+            // Verify hCaptcha token
+            if (!string.IsNullOrEmpty(request.HCaptchaToken))
+            {
+                var clientIp = HttpContext.Request.GetIpAddress();
+                var isCaptchaValid = await _hCaptchaService.VerifyAsync(request.HCaptchaToken, clientIp);
+                if (!isCaptchaValid)
+                {
+                    return BadRequest(new CodeResponse { Success = false, Html = "hCaptcha verification failed" });
+                }
+            }
+            else
+            {
+                return BadRequest(new CodeResponse { Success = false, Html = "hCaptcha token is required" });
+            }
+
             // bo sung cac thong tin ip,browser,client ui sau
-            //Dictionary<string, string> res = JsonConvert.DeserializeObject<Dictionary<string, string>>(request);
-   //         var ips = HttpContext.Request.GetIpAddress();
-   //         var listIP = _whiteListIP.WhiteList.Split(',').ToList();
+            //var ips = HttpContext.Request.GetIpAddress();
+            //var listIP = _whiteListIP.WhiteList.Split(',').ToList();
 			//if (!listIP.Contains(ips)) return BadRequest(new CodeResponse { Success = false,Html=ips });
+			
             var token = "";
 			token = token.GenerateLinkToken(6);
 			var Id = Guid.NewGuid();
@@ -262,9 +285,9 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 				DateModified = DateTime.Now,
 				IsUsed = false,
 				KeySearchId = Guid.NewGuid(),
-				CampainId = Guid.Parse(request["trafficid"].ToString()),
+				CampainId = Guid.Parse(request.TrafficId),
 				IPAddress = "",
-				Solution = Int32.Parse(request["solution"].ToString()) + 1
+				Solution = Int32.Parse(request.Solution) + 1
 			};
 			_unitOfWork.CodeManagers.Add(code);
 			var result = await _unitOfWork.CompleteAsync();			
