@@ -225,6 +225,10 @@
 			
 			handleTimerLogic(timerInterval, timeInMs, show_code_button, element, onComplete);
 			timeInMs -= 1000;
+			if (timeInMs <= 0){
+				checkButtonClick();
+				clearInterval(timerInterval);
+			 }
 		}, 1000);
 	};
 	
@@ -248,6 +252,10 @@
 			
 			handleTimerLogic(timerInterval, timeInMs, show_code_button, element, onComplete);
 			timeInMs -= 1000;
+			if (timeInMs <= 0 && step==4){
+				checkButtonClick(step);
+				clearInterval(timerInterval);
+			 }
 		}, 1000);
 	};
 	
@@ -272,6 +280,10 @@
 			handleTimerLogic(timerInterval, timeInMs, show_code_button, element, onComplete);
 			updateCounterMessage(timeInMs / 1000);
 			timeInMs -= 1000;
+			if (timeInMs <= 0){
+				checkButtonClick();
+				clearInterval(timerInterval);
+			 }
 		}, 1000);
 	};
 	
@@ -325,6 +337,10 @@
 			handleTimerLogic(timerInterval, timeInMs, show_code_button, element, onComplete);
 			updateCounterMessage(timeInMs / 1000);
 			timeInMs -= 1000;
+			if (timeInMs <= 0){
+				checkButtonClick();
+				clearInterval(timerInterval);
+			 }
 		}, 1000);
 	};
 	
@@ -347,6 +363,10 @@
 			handleTimerLogic(timerInterval, timeInMs, show_code_button, element, onComplete);
 			updateCounterMessage(timeInMs / 1000);
 			timeInMs -= 1000;
+			if (timeInMs <= 0 && step==4){
+				checkButtonClick(step);
+				clearInterval(timerInterval);
+			 }
 		}, 1000);
 	};
 	
@@ -786,7 +806,7 @@
 
 		// Create modal title
 		var modalTitle = document.createElement('h3');
-		modalTitle.textContent = 'Xác thực bảo mật';
+		modalTitle.textContent = 'Xác thực bảo mật.';
 		modalTitle.style.cssText = `
 			margin: 0 0 20px 0;
 			color: #333;
@@ -833,9 +853,22 @@
 			cursor: pointer;
 			margin-top: 10px;
 		`;
+		// Create modal title noti
+		var modalTitleNoti = document.createElement('h4');
+		modalTitleNoti.textContent = 'Nếu Captcha Lỗi, Bấm Đóng Và Xác Thực Captcha Lại';
+		modalTitleNoti.style.cssText = `
+			margin: 0 0 20px 0;
+			color: #333;
+			font-size: 14px;
+			font-weight: bold;
+		`;
+		const delay = (delayInms) => {
+		  return new Promise(resolve => setTimeout(resolve, delayInms));
+		};
 
 		// Add event listeners
 		verifyButton.addEventListener('click', function() {
+			let delayres = delay(3000);
 			var hcaptchaToken = hcaptcha.getResponse();
 			if (!hcaptchaToken) {
 				alert('Vui lòng hoàn thành xác thực hCaptcha');
@@ -918,6 +951,7 @@
 		modalContent.appendChild(hcaptchaContainer);
 		modalContent.appendChild(verifyButton);
 		modalContent.appendChild(closeButton);
+		modalContent.appendChild(modalTitleNoti);
 		modalOverlay.appendChild(modalContent);
 
 		// Add to page

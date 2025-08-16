@@ -77,12 +77,12 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 			}
 			var ips = HttpContext.Request.GetIpAddress();
 			ShortLink shortLink = null;
-			for (int i = 0;i < 3; i++)
+			for (int i = 0;i < 10; i++)
 			{
 				shortLink = await _unitOfWork.ShortLinks.GetByTokenAsync(request.Token);
 				if (shortLink != null) break;
 			}						
-			if (shortLink == null) return BadRequest("Link rút gọn " + request.Token + " không tồn tại");
+			if (shortLink == null) return BadRequest("Link rút gọn " + request.Token + " không tồn tại. Bạn có thể tải lại link và nhập lại code để thử lại");
 			var userId = shortLink.UserId;
 			var user = await _userManager.FindByIdAsync(userId.ToString());
 			if (user == null || user.IsActive == false) return BadRequest("User không hợp lệ");
