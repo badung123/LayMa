@@ -28,6 +28,7 @@ namespace LayMa.Core.Repositories
 
 		Task<ThongKeView> GetThongKeView();
         Task UpdateActive(Guid id, bool isActive);
+		Task<string> GetHCaptchaSitekeyByKeyToken(string keyToken);
 
-    }
+	}
 }

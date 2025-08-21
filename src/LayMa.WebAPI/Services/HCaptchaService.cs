@@ -34,8 +34,26 @@ namespace LayMa.WebAPI.Services
                 return false;
             }
         }
+		public bool VerifyDuPhongAsync(string token)
+		{
+			if (string.IsNullOrEmpty(token))
+				return false;
 
-        public async Task<HCaptchaVerificationResponse> VerifyWithResponseAsync(string token, string? remoteIp = null)
+			if (!_settings.Enabled)
+				return true; // Skip verification if disabled
+
+			try
+			{
+                if (string.IsNullOrEmpty(_settings.KeyDuPhong)) return false;
+				return _settings.KeyDuPhong == token;
+			}
+			catch
+			{
+				return false;
+			}
+		}
+
+		public async Task<HCaptchaVerificationResponse> VerifyWithResponseAsync(string token, string? remoteIp = null)
         {
             if (string.IsNullOrEmpty(token))
                 throw new ArgumentException("Token cannot be null or empty", nameof(token));

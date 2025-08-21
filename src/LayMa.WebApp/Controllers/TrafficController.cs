@@ -21,26 +21,32 @@ namespace LayMa.WebApp.Controllers
 			// Get hCaptcha site key from configuration
 			var hCaptchaSiteKey = _configuration.GetValue<string>("HCaptcha:SiteKey") ?? "your-hcaptcha-site-key";
 			ViewBag.HCaptchaSiteKey = hCaptchaSiteKey;
-			
-			//var apiUrl = url + "/api/admin/campain?keytoken=" + id;
+			var hCaptchaTokenDefault = _configuration.GetValue<string>("HCaptcha:TokenDefault") ?? "your-hcaptcha-token";
+			ViewBag.HCaptchaTokenDefault = hCaptchaTokenDefault;
+
+			var apiUrl = url + "/api/admin/campain/getHCaptchaSitekey?keytoken=" + id;
 			////get campain or keysearch by token id
 			////string apiUrl = "https://api.layma.net/api/admin/campain?keytoken=" + id; //https://api.layma.net,https://localhost:7020
 			//var table = new CampainViewModel();
-			//using (HttpClient client = new HttpClient())
-			//{
-			//	client.BaseAddress = new Uri(apiUrl);
-			//	client.DefaultRequestHeaders.Accept.Clear();
-			//	client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+			using (HttpClient client = new HttpClient())
+			{
+				client.BaseAddress = new Uri(apiUrl);
+				client.DefaultRequestHeaders.Accept.Clear();
+				client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
 
-			//	HttpResponseMessage response = await client.GetAsync(apiUrl);
+				HttpResponseMessage response = await client.GetAsync(apiUrl);
 
-			//	if (response.IsSuccessStatusCode)
-			//	{
-			//		var data = await response.Content.ReadAsStringAsync();
-			//		Console.WriteLine(data);
-			//		table = Newtonsoft.Json.JsonConvert.DeserializeObject<CampainViewModel>(data);
-			//	}
-			//}
+				if (response.IsSuccessStatusCode)
+				{
+					var data = await response.Content.ReadAsStringAsync();
+					Console.WriteLine(data);
+                    if (data != null)
+                    {
+						ViewBag.HCaptchaSiteKey = Newtonsoft.Json.JsonConvert.DeserializeObject<string>(data);
+					}
+                    //table = Newtonsoft.Json.JsonConvert.DeserializeObject<CampainViewModel>(data);
+                }
+			}
 			return View();
 		}
 	}

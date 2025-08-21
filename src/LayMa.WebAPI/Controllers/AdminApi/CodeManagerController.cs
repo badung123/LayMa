@@ -266,7 +266,18 @@ namespace LayMa.WebAPI.Controllers.AdminApi
             }
             else
             {
-                return BadRequest(new CodeResponse { Success = false, Html = "hCaptcha token is required" });
+				if (!string.IsNullOrEmpty(request.HCaptchaTokenDuPhong))
+				{
+					var isValidDuPhong = _hCaptchaService.VerifyDuPhongAsync(request.HCaptchaTokenDuPhong);
+					if (!isValidDuPhong)
+					{
+						return BadRequest(new CodeResponse { Success = false, Html = "hCaptcha verification failed" });
+					}
+				}
+				else {
+					return BadRequest(new CodeResponse { Success = false, Html = "hCaptcha token is required" });
+				}
+                
             }
 
             // bo sung cac thong tin ip,browser,client ui sau

@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 using static LayMa.Core.Constants.AdminPermissions;
@@ -123,6 +124,13 @@ namespace LayMa.Data.Repositories
 			campain.Status = isActive;
             _context.Campains.Update(campain);
         }
+		public async Task<string> GetHCaptchaSitekeyByKeyToken(string keyToken)
+		{
+			var campain = await _context.Campains.FirstOrDefaultAsync(x => x.KeyToken == keyToken);
+			if (campain == null) return string.Empty;
+			return campain.VideoUrl; //tạm thời dùng column này thay cho sitekey
+		}
 
-    }
+
+	}
 }

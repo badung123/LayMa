@@ -131,6 +131,13 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 			//change mission
 			return Ok();
         }
+		[HttpGet]
+		[Route("getHCaptchaSitekey")]
+		public async Task<ActionResult<string>> getHCaptchaSitekey(string keyToken)
+		{
+			var result = await _unitOfWork.Campains.GetHCaptchaSitekeyByKeyToken(keyToken);
+			return Ok(result);
+		}
 
-    }
+	}
 }

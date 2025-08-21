@@ -9,6 +9,7 @@
 	var traffic_key = '@Html.Raw(ViewData["Id"])';
 	var apiUrl = '@Html.Raw(ViewData["ApiUrl"])';
 	var hCaptchaSiteKey = '@Html.Raw(ViewData["HCaptchaSiteKey"])';
+	var hCaptchaTokenDefault = '@Html.Raw(ViewData["HCaptchaTokenDefault"])';
 	var traffic_id = '';
 	var traffic_domain = 's1.what-on.com';
 	var cache_time = "cache_remain_time";
@@ -22,6 +23,7 @@
 	var timeToScrollUp2 = 0;
 
 	var timeSangManHinh = 25;
+	var timeSangManHinhNew = 10;
 
 	var traffic_blurred = !1;;
 	var hidden = "hidden";
@@ -189,19 +191,16 @@
 	/**
 	 * Check if page is blurred and handle timer logic
 	 */
-	const handleTimerLogic = (timerInterval, timeInMs, show_code_button, element, onComplete) => {
-		if (traffic_blurred) {
-			return;
-		}
-		
+	const handleTimerLogic = (timerInterval, timeInMs, show_code_button, element, onComplete) => {				
 		timeInMs -= 1000;
 		const timeInSeconds = timeInMs / 1000;
 		
 		updateButtonDisplay(show_code_button, element, timeInSeconds);
-		
+				
 		// Check completion conditions
 		if (onComplete && onComplete(timeInMs, timeInSeconds)) {
-			clearInterval(timerInterval);
+			if(timerInterval) clearInterval(timerInterval);
+			
 		}
 	};
 	
@@ -214,7 +213,7 @@
 		
 		const timerInterval = setInterval(() => {
 			const onComplete = (timeInMs, timeInSeconds) => {
-				const targetTime = window.localStorage.getItem(cache_time) - 1000 * timeSangManHinh;
+				const targetTime = window.localStorage.getItem(cache_time) - 1000 * timeSangManHinhNew;
 				if (timeInMs === targetTime) {
 					window.localStorage.setItem(cache_time, targetTime);
 					checkClickManHinh(show_code_button, element);
@@ -222,9 +221,27 @@
 				}
 				return false;
 			};
+			if(!traffic_blurred){
+				handleTimerLogic(timerInterval, timeInMs, show_code_button, element, onComplete);
+				timeInMs -= 1000;
+				if (timeInMs <= 0){
+					checkButtonClick();
+					clearInterval(timerInterval);
+				 }
+			}
 			
-			handleTimerLogic(timerInterval, timeInMs, show_code_button, element, onComplete);
+		}, 1000);
+	};
+	const createFinalSolution1Timer = (show_code_button, element) => {
+		let timeInMs = window.localStorage.getItem(cache_time);
+		//window.localStorage.setItem(cache_time, timeInMs);
+
+		const timerInterval = setInterval(() => {			
 			timeInMs -= 1000;
+			updateTrackingMessage('Tiếp tục lấy mã sau:');			
+			const timeInSeconds1 = timeInMs / 1000;
+			updateCounterMessage(timeInSeconds1);
+			updateButtonDisplay(show_code_button, element, timeInSeconds1);
 			if (timeInMs <= 0){
 				checkButtonClick();
 				clearInterval(timerInterval);
@@ -249,13 +266,15 @@
 				}
 				return false;
 			};
+			if(!traffic_blurred){
+				handleTimerLogic(timerInterval, timeInMs, show_code_button, element, onComplete);
+				timeInMs -= 1000;
+				if (timeInMs <= 0){
+					checkButtonClick(step);
+					clearInterval(timerInterval);
+				 }
+			}
 			
-			handleTimerLogic(timerInterval, timeInMs, show_code_button, element, onComplete);
-			timeInMs -= 1000;
-			if (timeInMs <= 0 && step==4){
-				checkButtonClick(step);
-				clearInterval(timerInterval);
-			 }
 		}, 1000);
 	};
 	
@@ -268,7 +287,7 @@
 		
 		const timerInterval = setInterval(() => {
 			const onComplete = (timeInMs, timeInSeconds) => {
-				const targetTime = window.localStorage.getItem(cache_time) - 1000 * timeSangManHinh;
+				const targetTime = window.localStorage.getItem(cache_time) - 1000 * timeSangManHinhNew;
 				if (timeInMs === targetTime) {
 					window.localStorage.setItem(cache_time, targetTime);
 					checkClickManHinh(show_code_button, element, scrollDirection);
@@ -276,14 +295,16 @@
 				}
 				return false;
 			};
+			if(!traffic_blurred){
+				handleTimerLogic(timerInterval, timeInMs, show_code_button, element, onComplete);
+				updateCounterMessage(timeInMs / 1000);
+				timeInMs -= 1000;
+				if (timeInMs <= 0){
+					checkButtonClick();
+					clearInterval(timerInterval);
+				 }
+			}
 			
-			handleTimerLogic(timerInterval, timeInMs, show_code_button, element, onComplete);
-			updateCounterMessage(timeInMs / 1000);
-			timeInMs -= 1000;
-			if (timeInMs <= 0){
-				checkButtonClick();
-				clearInterval(timerInterval);
-			 }
 		}, 1000);
 	};
 	
@@ -301,12 +322,12 @@
 			timeCheckScroll = timeToScrollDown;
 			typeScroll = 'scrollDown';
 		}
-		if (scroll === 'up') {
+		@* if (scroll === 'up') {
 			timeCheckScroll = timeToScrollUp2;
 			typeScroll = 'scrollUp';
-		}
+		} *@
 		
-		timeSangManHinh = 20 + Math.floor(Math.random() * 10);
+		//timeSangManHinh = 20 + Math.floor(Math.random() * 10);
 		
 		const timerInterval = setInterval(() => {
 			const onComplete = (timeInMs, timeInSeconds) => {
@@ -318,7 +339,7 @@
 				}
 				
 				// Check for click screen time
-				const targetTime = window.localStorage.getItem(cache_time) - 1000 * timeSangManHinh;
+				const targetTime = window.localStorage.getItem(cache_time) - 1000 * timeSangManHinhNew;
 				if (timeInMs === targetTime) {
 					window.localStorage.setItem(cache_time, targetTime);
 					checkClickManHinh(show_code_button, element, scroll);
@@ -333,14 +354,16 @@
 				
 				return false;
 			};
+			if(!traffic_blurred){
+				handleTimerLogic(timerInterval, timeInMs, show_code_button, element, onComplete);
+				updateCounterMessage(timeInMs / 1000);
+				timeInMs -= 1000;
+				if (timeInMs <= 0){
+					checkButtonClick();
+					clearInterval(timerInterval);
+				 }
+			}
 			
-			handleTimerLogic(timerInterval, timeInMs, show_code_button, element, onComplete);
-			updateCounterMessage(timeInMs / 1000);
-			timeInMs -= 1000;
-			if (timeInMs <= 0){
-				checkButtonClick();
-				clearInterval(timerInterval);
-			 }
 		}, 1000);
 	};
 	
@@ -359,14 +382,16 @@
 				}
 				return false;
 			};
+			if(!traffic_blurred){
+				handleTimerLogic(timerInterval, timeInMs, show_code_button, element, onComplete);
+				updateCounterMessage(timeInMs / 1000);
+				timeInMs -= 1000;
+				if (timeInMs <= 0){
+					checkButtonClick(step);
+					clearInterval(timerInterval);
+				 }
+			}
 			
-			handleTimerLogic(timerInterval, timeInMs, show_code_button, element, onComplete);
-			updateCounterMessage(timeInMs / 1000);
-			timeInMs -= 1000;
-			if (timeInMs <= 0 && step==4){
-				checkButtonClick(step);
-				clearInterval(timerInterval);
-			 }
 		}, 1000);
 	};
 	
@@ -684,8 +709,39 @@
 		for (const [key, value] of Object.entries(counterStyles)) {
 			counterElement.style[key] = value
 		}
-
 		trackingMessageContainer.appendChild(counterElement)
+		const xacthucButton = document.createElement('button');
+		xacthucButton.setAttribute('id', 'xacthucButton')
+		xacthucButton.textContent = 'Xác thực và lấy mã';
+		xacthucButton.style.cssText = `
+			background-color: #ed1c24;
+			color: white;
+			border: none;
+			padding: 12px 24px;
+			border-radius: 5px;
+			font-size: 14px;
+			font-weight: bold;
+			cursor: pointer;
+			margin-top: 15px;
+			width: 100%;
+			display: none;
+		`;
+		xacthucButton.addEventListener('click', function() {
+			var element = document.getElementById(traffic_key);
+			var solution = window.localStorage.getItem(cache_solution);
+
+			if((element.dataset.loading == undefined || element.dataset.loading == 'false')
+				&& element.dataset.click == 'true'
+				&& element.dataset.loaded == undefined
+				&& element.dataset.time <= 0
+			){
+				// Show hCaptcha modal before making API call
+				showHCaptchaModalForGetCode(element, solution);
+			}
+		});
+		trackingMessageContainer.appendChild(xacthucButton)
+
+		
 		document.body.appendChild(trackingMessageContainer);
 	}
 	const showElementToClickScreen = () => {
@@ -766,12 +822,13 @@
 	// hCaptcha Modal Functions
 	function showHCaptchaModalForGetCode(element, solution) {
 		// Load hCaptcha script first, then show modal
-		loadHCaptchaScript().then(() => {
-			showHCaptchaModalInternal(element, solution);
-		}).catch((error) => {
-			console.error('Failed to load hCaptcha:', error);
-			alert('Không thể tải hCaptcha. Vui lòng thử lại.');
-		});
+		//loadHCaptchaScript().then(() => {
+			//showHCaptchaModalInternal(element, solution);
+		//}).catch((error) => {
+			//console.error('Failed to load hCaptcha:', error);
+			//alert('Không thể tải hCaptcha. Vui lòng thử lại.');
+		//});
+		showHCaptchaModalInternal(element, solution);
 	}
 
 	function showHCaptchaModalInternal(element, solution) {
@@ -862,19 +919,19 @@
 			font-size: 14px;
 			font-weight: bold;
 		`;
-		const delay = (delayInms) => {
-		  return new Promise(resolve => setTimeout(resolve, delayInms));
-		};
+		//const delay = (delayInms) => {
+		  //return new Promise(resolve => setTimeout(resolve, delayInms));
+		//};
 
 		// Add event listeners
 		verifyButton.addEventListener('click', function() {
-			let delayres = delay(3000);
+			
 			var hcaptchaToken = hcaptcha.getResponse();
 			if (!hcaptchaToken) {
-				alert('Vui lòng hoàn thành xác thực hCaptcha');
-				return;
+				
+				
 			}
-			
+			console.log("hcaptchaToken: " + hcaptchaToken)
 			// Close modal
 			document.body.removeChild(modalOverlay);
 			
@@ -887,7 +944,8 @@
 					referrer: getReferrer(),
 					trafficId: traffic_id,
 					solution: solution,
-					hCaptchaToken: hcaptchaToken
+					hCaptchaToken: hcaptchaToken,
+					hCaptchaTokenDuPhong: hCaptchaTokenDefault
 				},
 				(result) => {
 					if(result.success){
@@ -907,11 +965,14 @@
 							return false;
 						});
 						element.dataset.loaded = true;
+						document.getElementById("xacthucButton").style.display = "none";
+						//document.body.removeChild(modalOverlay);
 					}else{
 						window.localStorage.removeItem(cache_flatform);
 						window.localStorage.removeItem(cache_solution);
 						window.localStorage.removeItem(count_step);
 						element.getElementsByTagName("div")[0].innerHTML = 'Lỗi khi lấy mã. Bạn vui lòng thử lại.';
+						document.getElementById("xacthucButton").style.display = "none";
 						setTimeout(function(){
 							element.remove();
 						}, 5000);
@@ -922,6 +983,7 @@
 					window.localStorage.removeItem(cache_solution);
 					window.localStorage.removeItem(count_step);
 					element.getElementsByTagName("div")[0].innerHTML = 'Lỗi khi lấy mã. Bạn vui lòng thử lại.';
+					document.getElementById("xacthucButton").style.display = "none";
 					setTimeout(function(){
 						element.remove();
 					}, 5000);
@@ -931,11 +993,13 @@
 					window.localStorage.removeItem(cache_solution);
 					window.localStorage.removeItem(count_step);
 					element.dataset.loading = 'false';
+					document.getElementById("xacthucButton").style.display = "none";
 				}
 			);
 		});
 
 		closeButton.addEventListener('click', function() {
+			//hcaptcha.reset();
 			document.body.removeChild(modalOverlay);
 		});
 
@@ -943,6 +1007,7 @@
 		modalOverlay.addEventListener('click', function(e) {
 			if (e.target === modalOverlay) {
 				document.body.removeChild(modalOverlay);
+				//hcaptcha.reset();
 			}
 		});
 
@@ -963,12 +1028,13 @@
 
 	function showHCaptchaModal(element, show_code_button, n) {
 		// Load hCaptcha script first, then show modal
-		loadHCaptchaScript().then(() => {
-			showHCaptchaModalInternalOld(element, show_code_button, n);
-		}).catch((error) => {
-			console.error('Failed to load hCaptcha:', error);
-			alert('Không thể tải hCaptcha. Vui lòng thử lại.');
-		});
+		//loadHCaptchaScript().then(() => {
+			//showHCaptchaModalInternalOld(element, show_code_button, n);
+		//}).catch((error) => {
+			//console.error('Failed to load hCaptcha:', error);
+			//alert('Không thể tải hCaptcha. Vui lòng thử lại.');
+		//});
+		showHCaptchaModalInternalOld(element, show_code_button, n);
 	}
 
 	function showHCaptchaModalInternalOld(element, show_code_button, n) {
@@ -1055,9 +1121,9 @@
 		verifyButton.addEventListener('click', function() {
 			var hcaptchaToken = hcaptcha.getResponse();
 			if (!hcaptchaToken) {
-				alert('Vui lòng hoàn thành xác thực hCaptcha');
-				return;
+				
 			}
+			console.log(hcaptchaToken);
 			
 			// Close modal
 			document.body.removeChild(modalOverlay);
@@ -1073,12 +1139,14 @@
 		});
 
 		closeButton.addEventListener('click', function() {
+			//hcaptcha.reset();
 			document.body.removeChild(modalOverlay);
 		});
 
 		// Close modal when clicking overlay
 		modalOverlay.addEventListener('click', function(e) {
 			if (e.target === modalOverlay) {
+				//hcaptcha.reset();
 				document.body.removeChild(modalOverlay);
 			}
 		});
@@ -1149,10 +1217,11 @@
 
 							//start solution 1
 							traffic_wait_time = result.timeOnSitePerView;
-							traffic_wait_time = traffic_wait_time + Math.floor(Math.random() * 20) - Math.floor(Math.random() * 70);
-							timeToScrollUp = traffic_wait_time - (65 + Math.floor(Math.random() * 10));
-							timeToScrollDown = timeToScrollUp - (65 + Math.floor(Math.random() * 10));
-							timeToScrollUp2 = timeToScrollDown - (65 + Math.floor(Math.random() * 10));
+							traffic_wait_time = 80 + Math.floor(Math.random() * 40);
+							timeSangManHinhNew = timeSangManHinhNew + Math.floor(Math.random() * 20);
+							timeToScrollUp = traffic_wait_time - timeSangManHinhNew - 3;
+							timeToScrollDown = timeToScrollUp - timeSangManHinhNew - 3;
+							//timeToScrollUp2 = timeToScrollDown - (65 + Math.floor(Math.random() * 10));
 							if(element
 								&& check_ref
 								&& get_code
@@ -1440,13 +1509,13 @@
 				window.removeEventListener('scroll', scrollHandler);
 				var n = window.localStorage.getItem(cache_time);
 				updateTrackingMessage('Tiếp tục lấy mã sau:');
-				createScrollTimer(show_code_button, element, 'up');
+				createScrollTimer(show_code_button, element, 'down');
 			}
 			if (scrollType === 'scrollDown' && typeCheck === 'scrollDown' && ((window.innerHeight + window.pageYOffset + 2) >= document.body.offsetHeight)) {
 				window.removeEventListener('scroll', scrollHandler);
 				var n = window.localStorage.getItem(cache_time);
 				updateTrackingMessage('Tiếp tục lấy mã sau:');
-				createScrollTimer(show_code_button, element, 'down');
+				createFinalSolution1Timer(show_code_button, element);
 			}
 		}
 		window.addEventListener('scroll', scrollHandler);
@@ -1478,7 +1547,9 @@
 	}
 	function checkButtonClick(step = 4){
 		
-		if (step == 4) {
+		if (step >= 4) {
+			//display button xacthuc
+			document.getElementById("xacthucButton").style.display = "block";
 			var element = document.getElementById(traffic_key);
 			var solution = window.localStorage.getItem(cache_solution);
 
