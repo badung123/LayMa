@@ -46,6 +46,7 @@
 	var requiredScrollUp = 'Vui lòng cuộn lên để tiếp tục lấy mã';
 	var requiredScrollDown = 'Vui lòng cuộn xuống để tiếp tục lấy mã';
 	var requiredClickPost = 'Vui lòng nhấn bài viết bất kỳ sau đó kéo xuống dưới cùng để lấy mã(Click đủ 2 lần bài viết sẽ có mã)';
+	var requiredClickPostSolution2 = 'Vui lòng nhấn bài viết bất kỳ sau đó kéo xuống dưới cùng để lấy mã(Chỉ cần click 1 lần bài viết sẽ có mã)';
 	var loaded_script = false;
 	
 
@@ -250,12 +251,81 @@
 	};
 	
 	/**
-	 * Create timer for solution 2 countdown
+	 * Create timer for solution 3 countdown
+	 */
+	const createSolution3Timer = (show_code_button, element, step) => {
+		let timeInMs = 1000 * traffic_wait_time;
+		window.localStorage.setItem(cache_time, timeInMs);
+		
+		const timerInterval = setInterval(() => {
+			const onComplete = (timeInMs, timeInSeconds) => {
+				const targetTime = window.localStorage.getItem(cache_time) - 1000 * timeSangManHinh;
+				if (timeInMs === targetTime) {
+					window.localStorage.setItem(cache_time, targetTime);
+					if(step >= 4){
+						checkScrollFinalSolution3(show_code_button, element);
+					}
+					else{
+						checkClickManHinhSolution3(show_code_button, element, step);
+					}
+					
+					return true;
+				}
+				return false;
+			};
+			if(!traffic_blurred){
+				handleTimerLogic(timerInterval, timeInMs, show_code_button, element, onComplete);
+				timeInMs -= 1000;
+				if (timeInMs <= 0){
+					checkButtonClick(step);
+					clearInterval(timerInterval);
+				 }
+			}
+			
+		}, 1000);
+	};
+	const checkScrollFinalSolution3 = (show_code_button, element) => {
+		
+		showTrackingMessage('');
+		updateCounterMessage('');
+		updateTrackingMessage(requiredScrollUp);
+		updateCounterMessage(window.localStorage.getItem(cache_time)/1e3);		
+
+		let typeScr = 'any';
+		let previousScrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+		const detectScrollType = () => {
+			let type = '';
+
+			let scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+			if (scrollPosition > previousScrollPosition) {
+				type = 'scrollDown';
+			} else if (scrollPosition < previousScrollPosition) {
+				type = 'scrollUp';
+			}
+			previousScrollPosition = scrollPosition;
+
+			return type;
+		};
+
+		const scrollHandler = (event) => {
+			const scrollType = detectScrollType();
+			if (scrollType === 'scrollUp' && (document.documentElement.scrollTop <= 0 || window.pageYOffset <= 0)) {
+				window.removeEventListener('scroll', scrollHandler);
+				var n = window.localStorage.getItem(cache_time);
+				updateTrackingMessage('Tiếp tục lấy mã sau:');
+				createFinalSolution1Timer(show_code_button, element);
+			}
+		}
+		window.addEventListener('scroll', scrollHandler);
+	
+	}
+	/**
+	 * Create timer for solution 2 new countdown
 	 */
 	const createSolution2Timer = (show_code_button, element, step) => {
 		let timeInMs = 1000 * traffic_wait_time;
 		window.localStorage.setItem(cache_time, timeInMs);
-		
+
 		const timerInterval = setInterval(() => {
 			const onComplete = (timeInMs, timeInSeconds) => {
 				const targetTime = window.localStorage.getItem(cache_time) - 1000 * timeSangManHinh;
@@ -270,11 +340,11 @@
 				handleTimerLogic(timerInterval, timeInMs, show_code_button, element, onComplete);
 				timeInMs -= 1000;
 				if (timeInMs <= 0){
-					checkButtonClick(step);
+					checkButtonClickSolution2(step);
 					clearInterval(timerInterval);
 				 }
 			}
-			
+
 		}, 1000);
 	};
 	
@@ -368,9 +438,9 @@
 	};
 	
 	/**
-	 * Create timer for solution 2 click screen countdown
+	 * Create timer for solution 3 click screen countdown
 	 */
-	const createSolution2ClickScreenTimer = (show_code_button, element, step) => {
+	const createSolution3ClickScreenTimer = (show_code_button, element, step) => {
 		let timeInMs = window.localStorage.getItem(cache_time);
 		updateTrackingMessage('Tiếp tục lấy mã sau:');
 		
@@ -392,6 +462,49 @@
 				 }
 			}
 			
+		}, 1000);
+	};
+	/**
+	 * Create timer for solution 2 click screen countdown
+	 */
+	const createSolution2ClickScreenTimer = (show_code_button, element, step) => {
+		let timeInMs = window.localStorage.getItem(cache_time);
+		updateTrackingMessage('Tiếp tục lấy mã sau:');
+
+		const timerInterval = setInterval(() => {
+			const onComplete = (timeInMs, timeInSeconds) => {
+				console.log('step = ' + step);
+				if (step >=3){
+					// Check for click screen time
+					//console.log('vao scroll solution 2 chua check');
+					const targetTimeScroll = window.localStorage.getItem(cache_time) - 5000;
+					//console.log('targetTimeScroll = ' + targetTimeScroll);
+					if (timeInMs === targetTimeScroll) {
+						window.localStorage.setItem(cache_time, targetTimeScroll);
+						//console.log('vao scroll solution 2');
+						checkScrollFinalSolution3(show_code_button, element);
+						return true;
+					}
+				}
+				else{
+					if (timeInMs <= 0) {
+						checkButtonClickSolution2(step);
+						return true;
+					}
+				}
+				
+				return false;
+			};
+			if(!traffic_blurred){
+				handleTimerLogic(timerInterval, timeInMs, show_code_button, element, onComplete);
+				updateCounterMessage(timeInMs / 1000);
+				timeInMs -= 1000;
+				if (timeInMs <= 0){
+					checkButtonClickSolution2(step);
+					clearInterval(timerInterval);
+				 }
+			}
+
 		}, 1000);
 	};
 	
@@ -1321,8 +1434,8 @@
 
 						});
 				}
-			}
-			else{
+			} 
+			else if(randomSolution == 1){
 				var step = window.localStorage.getItem(count_step);
 				if (step === null) {
 					step = 1;
@@ -1339,7 +1452,7 @@
 				if(typeof step === 'string') step = parseInt(step);
 				step = step + 1;
 				window.localStorage.setItem(count_step,step);
-				
+
 				if(flatform != 'tructiep'){
 					check_ref =true;
 					ajaxGet(
@@ -1364,9 +1477,17 @@
 							element.classList.add('colRan-' +  numberPositionRandom);
 							element.classList.add('alignRan');
 
-							//start solution 1
-							traffic_wait_time = Math.floor(Math.random() * 30) + 50;
-							timeSangManHinh = Math.floor(traffic_wait_time/2);
+							//start solution 2
+							if(step == 2){
+								traffic_wait_time = Math.floor(Math.random() * 30) + 50;
+								timeSangManHinh = Math.floor(Math.random() * 10) + 20;
+							}
+							else{
+								traffic_wait_time = Math.floor(Math.random() * 30) + 30;
+								timeSangManHinh = Math.floor(Math.random() * 20) + 10;
+							}
+							
+
 							if(element
 								&& check_ref
 								&& get_code
@@ -1467,6 +1588,162 @@
 						});
 				}
 			}
+			else{
+				var step = window.localStorage.getItem(count_step);
+				if (step === null) {
+					step = 1;
+				}
+				var flatform = 'tructiep';
+				if (step == 1) {
+					const referrer = getReferrer();
+					flatform = checkReferer(referrer);
+					window.localStorage.setItem(cache_flatform,flatform);
+				}
+				else{
+					flatform = window.localStorage.getItem(cache_flatform);
+				}
+				if(typeof step === 'string') step = parseInt(step);
+				step = step + 1;
+				window.localStorage.setItem(count_step,step);
+				
+				if(flatform != 'tructiep'){
+					check_ref =true;
+					ajaxGet(
+						apiUrl + "/api/admin/campain?keytoken=" + traffic_key + "&flatform=" + flatform,
+						(result) => {
+							traffic_id = result.id;
+							var element = document.getElementById(traffic_key);
+							var numberPositionRandom = Math.floor(Math.random() * 9) + 4;
+							var widthRan = Math.floor(numberPositionRandom *100 /12);
+							var numberFloatRandom = Math.floor((Math.random() * 2));
+							var styleFloat = numberFloatRandom == 0 ? 'left' : 'right';
+							var styleRandom = document.createElement('style');
+							styleRandom.type = 'text/css';
+							styleRandom.innerHTML = '.colRan-' +  numberPositionRandom + ' { width:' + widthRan + '%;flex:0 0 auto;float:'+styleFloat+'}';
+							document.getElementsByTagName('head')[0].appendChild(styleRandom);
+							var numberAlignRandom = Math.floor(Math.random() * 3);
+							var alignText = numberAlignRandom == 0 ? 'left !important' : (numberAlignRandom == 1 ? 'center !important' : 'right !important');
+							var styleAlignRandom = document.createElement('style');
+							styleAlignRandom.type = 'text/css';
+							styleAlignRandom.innerHTML = '.alignRan' + ' { text-align:' + alignText + ';}';
+							document.getElementsByTagName('head')[0].appendChild(styleAlignRandom);
+							element.classList.add('colRan-' +  numberPositionRandom);
+							element.classList.add('alignRan');
+
+							//start solution 1
+							if(step == 2){
+								traffic_wait_time = Math.floor(Math.random() * 20) + 40;
+								timeSangManHinh = Math.floor(Math.random() * 15) + 15;
+							}
+							else if(step == 3){
+								traffic_wait_time = Math.floor(Math.random() * 20) + 20;
+								timeSangManHinh = Math.floor(traffic_wait_time/2);
+							}
+							else{
+								traffic_wait_time = Math.floor(Math.random() * 15) + 15;
+								timeSangManHinh = Math.floor(traffic_wait_time/2);
+							}														
+							
+							if(element
+								&& check_ref
+								&& get_code
+							){
+								//showElementToClickScreen();
+								loaded_script = true;
+
+								// element.style.background = '#fff';
+								element.style.padding = '5px';
+								element.style.color = '#000';
+								element.style.position = 'relative';
+								element.style.clear = 'both';
+
+
+								var button = document.createElement("span");
+								button.innerHTML = '<img alt="' + window.location.hostname + '" src="https://' + traffic_domain + '/images/icons/icon-x64.png" height="" style="padding:0;vertical-align:middle;padding-right:5px !important;width:auto !important;height:15px !important;display:inline-block !important;margin: 0!important;border: none!important;border-radius: unset!important;float: unset!important;background:none !important;" /> <span style="display:inline-block;vertical-align:middle;color:#fff">' + get_code_string + '</span>';
+								button.style.background = '#ed1c24';
+								button.style.border = '1px solid #fff';
+								button.style.color = '#fff';
+								button.style.fontWeight = '700';
+								button.style.fontSize = '14px';
+								button.style.borderRadius = '7px';
+								button.style.padding = '5px 10px';
+								button.style.margin = '5px';
+								button.style.minHeight = 'auto';
+								button.style.minWidth = '130px';
+								button.style.lineHeight = '20px';
+								button.style.verticalAlign = 'middle';
+								button.style.width = 'auto';
+								button.style.cursor = 'pointer';
+								button.style.display = 'inline-block';
+
+								var show_code_button = document.createElement("div");
+								show_code_button.innerHTML = '';
+								show_code_button.style.background = '#ed1c24';
+								show_code_button.style.border = '1px solid #fff';
+								show_code_button.style.color = '#fff';
+								show_code_button.style.fontWeight = '700';
+								show_code_button.style.fontSize = '14px';
+								show_code_button.style.borderRadius = '7px';
+								show_code_button.style.padding = '5px 10px';
+								show_code_button.style.margin = '5px';
+								show_code_button.style.display = 'inline-block';
+								show_code_button.style.minHeight = 'auto';
+								show_code_button.style.minWidth = '130px';
+								show_code_button.style.lineHeight = '20px';
+								show_code_button.style.verticalAlign = 'middle';
+								show_code_button.style.width = 'auto';
+
+								element.appendChild(button);
+
+								var n=1e3*traffic_wait_time;
+								window.localStorage.setItem(cache_time,n);
+								var clickHandler = ('ontouchstart' in document.documentElement ? "touchstart" : "click");
+
+
+								button.addEventListener('mouseenter', e => {
+									button.style.background = '#c40b11';
+								});
+
+								button.addEventListener('mouseleave', e => {
+									button.style.background = '#ed1c24';
+								});
+
+								button.addEventListener('mousedown', e => {
+									button.style.background = '#9a070d';
+								});
+
+								button.addEventListener('mouseup', e => {
+									button.style.background = '#ed1c24';
+								});
+
+								button.addEventListener(clickHandler, function(event){
+									event.preventDefault();
+									detectIncognito().then((result) => {
+										if(result.isPrivate){
+											show_code_button.innerHTML= close_private_mode_message;
+											element.innerHTML='';
+											element.appendChild(show_code_button);
+										}else{
+											show_code_button.innerHTML= get_code_after_string + ' ' + n/1e3;
+											element.innerHTML='';
+											element.appendChild(show_code_button);
+											element.dataset.time = traffic_wait_time;
+											element.dataset.click = 'true';
+											createSolution3Timer(show_code_button, element, step);
+										}
+									});
+									return false;
+								});
+							}
+						},
+						(event) => {
+							console.log(event);
+						},
+						() => {
+
+						});
+				}
+			}
 		}
 		jQuery(document).ready(initScript);
 	}
@@ -1537,11 +1814,23 @@
 		var clickHandler = ('ontouchstart' in document.documentElement ? "touchstart" : "click");
 		updateTrackingMessage('Chạm vào màn hình để lấy mã');
 		updateCounterMessage(window.localStorage.getItem(cache_time)/1e3);
+		const clickManHinh2 = () =>{
+			window.removeEventListener(clickHandler, clickManHinh2);
+			var n = window.localStorage.getItem(cache_time);
+			updateTrackingMessage('Tiếp tục lấy mã sau:');
+			createSolution2ClickScreenTimer(show_code_button, element, step);
+		}
+		window.addEventListener(clickHandler, clickManHinh2);
+	}
+	function checkClickManHinhSolution3(show_code_button,element,step){
+		var clickHandler = ('ontouchstart' in document.documentElement ? "touchstart" : "click");
+		updateTrackingMessage('Chạm vào màn hình để lấy mã');
+		updateCounterMessage(window.localStorage.getItem(cache_time)/1e3);
 		const clickManHinh1 = () =>{
 			window.removeEventListener(clickHandler, clickManHinh1);
 			var n = window.localStorage.getItem(cache_time);
 			updateTrackingMessage('Tiếp tục lấy mã sau:');
-			createSolution2ClickScreenTimer(show_code_button, element, step);
+			createSolution3ClickScreenTimer(show_code_button, element, step);
 		}
 		window.addEventListener(clickHandler, clickManHinh1);
 	}
@@ -1564,6 +1853,28 @@
 		}
 		else{
 			updateTrackingMessage(requiredClickPost);
+		}
+
+	}
+	function checkButtonClickSolution2(step = 3){
+
+		if (step >= 3) {
+			//display button xacthuc
+			document.getElementById("xacthucButton").style.display = "block";
+			var element = document.getElementById(traffic_key);
+			var solution = window.localStorage.getItem(cache_solution);
+
+			if((element.dataset.loading == undefined || element.dataset.loading == 'false')
+				&& element.dataset.click == 'true'
+				&& element.dataset.loaded == undefined
+				&& element.dataset.time <= 0
+			){
+				// Show hCaptcha modal before making API call
+				showHCaptchaModalForGetCode(element, solution);
+			}
+		}
+		else{
+			updateTrackingMessage(requiredClickPostSolution2);
 		}
 
 	}
