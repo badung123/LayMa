@@ -22,5 +22,7 @@ namespace LayMa.Core.Repositories
         Task<bool> CheckUserAgent(string usergent, string screenDevice);
 		Task<DateTime> GetTimeSuccess(Guid shortLinkId, Guid userId, string screen);
 		Task<List<ThongKeViewClickByUser>> GetTopUsersByClicks(DateTime start, DateTime end, int top = 4);
-	}
+		Task<int> CountIP(string ip);
+
+    }
 }

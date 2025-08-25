@@ -2,6 +2,7 @@
 using LayMa.Core.ConfigOptions;
 using LayMa.Core.Domain.Identity;
 using LayMa.Core.Domain.Link;
+using LayMa.Core.Domain.Mission;
 using LayMa.Core.Domain.Transaction;
 using LayMa.Core.Interface;
 using LayMa.Core.Model.Auth;
@@ -135,9 +136,10 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 					await _unitOfWork.Campains.UpdateActive(campain.Id, false);
 				}
             }
-			//check 1 ngày 1 user chỉ đc dùng 1 IP,user agent
-			var checkIp = await _unitOfWork.ViewDetails.CheckIP(ips, request.DeviceScreen);
-			if (!checkIp) {
+			//1 IP/2 view
+			//var checkIp = await _unitOfWork.ViewDetails.CheckIP(ips, request.DeviceScreen);
+			var countIPinday = await _unitOfWork.ViewDetails.CountIP(ips);
+            if (countIPinday == 2) {
 				var transLog = new TransactionLog
 				{
 					Id = Guid.NewGuid(),
@@ -146,7 +148,7 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 					Amount = 0,
 					OldBalance = Int64.Parse(user.Balance.ToString()),
 					CreatedBy = user.UserName,
-					Description = "trùng IP - " + shortLink.Link,
+					Description = "IP đã có 2 view - " + shortLink.Link,
 					TranSactionType = TranSactionType.ClickCode,
 					ShortLink = shortLink.Link,
 					DeviceScreen = request.DeviceScreen,
@@ -160,6 +162,7 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 				await _unitOfWork.CompleteAsync();
 				return Ok(shortLink.OriginLink);
 			}
+			
 			//update code đã dùng
 			int? solution = null;
 			if (campain.Flatform == "google")
@@ -240,7 +243,36 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 					_unitOfWork.TransactionLogs.Add(transLogAgent);
 				}
 			}
-			var result = await _unitOfWork.CompleteAsync();
+            if (countIPinday == 0)
+            {
+                //đổi nhiệm vụ
+                //get mission by userid
+                var mission = await _unitOfWork.Missions.GetMissionByUserId(userId, shortLink.Id);
+                if (mission != null)
+				{
+                    //update mission isactive = false
+                    await _unitOfWork.Missions.UpdateIsChange(mission.Id);
+                    var newCampainId = await _unitOfWork.Campains.GetCampainIdRandomByOldID(mission.CampainId);
+                    if (newCampainId != Guid.Empty)
+					{
+                        var newMissionId = Guid.NewGuid();
+                        var newMission = new Mission()
+                        {
+                            Id = newMissionId,
+                            CampainId = newCampainId,
+                            ShortLinkId = shortLink.Id,
+                            TokenUrl = shortLink.Token,
+                            ShortLink = shortLink.OriginLink,
+                            UserId = userId,
+                            DateCreated = DateTime.Now,
+                            DateModified = DateTime.Now,
+                            IsActive = true
+                        };
+                        _unitOfWork.Missions.Add(newMission);
+                    }                   
+                }                                    
+            }
+            var result = await _unitOfWork.CompleteAsync();
 			return result > 0 ? Ok(shortLink.OriginLink) : BadRequest("Nhập code không thành công");
 
 		}

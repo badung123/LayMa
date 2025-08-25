@@ -39,7 +39,7 @@ namespace LayMa.Data.Repositories
 		{
 			var count = await _context.ViewDetails
 				.Where(x => x.UserId == userId && x.DateCreated >= start && x.DateCreated <= end)
-				.GroupBy(x => new { x.CampainId, x.ShortLinkId, x.Device, x.IPAddress })
+				//.GroupBy(x => new { x.CampainId, x.ShortLinkId, x.Device, x.IPAddress })
 				.CountAsync();
 			return count;
 		}
@@ -75,7 +75,7 @@ namespace LayMa.Data.Repositories
 		{
 			var count = await _context.ViewDetails
 				.Where(x => x.CampainId == campainId && x.DateCreated >= start && x.DateCreated <= end)
-				.GroupBy(x => new { x.CampainId, x.ShortLinkId, x.Device, x.IPAddress })
+				//.GroupBy(x => new { x.CampainId, x.ShortLinkId, x.Device, x.IPAddress })
 				.CountAsync();
 			return count;
 		}
@@ -84,7 +84,7 @@ namespace LayMa.Data.Repositories
 		{
             var count = await _context.ViewDetails
 				.Where(x =>x.DateCreated >= start && x.DateCreated <= end)
-				.GroupBy(x => new { x.CampainId, x.ShortLinkId, x.Device, x.IPAddress })
+				//.GroupBy(x => new { x.CampainId, x.ShortLinkId, x.Device, x.IPAddress })
 				.CountAsync();
             return count;
         }
@@ -93,9 +93,18 @@ namespace LayMa.Data.Repositories
 			var date = DateTime.Now;
 			var start = date.Date;
 			var end = date.Date.AddDays(1);
-			var isValid = await _context.ViewDetails.Where(x=> start <=x.DateCreated && x.DateCreated < end).AnyAsync(x => x.IPAddress == ip);
-			return !isValid;
+			var countIP = await _context.ViewDetails.CountAsync(x=> start <=x.DateCreated && x.DateCreated < end && x.IPAddress == ip);
+			return countIP < 2 ? true : false;
 		}
+        public async Task<int> CountIP(string ip)
+        {
+            var countIP = 0;
+            var date = DateTime.Now;
+            var start = date.Date;
+            var end = date.Date.AddDays(1);
+            countIP = await _context.ViewDetails.CountAsync(x => start <= x.DateCreated && x.DateCreated < end && x.IPAddress == ip);
+            return countIP;
+        }
         public async Task<bool> CheckUserAgent(string usergent, string screenDevice)
         {
             var date = DateTime.Now;
@@ -117,7 +126,7 @@ namespace LayMa.Data.Repositories
 				.Select(g => new
 				{
 					UserId = g.Key,
-					ClickCount = g.GroupBy(x => new { x.CampainId, x.ShortLinkId, x.Device, x.IPAddress }).Count()
+					ClickCount = g.Count()
 				})
 				.OrderByDescending(x => x.ClickCount)
 				.Take(top);
