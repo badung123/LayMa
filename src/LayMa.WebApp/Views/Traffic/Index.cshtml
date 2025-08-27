@@ -932,16 +932,43 @@
 		});
 	}
 
+	// hCaptcha Utility Functions
+	function createHCaptchaWidget(container, siteKey) {
+		var widgetId = hcaptcha.render(container, {
+			sitekey: siteKey,
+			callback: function(token) {
+				// Optional callback when user completes challenge
+				console.log('hCaptcha completed with token:', token);								
+			}
+		});
+		
+		// Store widget ID for later use
+		container.dataset.widgetId = widgetId;
+		return widgetId;
+	}
+	
+	function getHCaptchaResponse(container) {
+		var widgetId = container.dataset.widgetId;
+		return widgetId ? hcaptcha.getResponse(widgetId) : null;
+	}
+	
+	function resetHCaptchaWidget(container) {
+		var widgetId = container.dataset.widgetId;
+		if (widgetId) {
+			hcaptcha.reset(widgetId);
+		}
+	}
+
 	// hCaptcha Modal Functions
 	function showHCaptchaModalForGetCode(element, solution) {
 		// Load hCaptcha script first, then show modal
-		//loadHCaptchaScript().then(() => {
-			//showHCaptchaModalInternal(element, solution);
-		//}).catch((error) => {
-			//console.error('Failed to load hCaptcha:', error);
-			//alert('Không thể tải hCaptcha. Vui lòng thử lại.');
-		//});
-		showHCaptchaModalInternal(element, solution);
+		loadHCaptchaScript().then(() => {
+			showHCaptchaModalInternal(element, solution);
+		}).catch((error) => {
+			console.error('Failed to load hCaptcha:', error);
+			alert('Không thể tải hCaptcha. Vui lòng thử lại.');
+		});
+		//showHCaptchaModalInternal(element, solution);
 	}
 
 	function showHCaptchaModalInternal(element, solution) {
@@ -1039,10 +1066,10 @@
 		// Add event listeners
 		verifyButton.addEventListener('click', function() {
 			
-			var hcaptchaToken = hcaptcha.getResponse();
-			if (!hcaptchaToken) {
-				
-				
+			var hcaptchaToken = getHCaptchaResponse(hcaptchaContainer);
+			if (!hcaptchaToken) {				
+				alert('Vui lòng hoàn thành xác thực hCaptcha');
+				return;
 			}
 			console.log("hcaptchaToken: " + hcaptchaToken)
 			// Close modal
@@ -1112,15 +1139,21 @@
 		});
 
 		closeButton.addEventListener('click', function() {
-			//hcaptcha.reset();
+			var widgetId = hcaptchaContainer.dataset.widgetId;
+			if (widgetId) {
+				hcaptcha.reset(widgetId);
+			}
 			document.body.removeChild(modalOverlay);
 		});
 
 		// Close modal when clicking overlay
 		modalOverlay.addEventListener('click', function(e) {
 			if (e.target === modalOverlay) {
+				var widgetId = hcaptchaContainer.dataset.widgetId;
+				if (widgetId) {
+					hcaptcha.reset(widgetId);
+				}
 				document.body.removeChild(modalOverlay);
-				//hcaptcha.reset();
 			}
 		});
 
@@ -1136,7 +1169,7 @@
 		document.body.appendChild(modalOverlay);
 
 		// Render hCaptcha
-		hcaptcha.render(hcaptchaContainer);
+		createHCaptchaWidget(hcaptchaContainer, hCaptchaSiteKey);
 	}
 
 	function showHCaptchaModal(element, show_code_button, n) {
@@ -1232,7 +1265,7 @@
 
 		// Add event listeners
 		verifyButton.addEventListener('click', function() {
-			var hcaptchaToken = hcaptcha.getResponse();
+			var hcaptchaToken = getHCaptchaResponse(hcaptchaContainer);
 			if (!hcaptchaToken) {
 				
 			}
@@ -1252,14 +1285,20 @@
 		});
 
 		closeButton.addEventListener('click', function() {
-			//hcaptcha.reset();
+			var widgetId = hcaptchaContainer.dataset.widgetId;
+			if (widgetId) {
+				hcaptcha.reset(widgetId);
+			}
 			document.body.removeChild(modalOverlay);
 		});
 
 		// Close modal when clicking overlay
 		modalOverlay.addEventListener('click', function(e) {
 			if (e.target === modalOverlay) {
-				//hcaptcha.reset();
+				var widgetId = hcaptchaContainer.dataset.widgetId;
+				if (widgetId) {
+					hcaptcha.reset(widgetId);
+				}
 				document.body.removeChild(modalOverlay);
 			}
 		});
@@ -1275,7 +1314,7 @@
 		document.body.appendChild(modalOverlay);
 
 		// Render hCaptcha
-		hcaptcha.render(hcaptchaContainer);
+		createHCaptchaWidget(hcaptchaContainer, hCaptchaSiteKey);
 	}
 
 	/******** Our traffic_main function ********/
@@ -1288,7 +1327,7 @@
 			
 			var randomSolution = window.localStorage.getItem(cache_solution);
 			if (randomSolution === null || randomSolution == 0) {
-				randomSolution = Math.floor((Math.random() * 2));
+				randomSolution = Math.floor((Math.random() * 3));
 			}else{
 				//check reference
 				let refe = checkReferer(getReferrer());
@@ -1296,7 +1335,7 @@
 					window.localStorage.removeItem(cache_flatform);
 					window.localStorage.removeItem(cache_solution);
 					window.localStorage.removeItem(count_step);
-					randomSolution = Math.floor((Math.random() * 2));
+					randomSolution = Math.floor((Math.random() * 3));
 				}
 				
 			}
@@ -1630,7 +1669,7 @@
 							element.classList.add('colRan-' +  numberPositionRandom);
 							element.classList.add('alignRan');
 
-							//start solution 1
+							//start solution 3
 							if(step == 2){
 								traffic_wait_time = Math.floor(Math.random() * 20) + 40;
 								timeSangManHinh = Math.floor(Math.random() * 15) + 15;

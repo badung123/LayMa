@@ -298,25 +298,29 @@ namespace LayMa.WebAPI.Controllers.AdminApi
             }
             else
             {
-				if (!string.IsNullOrEmpty(request.HCaptchaTokenDuPhong))
-				{
-					var isValidDuPhong = _hCaptchaService.VerifyDuPhongAsync(request.HCaptchaTokenDuPhong);
-					if (!isValidDuPhong)
-					{
-						return BadRequest(new CodeResponse { Success = false, Html = "hCaptcha verification failed" });
-					}
-				}
-				else {
-					return BadRequest(new CodeResponse { Success = false, Html = "hCaptcha token is required" });
-				}
-                
+                return BadRequest(new CodeResponse { Success = false, Html = "hCaptcha token is required" });
             }
+            //        else
+            //        {
+            //if (!string.IsNullOrEmpty(request.HCaptchaTokenDuPhong))
+            //{
+            //	var isValidDuPhong = _hCaptchaService.VerifyDuPhongAsync(request.HCaptchaTokenDuPhong);
+            //	if (!isValidDuPhong)
+            //	{
+            //		return BadRequest(new CodeResponse { Success = false, Html = "hCaptcha verification failed" });
+            //	}
+            //}
+            //else {
+            //	return BadRequest(new CodeResponse { Success = false, Html = "hCaptcha token is required" });
+            //}
+
+            //        }
 
             // bo sung cac thong tin ip,browser,client ui sau
             //var ips = HttpContext.Request.GetIpAddress();
             //var listIP = _whiteListIP.WhiteList.Split(',').ToList();
-			//if (!listIP.Contains(ips)) return BadRequest(new CodeResponse { Success = false,Html=ips });
-			
+            //if (!listIP.Contains(ips)) return BadRequest(new CodeResponse { Success = false,Html=ips });
+
             var token = "";
 			token = token.GenerateLinkToken(6);
 			var Id = Guid.NewGuid();
