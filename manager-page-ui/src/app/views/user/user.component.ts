@@ -149,20 +149,24 @@ export class UserComponent implements OnInit, OnDestroy{
         },
       });
     }
-    congtrutientaikhoan(id: string){
+    congtrutientaikhoan(user: UserDtoInList){
       const ref = this.dialogService.open(CongTruTienTKComponent, {
         data: {
-          id: id,
+          user: user,
         },
-        header: 'Cộng trừ tiền tk',
-        width: '70%'
+        header: 'Cộng/Trừ tiền tài khoản',
+        width: '70%',
+        modal: true,
+        closable: true
       });
       const dialogRef = this.dialogService.dialogComponentRefMap.get(ref);
       const dynamicComponent = dialogRef?.instance as DynamicDialogComponent;
       const ariaLabelledBy = dynamicComponent.getAriaLabelledBy();
       dynamicComponent.getAriaLabelledBy = () => ariaLabelledBy;
       ref.onClose.subscribe((data: any) => {
-        this.loadData();  
+        if (data) {
+          this.loadData(); // Reload data only if transaction was successful
+        }
       });
     }
     edittaikhoan(id: string,maxClick:number,rate:number){

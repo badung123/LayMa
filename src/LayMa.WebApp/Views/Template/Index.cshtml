@@ -86,14 +86,21 @@
 				<div class="box-btn-copy">
 					<button id="copyUrlWeb" onclick="copyUrlWeb()">Copy</button>
 				</div>
-				<p class="box-step-title fadeInUp visible">Bước 2: Nhập tên tài khoản và nội dung được tạo sẵn ở dưới,sau đó nhấn gửi</p>
+				@* <p class="box-step-title fadeInUp visible">Bước 2: Nhập tên tài khoản và nội dung được tạo sẵn ở dưới,sau đó nhấn gửi</p>
 				<div class="box-linkFB-wrap">
 					<code id="linkNoidung">@Model.Noidung</code>
 				</div>
 				<div class="box-btn-copy">
 					<button id="copyNoidung" onclick="copyNoidung()">Copy</button>
-				</div>
+				</div> *@
 				<span><img src="@Model.UrlImage" alt="" class="img-fluid"></span>
+				<p class="box-step-title fadeInUp visible">Bước 2: Khi website mở ra,hãy cuộn chậm từ trên xuống tìm nút như hình bên dưới và sau đó click vào</p>
+				<p class="box-step-getCode fadeInUp mt-1 visible">
+					<span><img src="/uploads/laymabutton.png" alt="" class="img-fluid"></span>
+					<span class="text-danger">(Nếu không thấy nút lấy mã, vui lòng tắt trình duyệt và làm lại từ đầu)</span>
+				</p>
+				<p class="box-step-title fadeInUp visible">Bước 3: Sao chép mã hiện ra và nhập vào ô bên dưới</p>
+				<a id="xuong"></a>
 			}
 			else
 			{
@@ -779,6 +786,18 @@
 		</div>
 	</div>
 </div>
+
+<!-- Loading Modal -->
+<div id="myModalLoading" class="modal" style="z-index: 9999;">
+	<div class="modal-content" style="width: 300px; text-align: center; padding: 20px;">
+		<div class="modal-body">
+			<div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+				<span class="visually-hidden">Loading...</span>
+			</div>
+			<p style="margin-top: 15px; font-size: 16px;">Đang xử lý...</p>
+		</div>
+	</div>
+</div>
 @* @section Scripts {
 						@if (Model.Captcha.IsEnabled)
 						{
@@ -1139,16 +1158,29 @@
         }
 	}
 	function confirm1() {
-		 
+		 //disable nút xác nhận
+		const myButtonXacNhan = document.getElementById('btn-xac-nhan');
+		const modalLoading = document.getElementById('myModalLoading');
+		myButtonXacNhan.disabled = true;
+		
+		// Show loading modal
+		modalLoading.style.display = "block";
+		
 		var code = document.getElementById("codeInput").value;
 		if(code == null || code == ""){
+			modalLoading.style.display = "none";
+			myButtonXacNhan.disabled = false;
 			displayError("Bạn chưa nhập mã code");
+			return;
 		}
 		var tokenId = document.getElementById("tokenId").innerHTML;
 		
 		var campainId = document.getElementById("campainId").innerHTML;
 		if (campainId == null || campainId == "") {
+			modalLoading.style.display = "none";
+			myButtonXacNhan.disabled = false;
 			displayError("Chiến dịch không tồn tại");
+			return;
 		}
 		var clientInformation = getVisitorInfo();
 		var postData = {
@@ -1164,6 +1196,8 @@
 			contentType: 'application/json',
 			data: JSON.stringify(postData),
 			success: function (result) {
+				modalLoading.style.display = "none";
+				myButtonXacNhan.disabled = false;
 				displaySuccess("Nhập code thành công");
 				spanThongbao.style.display = "none"; 
 				document.getElementById("closeThongBao").style.display = "none";
@@ -1183,7 +1217,15 @@
 							
 			},
 			error: function (error) {
-				displayError(error.responseText);
+				modalLoading.style.display = "none";
+				myButtonXacNhan.disabled = false;
+				if (error.responseText === 'undefined') {
+					displayError(error);
+				}
+				else {
+					displayError(error.responseText);
+				}
+				
 				document.getElementById("redirect").style.display = "none";
 			}
 		});

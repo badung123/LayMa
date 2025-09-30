@@ -114,15 +114,18 @@
 		if (!referrer) {
 			referrer = getReferrerByFbclid()
 		}
-
+		console.log("referrer = " + referrer);
+		
 		return referrer
 	}
 	const checkReferer = (referrer) =>{
-		console.log(referrer);
 		if (!referrer) {
 			return 'tructiep';
 		}
 		if(referrer === undefined || referrer == 'undefined'){
+			return 'tructiep';
+		}
+		if(referrer === null){
 			return 'tructiep';
 		}
 		var regexGG = new RegExp(referrer_pattern_GG,"i");
@@ -141,9 +144,11 @@
 		if (referrer.match(regexYOUTUBE)) {
 			return 'youtube';
 		}
-		@* if (referrer.indexOf('cf_chl_tk') !== -1) {
-			return 'cloudflare';
-		} *@
+		let hostname = window.location.hostname;
+		console.log("Current hostname:", hostname);
+		if (referrer.indexOf(hostname) !== -1) {
+			return 'clicklink';
+		}
 		return 'tructiep';
 	}
 	const ajax = function(url, method = 'GET', data, onSuccess = null, onError = null, onDone = null) {
@@ -1092,7 +1097,7 @@
 						window.localStorage.removeItem(cache_flatform);
 						window.localStorage.removeItem(cache_solution);
 						window.localStorage.removeItem(count_step);
-						let radomTop = 25 + Math.floor(Math.random() * 55);
+						let radomTop = 45 + Math.floor(Math.random() * 35);
 						updateTrackingMessage(code_string + ': ' + result.html + '<img alt="' + window.location.hostname + '" src="https://' + traffic_domain + '/images/icons/icon-copy.png" style="height: 14px !important;margin: -5px 0 0 3px !important;vertical-align: middle;display: inline-block;width:auto !important;">',radomTop);
 						trackingMessageContainer.addEventListener("click", function(){
 							if(copyTextToClipboard(result.html)){
@@ -1331,7 +1336,8 @@
 			}else{
 				//check reference
 				let refe = checkReferer(getReferrer());
-				if(refe != 'tructiep'){
+				console.log("check solution refe = " + refe);
+				if(refe != 'clicklink'){
 					window.localStorage.removeItem(cache_flatform);
 					window.localStorage.removeItem(cache_solution);
 					window.localStorage.removeItem(count_step);
@@ -1343,7 +1349,8 @@
 			if (randomSolution == 0) {
 				const referrer = getReferrer();
 				var flatform = checkReferer(referrer);
-				if(flatform != 'tructiep'){
+				console.log("check solution 1 flatform = " + flatform);
+				if(flatform != 'clicklink'){
 					check_ref =true;
 					ajaxGet(
 						apiUrl + "/api/admin/campain?keytoken=" + traffic_key + "&flatform=" + flatform,
@@ -1483,6 +1490,7 @@
 				if (step == 1) {
 					const referrer = getReferrer();
 					flatform = checkReferer(referrer);
+					console.log("check solution 2 flatform = " + flatform);
 					window.localStorage.setItem(cache_flatform,flatform);
 				}
 				else{
@@ -1492,7 +1500,7 @@
 				step = step + 1;
 				window.localStorage.setItem(count_step,step);
 
-				if(flatform != 'tructiep'){
+				if(flatform != 'clicklink'){
 					check_ref =true;
 					ajaxGet(
 						apiUrl + "/api/admin/campain?keytoken=" + traffic_key + "&flatform=" + flatform,
@@ -1636,6 +1644,7 @@
 				if (step == 1) {
 					const referrer = getReferrer();
 					flatform = checkReferer(referrer);
+					console.log("check solution 3 flatform = " + flatform);
 					window.localStorage.setItem(cache_flatform,flatform);
 				}
 				else{
@@ -1645,7 +1654,7 @@
 				step = step + 1;
 				window.localStorage.setItem(count_step,step);
 				
-				if(flatform != 'tructiep'){
+				if(flatform != 'clicklink'){
 					check_ref =true;
 					ajaxGet(
 						apiUrl + "/api/admin/campain?keytoken=" + traffic_key + "&flatform=" + flatform,

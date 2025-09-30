@@ -108,7 +108,7 @@
                                   <li><a cDropdownItem (click)="xacminh(item.isVerify,item.id,item.origin,item.originImage)">Xác minh</a></li>
                                   <li *ngIf="item.isActive"><a cDropdownItem (click)="mokhoataikhoan(item.id)">Khóa TK</a></li>
                                   <li *ngIf="!item.isActive"><a cDropdownItem (click)="mokhoataikhoan(item.id)">Mở khóa TK</a></li>
-                                  <li><a cDropdownItem (click)="congtrutientaikhoan(item.id)">Cộng trừ tiền</a></li>
+                                  <li><a cDropdownItem (click)="congtrutientaikhoan(item)">Cộng trừ tiền</a></li>
                                   <li><a cDropdownItem (click)="edittaikhoan(item.id,item.maxClickInDay,item.rate)">Sửa</a></li>
                                 </ul>
                               </c-dropdown>

@@ -908,6 +908,61 @@ export class AdminApiCampainApiClient {
         }
         return _observableOf(null as any);
     }
+
+    /**
+     * @param keyToken (optional) 
+     * @return Success
+     */
+    getHCaptchaSitekey(keyToken?: string | null | undefined): Observable<string> {
+        let url_ = this.baseUrl + "/api/admin/campain/getHCaptchaSitekey?";
+        if (keyToken !== undefined && keyToken !== null)
+            url_ += "keyToken=" + encodeURIComponent("" + keyToken) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetHCaptchaSitekey(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetHCaptchaSitekey(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<string>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<string>;
+        }));
+    }
+
+    protected processGetHCaptchaSitekey(response: HttpResponseBase): Observable<string> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
 }
 
 @Injectable()
@@ -1029,7 +1084,7 @@ export class AdminApiCodeManagerApiClient {
      * @param body (optional) 
      * @return Success
      */
-    getCode(body?: { [key: string]: any; } | undefined): Observable<string> {
+    getCode(body?: GetCodeRequest | undefined): Observable<string> {
         let url_ = this.baseUrl + "/api/admin/codemanager/getcode";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -3050,6 +3105,116 @@ export class AdminApiUserApiClient {
         }
         return _observableOf(null as any);
     }
+
+    /**
+     * @return Success
+     */
+    getTopUsersByClicksInLastWeek(): Observable<ThongKeViewClickByUser[]> {
+        let url_ = this.baseUrl + "/api/admin/user/getTopUsersByClicksInLastWeek";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetTopUsersByClicksInLastWeek(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetTopUsersByClicksInLastWeek(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ThongKeViewClickByUser[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ThongKeViewClickByUser[]>;
+        }));
+    }
+
+    protected processGetTopUsersByClicksInLastWeek(response: HttpResponseBase): Observable<ThongKeViewClickByUser[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(ThongKeViewClickByUser.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    adjustUserBalanceByAdmin(body?: AdminBalanceAdjustmentRequest | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/admin/user/congtrutienbyadmin";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processAdjustUserBalanceByAdmin(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processAdjustUserBalanceByAdmin(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processAdjustUserBalanceByAdmin(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return _observableOf(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
 }
 
 @Injectable()
@@ -3181,6 +3346,50 @@ export class AdminApiVisitorApiClient {
         }
         return _observableOf(null as any);
     }
+}
+
+export class AdminBalanceAdjustmentRequest implements IAdminBalanceAdjustmentRequest {
+    userId!: string;
+    amount!: number;
+    description!: string;
+
+    constructor(data?: IAdminBalanceAdjustmentRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.userId = _data["userId"];
+            this.amount = _data["amount"];
+            this.description = _data["description"];
+        }
+    }
+
+    static fromJS(data: any): AdminBalanceAdjustmentRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new AdminBalanceAdjustmentRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userId"] = this.userId;
+        data["amount"] = this.amount;
+        data["description"] = this.description;
+        return data;
+    }
+}
+
+export interface IAdminBalanceAdjustmentRequest {
+    userId: string;
+    amount: number;
+    description: string;
 }
 
 export class AgentListDto implements IAgentListDto {
@@ -4161,6 +4370,54 @@ export class ForgotPasswordRequest implements IForgotPasswordRequest {
 
 export interface IForgotPasswordRequest {
     email?: string | undefined;
+}
+
+export class GetCodeRequest implements IGetCodeRequest {
+    trafficId?: string | undefined;
+    solution?: string | undefined;
+    hCaptchaToken?: string | undefined;
+    hCaptchaTokenDuPhong?: string | undefined;
+
+    constructor(data?: IGetCodeRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.trafficId = _data["trafficId"];
+            this.solution = _data["solution"];
+            this.hCaptchaToken = _data["hCaptchaToken"];
+            this.hCaptchaTokenDuPhong = _data["hCaptchaTokenDuPhong"];
+        }
+    }
+
+    static fromJS(data: any): GetCodeRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetCodeRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["trafficId"] = this.trafficId;
+        data["solution"] = this.solution;
+        data["hCaptchaToken"] = this.hCaptchaToken;
+        data["hCaptchaTokenDuPhong"] = this.hCaptchaTokenDuPhong;
+        return data;
+    }
+}
+
+export interface IGetCodeRequest {
+    trafficId?: string | undefined;
+    solution?: string | undefined;
+    hCaptchaToken?: string | undefined;
+    hCaptchaTokenDuPhong?: string | undefined;
 }
 
 export class InsertCodeRequest implements IInsertCodeRequest {

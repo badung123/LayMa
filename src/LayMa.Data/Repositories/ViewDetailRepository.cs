@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using static LayMa.Core.Constants.Permissions;
@@ -31,15 +32,53 @@ namespace LayMa.Data.Repositories
 		{
 			var count = await _context.ViewDetails
 				.Where(x => x.ShortLinkId == shortLinkId && x.DateCreated >= start && x.DateCreated <= end)
-				.DistinctBy(x=> new {x.CampainId,x.ShortLinkId,x.Device,x.IPAddress})
+				.DistinctBy(x => new { x.CampainId, x.ShortLinkId, x.Device, x.IPAddress })
 				.CountAsync();
 			return count;
 		}
+		public async Task<int> CountClickByDateRangeAndShortLink2IP(DateTime start, DateTime end, Guid shortLinkId)
+		{
+			var viewDatailGroup = _context.ViewDetails
+				.Where(x => x.ShortLinkId == shortLinkId && x.DateCreated >= start && x.DateCreated <= end)
+				.GroupBy(x => new { x.CampainId, x.ShortLinkId, x.Device, x.IPAddress })
+				.Select(x => new ViewDatailGroup
+				{ IPAddress = x.Key.IPAddress, CampainId = x.Key.CampainId, DeviceScreen = x.Key.Device, ShortLinkId = x.Key.ShortLinkId });
+			var countgroupIP = viewDatailGroup.GroupBy(x => x.IPAddress)
+				.Select(x => new { IPAddress = x.Key, CountIP = x.Count() });
+			var count = await countgroupIP.Where(x => x.CountIP <= 2).SumAsync(x => x.CountIP);
+			var countIPGreaterThan2 = await countgroupIP.Where(x => x.CountIP > 2).CountAsync();
+
+			return count + 2 * countIPGreaterThan2;
+		}
 		public async Task<int> CountClickByDateRangeAndUserId(DateTime start, DateTime end, Guid userId)
+		{
+
+			var count = await _context.ViewDetails
+				.Where(x => x.UserId == userId && x.DateCreated >= start && x.DateCreated <= end)
+				.GroupBy(x => new { x.CampainId, x.ShortLinkId, x.Device, x.IPAddress })
+				.CountAsync();
+			return count;
+		}
+		public async Task<int> CountClickByDateRangeAndUserId2IP(DateTime start, DateTime end, Guid userId)
+		{
+
+			var viewDatailGroup = _context.ViewDetails
+				.Where(x => x.UserId == userId && x.DateCreated >= start && x.DateCreated <= end)
+				.GroupBy(x => new { x.CampainId, x.ShortLinkId, x.Device, x.IPAddress })
+				.Select(x => new ViewDatailGroup
+				{ IPAddress = x.Key.IPAddress, CampainId = x.Key.CampainId, DeviceScreen = x.Key.Device, ShortLinkId = x.Key.ShortLinkId });
+			var countgroupIP = viewDatailGroup.GroupBy(x => x.IPAddress)
+				.Select(x => new { IPAddress = x.Key, CountIP = x.Count() });
+			var count = await countgroupIP.Where(x => x.CountIP <= 2).SumAsync(x => x.CountIP);
+			var countIPGreaterThan2 = await countgroupIP.Where(x => x.CountIP > 2).CountAsync();
+
+			return count + 2 * countIPGreaterThan2;
+		}
+		public async Task<int> CountClickByDateRangeAndUserIdOld(DateTime start, DateTime end, Guid userId)
 		{
 			var count = await _context.ViewDetails
 				.Where(x => x.UserId == userId && x.DateCreated >= start && x.DateCreated <= end)
-				//.GroupBy(x => new { x.CampainId, x.ShortLinkId, x.Device, x.IPAddress })
+				.GroupBy(x => new { x.CampainId, x.ShortLinkId, x.Device, x.IPAddress })
 				.CountAsync();
 			return count;
 		}
@@ -73,28 +112,59 @@ namespace LayMa.Data.Repositories
 
 		public async Task<int> CountClickByDateRangeAndCampainId(DateTime start, DateTime end, Guid campainId)
 		{
+
 			var count = await _context.ViewDetails
 				.Where(x => x.CampainId == campainId && x.DateCreated >= start && x.DateCreated <= end)
-				//.GroupBy(x => new { x.CampainId, x.ShortLinkId, x.Device, x.IPAddress })
+				.GroupBy(x => new { x.CampainId, x.ShortLinkId, x.Device, x.IPAddress })
 				.CountAsync();
 			return count;
 		}
-		
+		public async Task<int> CountClickByDateRangeAndCampainId2IP(DateTime start, DateTime end, Guid campainId)
+		{
+
+			var viewDatailGroup = _context.ViewDetails
+				.Where(x => x.CampainId == campainId && x.DateCreated >= start && x.DateCreated <= end)
+				.GroupBy(x => new { x.CampainId, x.ShortLinkId, x.Device, x.IPAddress })
+				.Select(x => new ViewDatailGroup
+				{ IPAddress = x.Key.IPAddress, CampainId = x.Key.CampainId, DeviceScreen = x.Key.Device, ShortLinkId = x.Key.ShortLinkId });
+			var countgroupIP = viewDatailGroup.GroupBy(x => x.IPAddress)
+				.Select(x => new { IPAddress = x.Key, CountIP = x.Count() });
+			var count = await countgroupIP.Where(x => x.CountIP <= 2).SumAsync(x => x.CountIP);
+
+			var countIPGreaterThan2 = await countgroupIP.Where(x => x.CountIP > 2).CountAsync();
+
+			return count + 2 * countIPGreaterThan2;
+		}
+
 		public async Task<int> CountClickByDateRange(DateTime start, DateTime end)
 		{
-            var count = await _context.ViewDetails
-				.Where(x =>x.DateCreated >= start && x.DateCreated <= end)
-				//.GroupBy(x => new { x.CampainId, x.ShortLinkId, x.Device, x.IPAddress })
+			var count = await _context.ViewDetails
+				.Where(x => x.DateCreated >= start && x.DateCreated <= end)
+				.GroupBy(x => new { x.CampainId, x.ShortLinkId, x.Device, x.IPAddress })
 				.CountAsync();
-            return count;
-        }
+			return count;
+		}
+		public async Task<int> CountClickByDateRange2IP(DateTime start, DateTime end)
+		{
+			var viewDatailGroup = _context.ViewDetails
+				.Where(x => x.DateCreated >= start && x.DateCreated <= end)
+				.GroupBy(x => new { x.CampainId, x.ShortLinkId, x.Device, x.IPAddress })
+				.Select(x => new ViewDatailGroup
+				{ IPAddress = x.Key.IPAddress, CampainId = x.Key.CampainId, DeviceScreen = x.Key.Device, ShortLinkId = x.Key.ShortLinkId });
+			var countgroupIP = viewDatailGroup.GroupBy(x => x.IPAddress)
+				.Select(x => new { IPAddress = x.Key, CountIP = x.Count() });
+			var count = await countgroupIP.Where(x => x.CountIP <= 2).SumAsync(x => x.CountIP);
+			var countIPGreaterThan2 = await countgroupIP.Where(x => x.CountIP > 2).CountAsync();
+
+			return count + 2 * countIPGreaterThan2;
+		}
 		public async Task<bool> CheckIP(string ip, string screenDevice)
 		{
 			var date = DateTime.Now;
 			var start = date.Date;
 			var end = date.Date.AddDays(1);
-			var countIP = await _context.ViewDetails.CountAsync(x=> start <=x.DateCreated && x.DateCreated < end && x.IPAddress == ip);
-			return countIP < 2 ? true : false;
+			var isValid = await _context.ViewDetails.Where(x => start <= x.DateCreated && x.DateCreated < end).AnyAsync(x => x.IPAddress == ip);
+			return !isValid;
 		}
         public async Task<int> CountIP(string ip)
         {
@@ -126,7 +196,7 @@ namespace LayMa.Data.Repositories
 				.Select(g => new
 				{
 					UserId = g.Key,
-					ClickCount = g.Count()
+					ClickCount = g.GroupBy(x => new { x.CampainId, x.ShortLinkId, x.Device, x.IPAddress }).Count()
 				})
 				.OrderByDescending(x => x.ClickCount)
 				.Take(top);

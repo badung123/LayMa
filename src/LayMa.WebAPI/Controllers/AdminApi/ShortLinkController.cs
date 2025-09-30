@@ -307,8 +307,16 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 
 			foreach (var user in listUserThongKe)
 			{
+				var countCLick = 0;
+				if (userName != "")
+				{
+					countCLick = await _unitOfWork.ViewDetails.CountClickByDateRangeAndUserId(from, to, user.Id);
+				}
+				else
+				{
+					countCLick = await _unitOfWork.ViewDetails.CountClickByDateRangeAndUserIdOld(from, to, user.Id);
+				}
 				
-				var countCLick = await _unitOfWork.ViewDetails.CountClickByDateRangeAndUserId(from, to, user.Id);
                 if (countCLick > 0)
 				{
 					user.Click = countCLick;
@@ -359,5 +367,17 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 			rs.Views = lstView;
 			return rs;
 		}
-	}
+
+        [HttpGet]
+        [Route("testThongkeClickByDateAndUser")]
+        public async Task<ActionResult<int>> GetTestThongKeClickByDateAndUser(DateTime from, DateTime to,Guid userId)
+        {
+            from = from.ToLocalTime().Date;
+            to = to.ToLocalTime().Date;
+            var countClick = await _unitOfWork.ViewDetails.CountClickByDateRangeAndUserId(from, to, userId);
+
+            //count click thanh cong
+            return countClick;
+        }
+    }
 }

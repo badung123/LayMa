@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using LayMa.Core.Domain.Identity;
+using LayMa.Core.Domain.Transaction;
 using LayMa.Core.Interface;
 using LayMa.Core.Model;
 using LayMa.Core.Model.Auth;
@@ -137,6 +138,81 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 
 			var topUsers = await _unitOfWork.ViewDetails.GetTopUsersByClicks(startOfMonth, endOfMonth, 4);
 			return Ok(topUsers);
+		}
+		[HttpGet]
+		[Route("getTopUsersByClicksInLastWeek")]
+		public async Task<ActionResult<List<ThongKeViewClickByUser>>> GetTopUsersByClicksInLastWeek()
+		{
+			// Calculate this week's date range (Monday to Sunday)
+			var today = DateTime.Now.Date.AddDays(-7);
+			var startOfWeek = today.AddDays(-(int)today.DayOfWeek + (int)DayOfWeek.Monday);
+			var endOfWeek = startOfWeek.AddDays(6).AddHours(23).AddMinutes(59).AddSeconds(59);
+
+			var topUsers = await _unitOfWork.ViewDetails.GetTopUsersByClicks(startOfWeek, endOfWeek, 4);
+			return Ok(topUsers);
+		}
+
+		[HttpPost]
+		[Route("congtrutienbyadmin")]
+		public async Task<ActionResult> AdjustUserBalanceByAdmin([FromBody] AdminBalanceAdjustmentRequest request)
+		{
+			// Get the target user
+			var targetUser = await _userManager.FindByIdAsync(request.UserId.ToString());
+			if (targetUser == null) return BadRequest("Tài khoản không tồn tại");
+
+			// Get admin user info
+			var adminUserId = User.GetUserId();
+			var adminUser = await _userManager.FindByIdAsync(adminUserId.ToString());
+			if (adminUser == null) return BadRequest("Admin không tồn tại hoặc hết hạn đăng nhập");
+
+			// Validate amount
+			if (request.Amount == 0) return BadRequest("Số tiền không được bằng 0");
+
+			// Check if user has enough balance for subtraction
+			if (request.Amount < 0 && targetUser.Balance < Math.Abs(request.Amount))
+			{
+				return BadRequest("Số dư không đủ để thực hiện giao dịch");
+			}
+
+			// Store old balance for transaction log
+			var oldBalance = targetUser.Balance;
+
+			// Update user balance
+			await _unitOfWork.Users.UpdateBalanceCount(targetUser.Id, request.Amount);
+			await _unitOfWork.CompleteAsync();
+
+			// Create transaction log
+			var transactionLog = new TransactionLog
+			{
+				Id = Guid.NewGuid(),
+				UserId = targetUser.Id,
+				UserName = targetUser.UserName,
+				Amount = (long)request.Amount,
+				OldBalance = (long)oldBalance,
+				CreatedBy = adminUser.UserName,
+				Description = request.Description,
+				TranSactionType = TranSactionType.Admin,
+				DateCreated = DateTime.Now,
+				DateModified = DateTime.Now
+			};
+
+			_unitOfWork.TransactionLogs.Add(transactionLog);
+			var result = await _unitOfWork.CompleteAsync();
+
+			if (result <= 0)
+			{
+				// Rollback balance change if transaction log fails
+				await _unitOfWork.Users.UpdateBalanceCount(targetUser.Id, -request.Amount);
+				await _unitOfWork.CompleteAsync();
+				return BadRequest("Có lỗi xảy ra khi ghi log giao dịch");
+			}
+
+			return Ok(new { 
+				message = "Cập nhật số dư thành công",
+				oldBalance = oldBalance,
+				newBalance = targetUser.Balance + request.Amount,
+				amount = request.Amount
+			});
 		}
 	}
 }

@@ -1,3 +1,156 @@
 
-Cộng trừ tiền
-  
+<c-card>
+  <c-card-header>
+    <h4 class="mb-0">
+      <svg cIcon name="cil-dollar" class="me-2"></svg>
+      Cộng/Trừ tiền tài khoản
+    </h4>
+  </c-card-header>
+  <c-card-body>
+    <!-- User Information -->
+    <c-row class="mb-4">
+      <c-col>
+        <div class="alert alert-info">
+          <strong>Thông tin tài khoản:</strong><br>
+          <strong>Tên:</strong> {{ userInfo?.userName }}<br>
+          <strong>Email:</strong> {{ userInfo?.email }}<br>
+          <strong>Số dư hiện tại:</strong> 
+          <span class="badge bg-success fs-6">{{ getCurrentBalance() }} VNĐ</span>
+        </div>
+      </c-col>
+    </c-row>
+
+    <!-- Balance Adjustment Form -->
+    <form cForm [formGroup]="balanceAdjustmentForm" (ngSubmit)="adjustBalance()">
+      <c-row>
+        <!-- Operation Type -->
+        <c-col md="6" class="mb-3">
+          <label cFormLabel class="mb-3">Loại thao tác</label>
+          <div class="d-flex gap-4">
+            <div class="form-check">
+              <input 
+                class="form-check-input" 
+                type="radio" 
+                name="operationType" 
+                id="operationTypeAdd"
+                value="add"
+                formControlName="operationType"
+                [class.is-invalid]="formControls['operationType'].invalid && formControls['operationType'].touched">
+              <label class="form-check-label text-success fw-bold" for="operationTypeAdd">
+                <svg cIcon name="cil-plus" class="me-1"></svg>
+                Cộng tiền (+)
+              </label>
+            </div>
+            <div class="form-check">
+              <input 
+                class="form-check-input" 
+                type="radio" 
+                name="operationType" 
+                id="operationTypeSubtract"
+                value="subtract"
+                formControlName="operationType"
+                [class.is-invalid]="formControls['operationType'].invalid && formControls['operationType'].touched">
+              <label class="form-check-label text-danger fw-bold" for="operationTypeSubtract">
+                <svg cIcon name="cil-minus" class="me-1"></svg>
+                Trừ tiền (-)
+              </label>
+            </div>
+          </div>
+          <div *ngIf="formControls['operationType'].invalid && formControls['operationType'].touched" 
+               class="invalid-feedback">
+            Vui lòng chọn loại thao tác
+          </div>
+        </c-col>
+
+        <!-- Amount -->
+        <c-col md="6" class="mb-3">
+          <label cFormLabel for="amount">Số tiền (VNĐ)</label>
+          <c-input-group>
+            <input 
+              type="number" 
+              id="amount"
+              cFormControl
+              formControlName="amount"
+              placeholder="Nhập số tiền"
+              step="0.01"
+              min="0.01"
+              (input)="onAmountChange()"
+              [class.is-invalid]="formControls['amount'].invalid && formControls['amount'].touched"
+              class="form-control">
+            <span cInputGroupText>VNĐ</span>
+          </c-input-group>
+          <div *ngIf="formControls['amount'].invalid && formControls['amount'].touched" 
+               class="invalid-feedback">
+            <div *ngIf="formControls['amount'].errors?.['required']">Vui lòng nhập số tiền</div>
+            <div *ngIf="formControls['amount'].errors?.['min']">Số tiền phải lớn hơn 0</div>
+            <div *ngIf="formControls['amount'].errors?.['pattern']">Số tiền không hợp lệ</div>
+          </div>
+        </c-col>
+      </c-row>
+
+      <!-- Description -->
+      <c-row>
+        <c-col class="mb-3">
+          <label cFormLabel for="description">Mô tả giao dịch</label>
+          <textarea 
+            id="description"
+            cFormControl
+            formControlName="description"
+            placeholder="Nhập lý do cộng/trừ tiền (tối thiểu 5 ký tự)"
+            rows="3"
+            [class.is-invalid]="formControls['description'].invalid && formControls['description'].touched"
+            class="form-control">
+          </textarea>
+          <div *ngIf="formControls['description'].invalid && formControls['description'].touched" 
+               class="invalid-feedback">
+            <div *ngIf="formControls['description'].errors?.['required']">Vui lòng nhập mô tả giao dịch</div>
+            <div *ngIf="formControls['description'].errors?.['minlength']">Mô tả phải có ít nhất 5 ký tự</div>
+            <div *ngIf="formControls['description'].errors?.['maxlength']">Mô tả không được quá 500 ký tự</div>
+          </div>
+        </c-col>
+      </c-row>
+
+      <!-- Transaction Summary -->
+      <c-row *ngIf="balanceAdjustmentForm.get('amount')?.value && balanceAdjustmentForm.get('operationType')?.value">
+        <c-col>
+          <div class="alert alert-warning">
+            <strong>Tóm tắt giao dịch:</strong><br>
+            <span [class]="balanceAdjustmentForm.get('operationType')?.value === 'add' ? 'text-success' : 'text-danger'">
+              {{ getOperationText() }}: {{ (balanceAdjustmentForm.get('amount')?.value | number:'1.2-2') }} VNĐ
+            </span><br>
+            <strong>Mô tả:</strong> {{ balanceAdjustmentForm.get('description')?.value }}
+          </div>
+        </c-col>
+      </c-row>
+
+      <!-- Action Buttons -->
+      <c-row>
+        <c-col class="d-flex justify-content-end gap-2">
+          <button 
+            type="button" 
+            cButton 
+            color="secondary" 
+            variant="outline"
+            (click)="cancel()"
+            [disabled]="isSubmitting">
+            <svg cIcon name="cil-x" class="me-1"></svg>
+            Hủy
+          </button>
+          <button 
+            type="submit" 
+            cButton 
+            [color]="balanceAdjustmentForm.get('operationType')?.value === 'add' ? 'success' : 'danger'"
+            [disabled]="balanceAdjustmentForm.invalid || isSubmitting">
+            <svg 
+              cIcon 
+              [name]="isSubmitting ? 'cil-spinner' : (balanceAdjustmentForm.get('operationType')?.value === 'add' ? 'cil-plus' : 'cil-minus')" 
+              class="me-1"
+              [class.spin]="isSubmitting">
+            </svg>
+            {{ isSubmitting ? 'Đang xử lý...' : getOperationText() }}
+          </button>
+        </c-col>
+      </c-row>
+    </form>
+  </c-card-body>
+</c-card>
