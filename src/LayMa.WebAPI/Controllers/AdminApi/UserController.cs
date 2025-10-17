@@ -151,6 +151,18 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 			var topUsers = await _unitOfWork.ViewDetails.GetTopUsersByClicks(startOfWeek, endOfWeek, 4);
 			return Ok(topUsers);
 		}
+		[HttpGet]
+		[Route("getTopUsersByClicksLastMonth")]
+		public async Task<ActionResult<List<ThongKeViewClickByUser>>> GetTopUsersByClicksLastMonth()
+		{
+			// Calculate this week's date range (Monday to Sunday)
+			var today = DateTime.Now.Date.AddMonths(-1);
+			var startOfMonth = new DateTime(today.Year, today.Month, 1);
+			var endOfMonth = startOfMonth.AddMonths(1).AddSeconds(-1);
+
+			var topUsers = await _unitOfWork.ViewDetails.GetTopUsersByClicks(startOfMonth, endOfMonth, 4);
+			return Ok(topUsers);
+		}
 
 		[HttpPost]
 		[Route("congtrutienbyadmin")]

@@ -53,7 +53,6 @@
 	var requiredScrollUp = 'Vui lòng cuộn lên để tiếp tục lấy mã';
 	var requiredScrollDown = 'Vui lòng cuộn xuống để tiếp tục lấy mã';
 	var requiredClickPost = 'Vui lòng nhấn bài viết bất kỳ sau đó kéo xuống dưới cùng để lấy mã(Click đủ 2 lần bài viết sẽ có mã)';
-	var requiredClickPost1 = 'Vui lòng nhấn bài viết bất kỳ sau đó kéo xuống dưới cùng để lấy mã(Chỉ cần click 1 lần bài viết nữa sẽ có mã)';
 	var requiredClickPostSolution2 = 'Vui lòng nhấn bài viết bất kỳ sau đó kéo xuống dưới cùng để lấy mã(Chỉ cần click 1 lần bài viết sẽ có mã)';
 	var loaded_script = false;
 
@@ -480,13 +479,7 @@
 				window.removeEventListener('scroll', scrollHandler);
 				var n = window.localStorage.getItem(cache_time);
 				updateTrackingMessage('Tiếp tục lấy mã sau:');
-				if (scrollDirection != 'up') {
-					createScrollTimerS5(show_code_button, element,step, 'scrollDown','down');
-				}
-				else{
-					createFinalSolution1Timer(show_code_button, element);
-				}
-
+				createScrollTimerS5(show_code_button, element,step, 'scrollDown');
 			}
 			if (scrollType === 'scrollDown' && typeCheck === 'scrollDown' && ((window.innerHeight + window.pageYOffset + 2) >= document.body.offsetHeight)) {
 				window.removeEventListener('scroll', scrollHandler);
@@ -496,7 +489,7 @@
 					createSolution5ClickScreenTimer(show_code_button, element,step);
 				}
 				if(step ==4){
-					createScrollTimerS5(show_code_button, element,step, 'scrollUp','up');
+					createScrollTimerS5(show_code_button, element,step, 'scrollUp');
 				}
 			}
 		}
@@ -514,13 +507,7 @@
 				}
 				if (timeInMs === targetTime) {
 					window.localStorage.setItem(cache_time, targetTime);
-					if(scrollDirection != 'up'){
-						checkClickManHinhSolution5(show_code_button, element,step,typeCheck, scrollDirection);
-					}
-					else{
-						checkScrollUpDownS5(show_code_button,element,step,typeCheck,scrollDirection);
-					}
-
+					checkClickManHinhSolution5(show_code_button, element,step,typeCheck, scrollDirection);
 					return true;
 				}
 				return false;
@@ -866,7 +853,7 @@
 				var n = window.localStorage.getItem(cache_time);
 				updateTrackingMessage('Tiếp tục lấy mã sau:');
 				createScrollTimerS4(show_code_button, element, 'up');
-
+				createFinalSolution1Timer(show_code_button, element);
 			}
 		}
 		window.addEventListener('scroll', scrollHandler);
@@ -1483,7 +1470,8 @@
 						window.localStorage.removeItem(cache_solution);
 						window.localStorage.removeItem(count_step);
 						let radomTop = 45 + Math.floor(Math.random() * 35);
-						updateTrackingMessage(code_string + ': ' + result.html + '<img alt="' + window.location.hostname + '" src="https://' + traffic_domain + '/images/icons/icon-copy.png" style="height: 14px !important;margin: -5px 0 0 3px !important;vertical-align: middle;display: inline-block;width:auto !important;">',radomTop);
+						updateTrackingMessage(code_string + ': ' + result.html + '
+<img alt="' + window.location.hostname + '" src="https://' + traffic_domain + '/images/icons/icon-copy.png" style="height: 14px !important;margin: -5px 0 0 3px !important;vertical-align: middle;display: inline-block;width:auto !important;">',radomTop);
 						trackingMessageContainer.addEventListener("click", function(){
 							if(copyTextToClipboard(result.html)){
 								var tooltip = createTooltip(copied_notify);
@@ -1717,8 +1705,7 @@
 
 			var randomSolution = window.localStorage.getItem(cache_solution);
 			if (randomSolution === null || randomSolution == 0) {
-				randomSolution = 3 + Math.floor((Math.random() * 2));
-				//randomSolution = 4;
+				randomSolution = 3;
 			}else{
 				//check reference
 				let refe = checkReferer(getReferrer());
@@ -1727,8 +1714,7 @@
 					window.localStorage.removeItem(cache_flatform);
 					window.localStorage.removeItem(cache_solution);
 					window.localStorage.removeItem(count_step);
-					randomSolution = 3 + Math.floor((Math.random() * 2));
-					//randomSolution = 4;
+					randomSolution = 3;
 				}
 
 			}
@@ -2180,138 +2166,126 @@
 				}
 			}
 			else if (randomSolution == 3) {
-				const referrer = getReferrer();
-				var flatform = checkReferer(referrer);
-				if(flatform != 'clicklink'){
-					check_ref =true;
-					ajaxGet(
-						apiUrl + "/api/admin/campain?keytoken=" + traffic_key + "&flatform=" + flatform,
-						(result) => {
-							traffic_id = result.id;
-							var element = document.getElementById(traffic_key);
-							var numberPositionRandom = Math.floor(Math.random() * 9) + 4;
-							var widthRan = Math.floor(numberPositionRandom *100 /12);
-							var numberFloatRandom = Math.floor((Math.random() * 2));
-							var styleFloat = numberFloatRandom == 0 ? 'left' : 'right';
-							var styleRandom = document.createElement('style');
-							styleRandom.type = 'text/css';
-							styleRandom.innerHTML = '.colRan-' +  numberPositionRandom + ' { width:' + widthRan + '%;flex:0 0 auto;float:'+styleFloat+'}';
-							document.getElementsByTagName('head')[0].appendChild(styleRandom);
-							var numberAlignRandom = Math.floor(Math.random() * 3);
-							var alignText = numberAlignRandom == 0 ? 'left !important' : (numberAlignRandom == 1 ? 'center !important' : 'right !important');
-							var styleAlignRandom = document.createElement('style');
-							styleAlignRandom.type = 'text/css';
-							styleAlignRandom.innerHTML = '.alignRan' + ' { text-align:' + alignText + ';}';
-							document.getElementsByTagName('head')[0].appendChild(styleAlignRandom);
-							element.classList.add('colRan-' +  numberPositionRandom);
-							element.classList.add('alignRan');
+				//const referrer = getReferrer();
+				//var flatform = checkReferer(referrer);
 
-							//start solution 4
-							traffic_wait_time = Math.floor(Math.random() * 60) + 300;
-							//traffic_wait_time = 80 + Math.floor(Math.random() * 40);
-							timeSangManHinhS4 = 30 + Math.floor(Math.random() * 30);
-							timeToScrollUpS4 = traffic_wait_time - timeSangManHinhS4 - 5;
-							timeToScrollDownS4 = timeToScrollUpS4 - (Math.floor(Math.random() * 50) + 50);
-							timeToScrollUpS4_2 = timeToScrollDownS4 - (50 + Math.floor(Math.random() * 50));
-							if(element
-								&& check_ref
-								&& get_code
-							){
-								//showElementToClickScreen();
-								loaded_script = true;
+				check_ref =true;
+					var element = document.getElementById(traffic_key);
+					var numberPositionRandom = Math.floor(Math.random() * 9) + 4;
+					var widthRan = Math.floor(numberPositionRandom *100 /12);
+					var numberFloatRandom = Math.floor((Math.random() * 2));
+					var styleFloat = numberFloatRandom == 0 ? 'left' : 'right';
+					var styleRandom = document.createElement('style');
+					styleRandom.type = 'text/css';
+					styleRandom.innerHTML = '.colRan-' +  numberPositionRandom + ' { width:' + widthRan + '%;flex:0 0 auto;float:'+styleFloat+'}';
+					document.getElementsByTagName('head')[0].appendChild(styleRandom);
+					var numberAlignRandom = Math.floor(Math.random() * 3);
+					var alignText = numberAlignRandom == 0 ? 'left !important' : (numberAlignRandom == 1 ? 'center !important' : 'right !important');
+					var styleAlignRandom = document.createElement('style');
+					styleAlignRandom.type = 'text/css';
+					styleAlignRandom.innerHTML = '.alignRan' + ' { text-align:' + alignText + ';}';
+					document.getElementsByTagName('head')[0].appendChild(styleAlignRandom);
+					element.classList.add('colRan-' +  numberPositionRandom);
+					element.classList.add('alignRan');
 
-								// element.style.background = '#fff';
-								element.style.padding = '5px';
-								element.style.color = '#000';
-								element.style.position = 'relative';
-								element.style.clear = 'both';
+					//start solution 4
+					traffic_wait_time = Math.floor(Math.random() * 60) + 300;
+					//traffic_wait_time = 80 + Math.floor(Math.random() * 40);
+					timeSangManHinhS4 = 30 + Math.floor(Math.random() * 30);
+					timeToScrollUpS4 = traffic_wait_time - timeSangManHinhS4 - 5;
+					timeToScrollDownS4 = timeToScrollUpS4 - (Math.floor(Math.random() * 50) + 50);
+					timeToScrollUpS4_2 = timeToScrollDownS4 - (50 + Math.floor(Math.random() * 50));
+					if(element
+						&& check_ref
+						&& get_code
+					){
+						//showElementToClickScreen();
+						loaded_script = true;
+
+						// element.style.background = '#fff';
+						element.style.padding = '5px';
+						element.style.color = '#000';
+						element.style.position = 'relative';
+						element.style.clear = 'both';
 
 
-								var button = document.createElement("span");
-								button.innerHTML = '<img alt="' + window.location.hostname + '" src="https://' + traffic_domain + '/images/icons/icon-x64.png" height="" style="padding:0;vertical-align:middle;padding-right:5px !important;width:auto !important;height:15px !important;display:inline-block !important;margin: 0!important;border: none!important;border-radius: unset!important;float: unset!important;background:none !important;" /> <span style="display:inline-block;vertical-align:middle;color:#fff">' + get_code_string + '</span>';
-								button.style.background = '#ed1c24';
-								button.style.border = '1px solid #fff';
-								button.style.color = '#fff';
-								button.style.fontWeight = '700';
-								button.style.fontSize = '14px';
-								button.style.borderRadius = '7px';
-								button.style.padding = '5px 10px';
-								button.style.margin = '5px';
-								button.style.minHeight = 'auto';
-								button.style.minWidth = '130px';
-								button.style.lineHeight = '20px';
-								button.style.verticalAlign = 'middle';
-								button.style.width = 'auto';
-								button.style.cursor = 'pointer';
-								button.style.display = 'inline-block';
+						var button = document.createElement("span");
+						button.innerHTML = '<img alt="' + window.location.hostname + '" src="https://' + traffic_domain + '/images/icons/icon-x64.png" height="" style="padding:0;vertical-align:middle;padding-right:5px !important;width:auto !important;height:15px !important;display:inline-block !important;margin: 0!important;border: none!important;border-radius: unset!important;float: unset!important;background:none !important;" /> <span style="display:inline-block;vertical-align:middle;color:#fff">' + get_code_string + '</span>';
+						button.style.background = '#ed1c24';
+						button.style.border = '1px solid #fff';
+						button.style.color = '#fff';
+						button.style.fontWeight = '700';
+						button.style.fontSize = '14px';
+						button.style.borderRadius = '7px';
+						button.style.padding = '5px 10px';
+						button.style.margin = '5px';
+						button.style.minHeight = 'auto';
+						button.style.minWidth = '130px';
+						button.style.lineHeight = '20px';
+						button.style.verticalAlign = 'middle';
+						button.style.width = 'auto';
+						button.style.cursor = 'pointer';
+						button.style.display = 'inline-block';
 
-								var show_code_button = document.createElement("div");
-								show_code_button.innerHTML = '';
-								show_code_button.style.background = '#ed1c24';
-								show_code_button.style.border = '1px solid #fff';
-								show_code_button.style.color = '#fff';
-								show_code_button.style.fontWeight = '700';
-								show_code_button.style.fontSize = '14px';
-								show_code_button.style.borderRadius = '7px';
-								show_code_button.style.padding = '5px 10px';
-								show_code_button.style.margin = '5px';
-								show_code_button.style.display = 'inline-block';
-								show_code_button.style.minHeight = 'auto';
-								show_code_button.style.minWidth = '130px';
-								show_code_button.style.lineHeight = '20px';
-								show_code_button.style.verticalAlign = 'middle';
-								show_code_button.style.width = 'auto';
+						var show_code_button = document.createElement("div");
+						show_code_button.innerHTML = '';
+						show_code_button.style.background = '#ed1c24';
+						show_code_button.style.border = '1px solid #fff';
+						show_code_button.style.color = '#fff';
+						show_code_button.style.fontWeight = '700';
+						show_code_button.style.fontSize = '14px';
+						show_code_button.style.borderRadius = '7px';
+						show_code_button.style.padding = '5px 10px';
+						show_code_button.style.margin = '5px';
+						show_code_button.style.display = 'inline-block';
+						show_code_button.style.minHeight = 'auto';
+						show_code_button.style.minWidth = '130px';
+						show_code_button.style.lineHeight = '20px';
+						show_code_button.style.verticalAlign = 'middle';
+						show_code_button.style.width = 'auto';
 
-								element.appendChild(button);
+						element.appendChild(button);
 
-								var n=1e3*traffic_wait_time;
-								window.localStorage.setItem(cache_time,n);
-								var clickHandler = ('ontouchstart' in document.documentElement ? "touchstart" : "click");
+						var n=1e3*traffic_wait_time;
+						window.localStorage.setItem(cache_time,n);
+						var clickHandler = ('ontouchstart' in document.documentElement ? "touchstart" : "click");
 
 
-								button.addEventListener('mouseenter', e => {
-									button.style.background = '#c40b11';
-								});
-
-								button.addEventListener('mouseleave', e => {
-									button.style.background = '#ed1c24';
-								});
-
-								button.addEventListener('mousedown', e => {
-									button.style.background = '#9a070d';
-								});
-
-								button.addEventListener('mouseup', e => {
-									button.style.background = '#ed1c24';
-								});
-
-								button.addEventListener(clickHandler, function(event){
-									event.preventDefault();
-									detectIncognito().then((result) => {
-										if(result.isPrivate){
-											show_code_button.innerHTML= close_private_mode_message;
-											element.innerHTML='';
-											element.appendChild(show_code_button);
-										}else{
-											show_code_button.innerHTML= get_code_after_string + ' ' + n/1e3;
-											element.innerHTML='';
-											element.appendChild(show_code_button);
-											element.dataset.time = traffic_wait_time;
-											element.dataset.click = 'true';
-											createSolution4Timer(show_code_button, element);
-										}
-									});
-									return false;
-								});
-							}
-						},
-						(event) => {
-							console.log(event);
-						},
-						() => {
-
+						button.addEventListener('mouseenter', e => {
+							button.style.background = '#c40b11';
 						});
-				}
+
+						button.addEventListener('mouseleave', e => {
+							button.style.background = '#ed1c24';
+						});
+
+						button.addEventListener('mousedown', e => {
+							button.style.background = '#9a070d';
+						});
+
+						button.addEventListener('mouseup', e => {
+							button.style.background = '#ed1c24';
+						});
+
+						button.addEventListener(clickHandler, function(event){
+							event.preventDefault();
+							detectIncognito().then((result) => {
+								if(result.isPrivate){
+									show_code_button.innerHTML= close_private_mode_message;
+									element.innerHTML='';
+									element.appendChild(show_code_button);
+								}else{
+									show_code_button.innerHTML= get_code_after_string + ' ' + n/1e3;
+									element.innerHTML='';
+									element.appendChild(show_code_button);
+									element.dataset.time = traffic_wait_time;
+									element.dataset.click = 'true';
+									createSolution4Timer(show_code_button, element);
+								}
+							});
+							return false;
+						});
+					}
 			}
 			else if(randomSolution == 4){
 				var step = window.localStorage.getItem(count_step);
@@ -2334,10 +2308,7 @@
 
 				if(flatform != 'clicklink'){
 					check_ref =true;
-					ajaxGet(
-						apiUrl + "/api/admin/campain?keytoken=" + traffic_key + "&flatform=" + flatform,
-						(result) => {
-							traffic_id = result.id;
+					//traffic_id = result.id;
 							var element = document.getElementById(traffic_key);
 							var numberPositionRandom = Math.floor(Math.random() * 9) + 4;
 							var widthRan = Math.floor(numberPositionRandom *100 /12);
@@ -2461,13 +2432,6 @@
 									return false;
 								});
 							}
-						},
-						(event) => {
-							console.log(event);
-						},
-						() => {
-
-						});
 				}
 			}
 		}
@@ -2578,13 +2542,7 @@
 			}
 		}
 		else{
-			if(step == 3){
-				updateTrackingMessage(requiredClickPost1);
-			}
-			else{
-				updateTrackingMessage(requiredClickPost);
-			}
-			
+			updateTrackingMessage(requiredClickPost);
 		}
 
 	}

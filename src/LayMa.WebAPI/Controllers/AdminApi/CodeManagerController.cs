@@ -110,7 +110,7 @@ namespace LayMa.WebAPI.Controllers.AdminApi
 				check = await _unitOfWork.CodeManagers.CheckCode(request.Code, campain.Id);
 			}
 			
-			if (!check) return BadRequest("Code " + request.Code + " đã được dùng hoặc không hợp lệ");
+			if (!check) return BadRequest("Code " + request.Code + " đã được dùng hoặc không hợp lệ. Bạn có thể tải lại link và nhập lại code để thử lại");
 
 			if (campain.TypeRun == 1)
 			{
